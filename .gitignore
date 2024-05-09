@@ -1,6 +1,8 @@
 cgintro*/*
 !cgintro*/src
 !cgintro*/src/*
+!cgintro*/shaders
+!cgintro*/shaders/*
 cgintro*/src/framework
 cgintro*/src/library
 cgintro*/src/vendor
