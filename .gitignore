@@ -1,5 +1,7 @@
-
-!.gitignore
-!/src/
-!/src/*
-src/.DS_Store
+cgintro*/*
+!cgintro*/src
+!cgintro*/src/*
+cgintro*/src/framework
+cgintro*/src/library
+cgintro*/src/vendor
+cgintro*/src/.DS_Store
