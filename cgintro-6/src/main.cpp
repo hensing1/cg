@@ -1,3 +1,4 @@
+#include "glm/ext/quaternion_geometric.hpp"
 #include <config.hpp>
 
 #include <glm/glm.hpp>
@@ -60,11 +61,29 @@ int main() {
     vec2 N0 = normal(B - A), N1 = normal(C - B), N2 = normal(A - C);
 
     uvec2 loc = uvec2(0, 0);
-    vec2 P = vec2(loc);
-    float E0, E1, E2;
+    // vec2 P = vec2(loc);
+    float E0 = dot(-A, N0), E1 = dot(-B, N1), E2 = dot(-C, N2);
 
-    // TODO: Rasterize the triangle using Pineda's algorithm and compute the distances E0, E1, E2 for each pixel
-    // Note: Draw E0, E1, E2 to the ouptut image using the drawDistances function
+    // traverse image top-down with alternating directions
+    int direction = 1;
+    for (; loc.y < HEIGHT; loc.y++) {
+        
+        while (true) {
+            drawDistances(loc, E0, E1, E2);
+            if ((direction == -1 && loc.x == 0) || (direction == 1 && loc.x == WIDTH - 1)) { // butt ugly but who cares
+                break;
+            }
+            loc.x += direction;
+            E0 += direction * N0.x;
+            E1 += direction * N1.x;
+            E2 += direction * N2.x;
+        }
+
+        E0 += N0.y;
+        E1 += N1.y;
+        E2 += N2.y;
+        direction *= -1;
+    }
 
     saveImage();
     return 0;
