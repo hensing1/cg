@@ -1,0 +1,8 @@
+.cache/
+# Mac specific
+**/.DS_Store
+# VSCode specific
+.vscode/
+# Build files
+build/
+composed/
