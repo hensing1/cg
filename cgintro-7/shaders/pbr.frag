@@ -26,8 +26,7 @@ const float PI = 3.14159265359;
  * Most dielectrics have an IoR near 1.5 => R0 = ((1 - 1.5) / (1 + 1.5))^2 = 0.04.
  */
 vec3 F_schlickApprox(float HdotV, vec3 R0) {
-    // TODO
-    return vec3(1.0);
+    return R0 + (1.0 - R0) * pow(1.0 - HdotV, 5.0);
 }
 
 /**
@@ -36,8 +35,16 @@ vec3 F_schlickApprox(float HdotV, vec3 R0) {
  * See: A Reflectance Model for Computer Graphics by Robert L. Cook and Kenneth E. Torrance
  */
 float D_beckmannDistribution(float NdotH, float sigma2) {
-    // TODO
-    return 1.0;
+float alpha = sigma2;
+    float alpha2 = alpha * alpha;
+    float NdotH2 = NdotH * NdotH;
+
+    float denom = (NdotH2 * alpha2 + (1.0 - NdotH2));
+    denom = PI * denom * denom;
+
+    float exponent = (NdotH2 - 1.0) / (NdotH2 * alpha2);
+
+    return exp(exponent) / denom;
 }
 
 /**
@@ -45,16 +52,38 @@ float D_beckmannDistribution(float NdotH, float sigma2) {
  * See: A Reflectance Model for Computer Graphics by Robert L. Cook and Kenneth E. Torrance
  */
 float G_geometricAttenuation(float NdotL, float NdotV, float NdotH, float HdotV) {
-    // TODO
-    return 1.0;
+    float k = uRoughness / 2.0;
+    float G1L = NdotL / (NdotL * (1.0 - k) + k);
+    float G1V = NdotV / (NdotV * (1.0 - k) + k);
+    return G1L * G1V;
 }
 
 /**
  * Oren-Nayar reflectance model without the lambertian term (A + B * max(0, cos(phi_L - phi_V)) * sin(alpha) * tan(beta)).
  */
 float orenNayarTerm(float sigma2, float NdotV, float NdotL, vec3 N, vec3 L, vec3 V) {
-    // TODO
-    return 1.0;
+   // Berechne A und B
+    float sigma2_sq = sigma2 * sigma2;
+    float A = 1.0 - (sigma2_sq / (2.0 * (sigma2_sq + 0.33)));
+    float B = 0.45 * sigma2_sq / (sigma2_sq + 0.09);
+
+    // Berechne die Richtungsvektoren relativ zur Normalen
+    vec3 Ln = normalize(L - dot(L, N) * N);
+    vec3 Vn = normalize(V - dot(V, N) * N);
+
+    // Berechne die Winkel phiL und phiV
+    float phiL = atan(Ln.y, Ln.x);
+    float phiV = atan(Vn.y, Vn.x);
+    float cosPhiDiff = cos(phiL - phiV);
+
+    // Berechne die Winkel alpha und beta
+    float alpha = max(acos(NdotL), acos(NdotV));
+    float beta = min(acos(NdotL), acos(NdotV));
+
+    // Berechne den Oren-Nayar Term
+    float orenNayar = A + B * max(0.0, cosPhiDiff) * sin(alpha) * tan(beta);
+
+    return orenNayar;
 }
 
 /**
