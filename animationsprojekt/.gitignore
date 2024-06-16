@@ -2,6 +2,8 @@
 **/.DS_Store
 # VSCode specific
 .vscode/
+# nvim specific
+.cache/
 # Build files
 build/
 build/*
