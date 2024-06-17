@@ -45,7 +45,7 @@ vec3 Hermite::evaluateSplineAllowLoop(float t) {
 vec3 Hermite::evaluateSpline(float t) {
 
     if (t < 0) return points[0].pos; // t ist negativ -> Kann nicht evaluiert werden
-    if (t >= points.size()) return points[points.size()-1].pos;
+    if (t >= points.size()-1) return points[points.size()-1].pos;
 
     int segment = int(floor(t)) % points.size();
     float diff = t - floor(t);
