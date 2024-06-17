@@ -6,6 +6,7 @@ set(SRC
     src/main.cpp
     src/mainapp.cpp
     src/scenes.cpp
+    src/classes/hermite.cpp
     src/framework/app.cpp
     src/framework/camera.cpp
     src/framework/common.cpp
@@ -24,6 +25,7 @@ set(SRC
 set(INCLUDE
     src/
     src/framework/
+    src/classes/
 )
 # Resource files
 set(SHADERS
