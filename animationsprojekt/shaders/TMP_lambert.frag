@@ -9,6 +9,6 @@ uniform vec3 uColor = vec3(1.0);
 
 void main() {
     vec3 normal = normalize(interpNormal);
-    vec3 lighting = uColor * max(dot(normal, uLightDir), 0.0);
+    vec3 lighting = uColor * max(dot(normal, uLightDir), max(dot(normal, -uLightDir), 0.0));
     fragColor = lighting;
 }
