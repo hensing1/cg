@@ -15,7 +15,14 @@ using namespace glm;
 #include "classes/hermite.hpp"
 
 #include "config.hpp"
+
+#define GLM_ENABLE_EXPERIMENTAL
 #include <iostream>
+#include <string>
+#include <glm/gtx/string_cast.hpp>
+
+
+
 
 
 //  NOTE: Nur zu Testzwecken -> später entfernen
@@ -41,8 +48,8 @@ void MainApp::render_scene_01() {
    
     
     std::vector<hermite_point> donut_path_points = {
-        hermite_point{vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f)},
-        hermite_point{vec3(0.0f, 4.0f, 0.0f), vec3(2.0f, 0.5f, 0.5f)},
+        hermite_point{vec3(0.0f, -14.0f, 0.0f), vec3(0.5f, 1.0f, 0.0f)},
+        hermite_point{vec3(4.0f, 4.0f, 0.0f), vec3(-2.0f, 0.5f, 0.5f)},
         hermite_point{vec3(1.0f, 8.0f, 1.0f), vec3(-2.4f, 0.0f, 0.4f)},
         hermite_point{vec3(1.0f, 4.0f, 1.0f), vec3(-12.0f, -2.0f, 3.0f)},
         hermite_point{vec3(-6.0f, -3.0f, -4.0f), vec3(0.0f, -5.0f, 0.0f)},
@@ -57,23 +64,38 @@ void MainApp::render_scene_01() {
     Hermite cube_path(&cube_path_points);
 
     std::vector<hermite_point> sphere_path_points = {
-        hermite_point{vec3(-20.0f, 0.0f, 0.0f), vec3(0.0f, 10.0f, 0.0f)},
-        hermite_point{vec3(0.0f, 20.0f, 0.0f), vec3(10.0f, 0.0f, 0.0f)},
-        hermite_point{vec3(20.0f, 0.0f, 0.0f), vec3(0.0f, -10.0f, 0.0f)},
-        hermite_point{vec3(0.0f, -20.0f, 0.0f), vec3(-10.0f, 0.0f, 0.0f)},
+        hermite_point{vec3(-20.0f, 0.0f, 0.0f), vec3(0.0f, 30.0f, 0.0f)},
+        hermite_point{vec3(0.0f, 20.0f, 0.0f), vec3(40.0f, 0.0f, 0.0f)},
+        hermite_point{vec3(20.0f, 0.0f, 0.0f), vec3(0.0f, -30.0f, 0.0f)},
+        hermite_point{vec3(0.0f, -20.0f, 0.0f), vec3( -5.0f, 0.0f, 0.0f)},
     };
     Hermite sphere_path(&sphere_path_points);
 
 
+    std::vector<quintic_hermite_point> smooth_sphere_path_points = {
+        quintic_hermite_point{vec3(0.0f, 0.0f, -10.0f), vec3(0.0f, 15.0f, 15.0f), vec3(0.0f, 8.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.0f, 10.0f, 0.0f), vec3(0.0f, -15.0f, 15.0f), vec3(0.0f, 0.0f, 8.0f)},
+        quintic_hermite_point{vec3(0.0f, 0.0f, 10.0f), vec3(0.0f, -15.0f, -15.0f), vec3(0.0f, -8.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.0f, -10.0f, 0.0f), vec3(0.0f, 15.0f, -15.0f), vec3(0.0f, 0.0f, -8.0f)},
+    };
+    QuinticHermite smooth_sphere_path(&smooth_sphere_path_points);
+
+
+
+
     // Draw Test-Meshes
-    program.set("uColor", vec3(1.0f, 1.0f, 0.0f));
-    drawMesh(1.05f, vec3(2.0f, 3.0f, -2.0f), program, cube, worldToClip);
+    program.set("uColor", vec3(sin(float(FRAME)/14), 1.0f, cos(float(FRAME)/20)));
+    drawMesh(0.25f, vec3(0.0f, 0.0f, 0.0f), program, cube, worldToClip);
     program.set("uColor", vec3(0.0f, 0.9f, 0.1f));
     drawMesh(0.85f, cube_path.evaluateSplineAllowLoop(float(FRAME) / 200), program, cube, worldToClip);
     program.set("uColor", vec3(0.0f, 0.3f, 0.0f));
     drawMesh(2.25f, sphere_path.evaluateSplineAllowLoop(float(FRAME) / 100), program, sphere, worldToClip);
     program.set("uColor", vec3(0.5f, 0.0f, 0.8f));
     drawMesh(5.05f, donut_path.evaluateSpline(float(FRAME) / 200), program, donut, worldToClip);
+    program.set("uColor", vec3(0.8f, 0.0f, 0.8f));
+    drawMesh(1.35f, smooth_sphere_path.evaluateSplineAllowLoop(float(FRAME) / 200), program, sphere, worldToClip);
+
+    //std::cout << "----------------\nPOS:  " << to_string(smooth_sphere_path.evaluateSplineAllowLoop(float(FRAME) / 200)) << std::endl;
 
 }
 
