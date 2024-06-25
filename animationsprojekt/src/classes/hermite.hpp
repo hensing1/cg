@@ -40,6 +40,7 @@ struct quintic_hermite_point {
 class Hermite {
 
 public:
+   Hermite();
    Hermite(std::vector<hermite_point> *input);
 
    /** 
@@ -64,6 +65,7 @@ private:
 class QuinticHermite {
 
 public:
+   QuinticHermite();
    QuinticHermite(std::vector<quintic_hermite_point> *input);
 
    /** 

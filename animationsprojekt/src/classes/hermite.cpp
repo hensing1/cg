@@ -9,6 +9,10 @@
 #include <glm/gtx/string_cast.hpp>
 
 
+Hermite::Hermite() {
+    points = std::vector<hermite_point>({});
+    HERMITE_MATRIX = mat4(0.0f);
+}
 
 Hermite::Hermite(std::vector<hermite_point> *input) {
     points = *input;
@@ -69,6 +73,14 @@ vec3 Hermite::evaluateSpline(float t) {
 /** 
  *   NOTE: Quintic Hermite Splines ab hier
  */
+
+QuinticHermite::QuinticHermite() {
+    points = std::vector<quintic_hermite_point>({});
+    HERMITE_MATRIX_LU = mat3(0.0f);
+    HERMITE_MATRIX_RU = mat3(0.0f);
+    HERMITE_MATRIX_LL = mat3(0.0f);
+    HERMITE_MATRIX_RL = mat3(0.0f);
+}
 
 QuinticHermite::QuinticHermite(std::vector<quintic_hermite_point> *input) {
     points = *input;
