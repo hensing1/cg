@@ -10,6 +10,8 @@ using namespace glm;
 #include "framework/gl/program.hpp"
 #include "framework/imguiutil.hpp"
 
+#include "classes/hermite.hpp"
+
 class MainApp : public App {
    public:
     MainApp();
@@ -41,4 +43,14 @@ class MainApp : public App {
     Mesh donut;
     Mesh cube;
     Mesh sphere;
+
+    std::vector<hermite_point> donut_path_points;
+    std::vector<hermite_point> cube_path_points;
+    std::vector<hermite_point> sphere_path_points;
+    std::vector<quintic_hermite_point> smooth_sphere_path_points;
+
+    Hermite donut_path;
+    Hermite cube_path;
+    Hermite sphere_path;
+    QuinticHermite smooth_sphere_path;
 };
