@@ -11,8 +11,6 @@ using namespace glm;
 #include "framework/gl/program.hpp"
 #include "framework/mesh.hpp"
 
-#include "classes/hermite.hpp"
-
 #include "config.hpp"
 #include <iostream>
 
@@ -25,7 +23,7 @@ MainApp::MainApp() : App(800, 600) {
     DEBUG_MODE = false;
     ANIMATION_PLAYING = true;
 
-    App::imguiEnabled = false;
+    App::imguiEnabled = true;
     camera.cartesianPosition = vec3(0.0f, 0.0f, 0.0f);
     
     //  NOTE: Nur zu Testzwecken -> später entfernen
@@ -40,39 +38,6 @@ void MainApp::init() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
-
-    donut_path_points = {
-        hermite_point{vec3(0.0f, -14.0f, 0.0f), vec3(0.5f, 1.0f, 0.0f)},
-        hermite_point{vec3(4.0f, 4.0f, 0.0f), vec3(-2.0f, 0.5f, 0.5f)},
-        hermite_point{vec3(1.0f, 8.0f, 1.0f), vec3(-2.4f, 0.0f, 0.4f)},
-        hermite_point{vec3(1.0f, 4.0f, 1.0f), vec3(-12.0f, -2.0f, 3.0f)},
-        hermite_point{vec3(-6.0f, -3.0f, -4.0f), vec3(0.0f, -5.0f, 0.0f)},
-    }; 
-    donut_path = Hermite(&donut_path_points);
-
-    cube_path_points = {
-        hermite_point{vec3(10.0f, -4.0f, 0.0f), vec3(-20.0f, 23.0f, 0.0f)},
-        hermite_point{vec3(-10.0f, 8.0f, 0.0f), vec3(0.0f, -5.0f, 18.0f)},
-        hermite_point{vec3(-5.0f, -4.0f, -15.0f), vec3(-20.0f, 23.0f, 0.0f)},
-    };
-    cube_path = Hermite(&cube_path_points);
-
-    sphere_path_points = {
-        hermite_point{vec3(-20.0f, 0.0f, 0.0f), vec3(0.0f, 30.0f, 0.0f)},
-        hermite_point{vec3(0.0f, 20.0f, 0.0f), vec3(40.0f, 0.0f, 0.0f)},
-        hermite_point{vec3(20.0f, 0.0f, 0.0f), vec3(0.0f, -30.0f, 0.0f)},
-        hermite_point{vec3(0.0f, -20.0f, 0.0f), vec3( -5.0f, 0.0f, 0.0f)},
-    };
-    sphere_path = Hermite(&sphere_path_points);
-
-
-    smooth_sphere_path_points = {
-        quintic_hermite_point{vec3(0.0f, 0.0f, -10.0f), vec3(0.0f, 15.0f, 15.0f), vec3(0.0f, 8.0f, 0.0f)},
-        quintic_hermite_point{vec3(0.0f, 10.0f, 0.0f), vec3(0.0f, -15.0f, 15.0f), vec3(0.0f, 0.0f, 8.0f)},
-        quintic_hermite_point{vec3(0.0f, 0.0f, 10.0f), vec3(0.0f, -15.0f, -15.0f), vec3(0.0f, -8.0f, 0.0f)},
-        quintic_hermite_point{vec3(0.0f, -10.0f, 0.0f), vec3(0.0f, 15.0f, -15.0f), vec3(0.0f, 0.0f, -8.0f)},
-    };
-    smooth_sphere_path = QuinticHermite(&smooth_sphere_path_points);
 }
 
 
@@ -123,11 +88,13 @@ void MainApp::clickCallback(Button button, Action action, Modifier modifier) {
 void MainApp::buildImGui() {
     ImGui::StatisticsWindow(App::delta, App::resolution);
     ImGui::Begin("Settings", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
-    ImGui::Text("Position:  (%f|%f|%f)", camera.cartesianPosition);
-    ImGui::Text("Frame:  %zu", FRAME);
-    ImGui::Text("Scene:  %zu", SCENE);
+//    ImGui::Text("Position:  (%f|%f|%f)", camera.cartesianPosition);
+    ImGui::Text("Frame:  %u", FRAME);
+    ImGui::Text("Scene:  %u", SCENE);
     ImGui::Checkbox("Debug Mode", &DEBUG_MODE);
     ImGui::Checkbox("Play Animation", &ANIMATION_PLAYING);
+    ImGui::RadioButton("Scene 1", true);
+    ImGui::RadioButton("Scene 2", false);
     ImGui::End();
 }
 
