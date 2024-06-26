@@ -30,9 +30,17 @@ struct hermite_point {
    vec3 vel;
 };
 
+struct quintic_hermite_point {
+   vec3 pos;
+   vec3 vel;
+   vec3 acc;
+};
+
+
 class Hermite {
 
 public:
+   Hermite();
    Hermite(std::vector<hermite_point> *input);
 
    /** 
@@ -49,6 +57,31 @@ public:
 private:
    std::vector<hermite_point> points;
    mat4 HERMITE_MATRIX;
+
+
+};
+
+
+class QuinticHermite {
+
+public:
+   QuinticHermite();
+   QuinticHermite(std::vector<quintic_hermite_point> *input);
+
+   /** 
+    * Gibt zu einem t die passende Position im Raum gemäß der Spline zurück.
+    * Ist das t zu groß, so wird die Position des letzten Punktes gewählt.
+   */
+   vec3 evaluateSpline(float t);
+
+   /**
+    *  Funktioniert genau wie evaluateSpline(), jedoch wiederholt sich der Ablauf der Spline für zu große t.
+   */
+   vec3 evaluateSplineAllowLoop(float t);
+
+private:
+   std::vector<quintic_hermite_point> points;
+   mat3 HERMITE_MATRIX_LU, HERMITE_MATRIX_RU, HERMITE_MATRIX_LL, HERMITE_MATRIX_RL;
 
 
 };
