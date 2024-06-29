@@ -4,13 +4,6 @@
 #include <glm/glm.hpp>
 using namespace glm;
 
-#include "framework/app.hpp"
-#include "framework/app.hpp"
-#include "framework/camera.hpp"
-#include "framework/mesh.hpp"
-#include "framework/gl/program.hpp"
-#include "framework/imguiutil.hpp"
-
 #include <vector>
 
 
