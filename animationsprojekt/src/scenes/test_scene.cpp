@@ -65,4 +65,6 @@ void TestScene::render(int frame, Program& program, Camera& camera) {
              program, sphere, worldToClip);
 }
 
-TestScene::~TestScene() {}
+TestScene::~TestScene() {
+    // donut.load(nullptr);
+}
