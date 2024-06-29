@@ -65,21 +65,22 @@ void MainApp::render() {
 
 void MainApp::switchScene() {
     FRAME = 0;
+    glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
     switch (SCENE) {
-        case 0:
-            current_scene = std::make_unique<TestScene>();
-            break;
-        case 1:
-            current_scene = std::make_unique<Scene01>();
-            break;
-        case 2:
-            current_scene = std::make_unique<Scene02>();
-            break;
-        case 3:
-            current_scene = std::make_unique<Scene03>();
-            break;
-        default:
-            current_scene = std::make_unique<TestScene>();
+    case 0:
+        current_scene = std::make_unique<TestScene>();
+        break;
+    case 1:
+        current_scene = std::make_unique<Scene01>();
+        break;
+    case 2:
+        current_scene = std::make_unique<Scene02>();
+        break;
+    case 3:
+        current_scene = std::make_unique<Scene03>();
+        break;
+    default:
+        current_scene = std::make_unique<TestScene>();
     }
 }
 

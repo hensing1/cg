@@ -5,7 +5,6 @@ cmake_minimum_required(VERSION 3.26)
 set(SRC
     src/main.cpp
     src/mainapp.cpp
-    src/scenes.cpp
     src/classes/hermite.cpp
     src/framework/app.cpp
     src/framework/camera.cpp
