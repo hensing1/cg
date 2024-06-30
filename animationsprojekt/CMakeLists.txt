@@ -5,7 +5,6 @@ cmake_minimum_required(VERSION 3.26)
 set(SRC
     src/main.cpp
     src/mainapp.cpp
-    src/scenes.cpp
     src/classes/hermite.cpp
     src/framework/app.cpp
     src/framework/camera.cpp
@@ -21,11 +20,17 @@ set(SRC
     src/framework/gl/shader.cpp
     src/framework/gl/texture.cpp
     src/framework/gl/vertexarray.cpp
+    src/scenes/scene.cpp
+    src/scenes/scene01.cpp
+    src/scenes/scene02.cpp
+    src/scenes/scene03.cpp
+    src/scenes/test_scene.cpp
 )
 set(INCLUDE
     src/
     src/framework/
     src/classes/
+    src/scenes/
 )
 # Resource files
 set(SHADERS

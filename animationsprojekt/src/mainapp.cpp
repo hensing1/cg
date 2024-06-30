@@ -1,15 +1,18 @@
 #include "mainapp.hpp"
+#include "scenes/scene.hpp"
 
 #include <glad/glad.h>
 #include <imgui.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <memory>
 using namespace glm;
 
 #include "framework/app.hpp"
 #include "framework/camera.hpp"
 #include "framework/gl/program.hpp"
 #include "framework/mesh.hpp"
+#include "framework/imguiutil.hpp"
 
 #include "classes/hermite.hpp"
 
@@ -21,7 +24,7 @@ MainApp::MainApp() : App(800, 600) {
     App::setVSync(true); // Limit framerate
 
     FRAME = 0;
-    SCENE = 1;
+    SCENE = prev_scene = 0;
     DEBUG_MODE = false;
     ANIMATION_PLAYING = true;
 
@@ -30,9 +33,8 @@ MainApp::MainApp() : App(800, 600) {
     
     //  NOTE: Nur zu Testzwecken -> später entfernen
     program.load("TMP_projection.vert", "TMP_lambert.frag");
-    donut.load("meshes/donut.obj");
-    cube.load("meshes/cube.obj");
-    sphere.load("meshes/highpolysphere.obj");
+
+    current_scene = std::make_unique<TestScene>();
 }
 
 
@@ -40,39 +42,6 @@ void MainApp::init() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
-
-    donut_path_points = {
-        hermite_point{vec3(0.0f, -14.0f, 0.0f), vec3(0.5f, 1.0f, 0.0f)},
-        hermite_point{vec3(4.0f, 4.0f, 0.0f), vec3(-2.0f, 0.5f, 0.5f)},
-        hermite_point{vec3(1.0f, 8.0f, 1.0f), vec3(-2.4f, 0.0f, 0.4f)},
-        hermite_point{vec3(1.0f, 4.0f, 1.0f), vec3(-12.0f, -2.0f, 3.0f)},
-        hermite_point{vec3(-6.0f, -3.0f, -4.0f), vec3(0.0f, -5.0f, 0.0f)},
-    }; 
-    donut_path = Hermite(&donut_path_points);
-
-    cube_path_points = {
-        hermite_point{vec3(10.0f, -4.0f, 0.0f), vec3(-20.0f, 23.0f, 0.0f)},
-        hermite_point{vec3(-10.0f, 8.0f, 0.0f), vec3(0.0f, -5.0f, 18.0f)},
-        hermite_point{vec3(-5.0f, -4.0f, -15.0f), vec3(-20.0f, 23.0f, 0.0f)},
-    };
-    cube_path = Hermite(&cube_path_points);
-
-    sphere_path_points = {
-        hermite_point{vec3(-20.0f, 0.0f, 0.0f), vec3(0.0f, 30.0f, 0.0f)},
-        hermite_point{vec3(0.0f, 20.0f, 0.0f), vec3(40.0f, 0.0f, 0.0f)},
-        hermite_point{vec3(20.0f, 0.0f, 0.0f), vec3(0.0f, -30.0f, 0.0f)},
-        hermite_point{vec3(0.0f, -20.0f, 0.0f), vec3( -5.0f, 0.0f, 0.0f)},
-    };
-    sphere_path = Hermite(&sphere_path_points);
-
-
-    smooth_sphere_path_points = {
-        quintic_hermite_point{vec3(0.0f, 0.0f, -10.0f), vec3(0.0f, 15.0f, 15.0f), vec3(0.0f, 8.0f, 0.0f)},
-        quintic_hermite_point{vec3(0.0f, 10.0f, 0.0f), vec3(0.0f, -15.0f, 15.0f), vec3(0.0f, 0.0f, 8.0f)},
-        quintic_hermite_point{vec3(0.0f, 0.0f, 10.0f), vec3(0.0f, -15.0f, -15.0f), vec3(0.0f, -8.0f, 0.0f)},
-        quintic_hermite_point{vec3(0.0f, -10.0f, 0.0f), vec3(0.0f, 15.0f, -15.0f), vec3(0.0f, 0.0f, -8.0f)},
-    };
-    smooth_sphere_path = QuinticHermite(&smooth_sphere_path_points);
 }
 
 
@@ -83,22 +52,37 @@ void MainApp::render() {
      *         Es wird empfohlen, allgemeine Funktionalität in separate Funktionen auszulagern.
      *         (Wahrscheinlich sollten diese Funktionen auch in MainApp deklariert werden)
      */
-    switch (SCENE) {
-        case 1:
-            render_scene_01();
-        break;
-        case 2:
-            render_scene_02();
-        break;
-        default:
-            render_scene_01();
-        break;
+
+    if (SCENE != prev_scene) { // event listener für arme
+        switchScene();
     }
+    current_scene->render(FRAME, program, camera);
+    prev_scene = SCENE;
 
     // Framezahl erhöhen, wenn Animation abgespielt wird
     if (ANIMATION_PLAYING) FRAME++;
 }
 
+void MainApp::switchScene() {
+    FRAME = 0;
+    glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+    switch (SCENE) {
+    case 0:
+        current_scene = std::make_unique<TestScene>();
+        break;
+    case 1:
+        current_scene = std::make_unique<Scene01>();
+        break;
+    case 2:
+        current_scene = std::make_unique<Scene02>();
+        break;
+    case 3:
+        current_scene = std::make_unique<Scene03>();
+        break;
+    default:
+        current_scene = std::make_unique<TestScene>();
+    }
+}
 
 /*
  *  TODO: Keyboard-Clicks umsetzen
@@ -128,9 +112,10 @@ void MainApp::buildImGui() {
     ImGui::Text("Scene:  %u", SCENE);
     ImGui::Checkbox("Debug Mode", &DEBUG_MODE);
     ImGui::Checkbox("Play Animation", &ANIMATION_PLAYING);
+    ImGui::RadioButton("Test scene", &SCENE, 0);
     ImGui::RadioButton("Scene 1", &SCENE, 1);
     ImGui::RadioButton("Scene 2", &SCENE, 2);
-    // ImGui::RadioButton("Scene 3", &SCENE, 3);
+    ImGui::RadioButton("Scene 3", &SCENE, 3);
     ImGui::End();
 }
 
