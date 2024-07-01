@@ -40,7 +40,7 @@ TestScene::TestScene() {
 
 }
 
-void TestScene::render(int frame, Program& program, Camera& camera) {
+void TestScene::render(int frame, float time, Program& program, Camera& camera) {
     camera.updateIfChanged();
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
 
@@ -48,20 +48,20 @@ void TestScene::render(int frame, Program& program, Camera& camera) {
 
     // Draw Test-Meshes
     program.set("uColor",
-                vec3(sin(float(frame) / 14), 1.0f, cos(float(frame) / 20)));
+                vec3(sin(time), 1.0f, cos(time / 3)));
     drawMesh(0.25f, vec3(0.0f, 0.0f, 0.0f), program, cube, worldToClip);
     program.set("uColor", vec3(0.0f, 0.9f, 0.1f));
-    drawMesh(0.85f, cube_path.evaluateSplineAllowLoop(float(frame) / 200),
+    drawMesh(0.85f, cube_path.evaluateSplineAllowLoop(time / 4),
              program, cube, worldToClip);
     program.set("uColor", vec3(0.0f, 0.3f, 0.0f));
-    drawMesh(2.25f, sphere_path.evaluateSplineAllowLoop(float(frame) / 100),
+    drawMesh(2.25f, sphere_path.evaluateSplineAllowLoop(time / 18),
              program, sphere, worldToClip);
-    program.set("uColor", vec3(0.5f, 0.0f, 0.8f));
-    drawMesh(5.05f, donut_path.evaluateSpline(float(frame) / 200), program,
+    program.set("uColor", vec3(cos(time / 17), 0.0f, sin(time / 10)));
+    drawMesh(5.05f, donut_path.evaluateSpline(time / 3), program,
              donut, worldToClip);
     program.set("uColor", vec3(0.8f, 0.0f, 0.8f));
     drawMesh(1.35f,
-             smooth_sphere_path.evaluateSplineAllowLoop(float(frame) / 200),
+             smooth_sphere_path.evaluateSplineAllowLoop(time / 2),
              program, sphere, worldToClip);
 }
 
