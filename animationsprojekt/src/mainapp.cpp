@@ -56,7 +56,7 @@ void MainApp::render() {
     if (SCENE != prev_scene) { // event listener für arme
         switchScene();
     }
-    current_scene->render(FRAME, program, camera);
+    current_scene->render(FRAME, time, program, camera);
     prev_scene = SCENE;
 
     // Framezahl erhöhen, wenn Animation abgespielt wird

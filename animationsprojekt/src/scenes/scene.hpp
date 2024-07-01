@@ -9,7 +9,7 @@
 class Scene {
   public:
     Scene(); // constructor loads all required objects
-    virtual void render(int frame, Program& program, Camera& camera) = 0;
+    virtual void render(int frame, float time, Program& program, Camera& camera) = 0;
     virtual ~Scene() = 0; // destructor unloads all objects
   protected:
     void drawMesh(float size, const vec3& pos, Program& program, Mesh& mesh,
@@ -19,7 +19,7 @@ class Scene {
 class TestScene : public Scene {
   public:
     TestScene();
-    void render(int frame, Program& program, Camera& camera) override;
+    void render(int frame, float time, Program& program, Camera& camera) override;
     ~TestScene();
 
   private:
@@ -41,7 +41,7 @@ class TestScene : public Scene {
 class Scene01 : public Scene {
     public:
         Scene01();
-        void render(int frame, Program& program, Camera& camera) override;
+        void render(int frame, float time, Program& program, Camera& camera) override;
         ~Scene01();
     private:
 
@@ -50,7 +50,7 @@ class Scene01 : public Scene {
 class Scene02 : public Scene {
     public:
         Scene02();
-        void render(int frame, Program& program, Camera& camera) override;
+        void render(int frame, float time, Program& program, Camera& camera) override;
         ~Scene02();
     private:
         Mesh campus;
@@ -59,7 +59,7 @@ class Scene02 : public Scene {
 class Scene03 : public Scene {
     public:
         Scene03();
-        void render(int frame, Program& program, Camera& camera) override;
+        void render(int frame, float time, Program& program, Camera& camera) override;
         ~Scene03();
     private:
         Mesh hoersaal;
