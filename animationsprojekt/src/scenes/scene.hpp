@@ -1,10 +1,16 @@
 #pragma once
 
 #include "classes/hermite.hpp"
+#include "classes/operations.hpp"
 
 #include "framework/gl/program.hpp"
 #include "framework/camera.hpp"
 #include "framework/mesh.hpp"
+
+
+
+#define PI 3.141592653589793
+
 
 class Scene {
   public:
@@ -12,8 +18,10 @@ class Scene {
     virtual void render(int frame, float time, Program& program, Camera& camera) = 0;
     virtual ~Scene() = 0; // destructor unloads all objects
   protected:
-    void drawMesh(float size, const vec3& pos, Program& program, Mesh& mesh,
-                  const mat4& worldToClip);
+    void drawMesh(float size, const vec3& pos, Program& program, Mesh& mesh, const mat4& worldToClip);
+    void drawMesh(float size, const vec3& pos, Program& program, Mesh& mesh, const mat4& worldToClip, const mat4& transformation);
+    
+    Operations operations;
 };
 
 class TestScene : public Scene {
@@ -31,11 +39,13 @@ class TestScene : public Scene {
     std::vector<hermite_point> cube_path_points;
     std::vector<hermite_point> sphere_path_points;
     std::vector<quintic_hermite_point> smooth_sphere_path_points;
+    std::vector<hermite_point> rotation_path_points;
 
     Hermite donut_path;
     Hermite cube_path;
     Hermite sphere_path;
     QuinticHermite smooth_sphere_path;
+    Hermite rotation_path;
 };
 
 class Scene01 : public Scene {
