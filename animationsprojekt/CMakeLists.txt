@@ -6,6 +6,7 @@ set(SRC
     src/main.cpp
     src/mainapp.cpp
     src/classes/hermite.cpp
+    src/classes/operations.cpp
     src/framework/app.cpp
     src/framework/camera.cpp
     src/framework/common.cpp
