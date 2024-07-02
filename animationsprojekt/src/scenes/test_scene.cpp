@@ -38,6 +38,15 @@ TestScene::TestScene() {
     };
     smooth_sphere_path = QuinticHermite(&smooth_sphere_path_points);
 
+    rotation_path_points = {
+        hermite_point{vec3(0.0f, PI, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        hermite_point{vec3(0.0f, 0.0f, PI), vec3(0.0f, 0.0f, 0.0f)},
+        hermite_point{vec3(PI, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+    };
+    rotation_path = Hermite(&rotation_path_points);
+
+
+
 }
 
 void TestScene::render(int frame, float time, Program& program, Camera& camera) {
@@ -63,6 +72,10 @@ void TestScene::render(int frame, float time, Program& program, Camera& camera) 
     drawMesh(1.35f,
              smooth_sphere_path.evaluateSplineAllowLoop(time / 2),
              program, sphere, worldToClip);
+    program.set("uColor", vec3(0.3, 0.02, 0.2));
+    drawMesh(2.85f, smooth_sphere_path.evaluateSplineAllowLoop(2.0 + time / 2), program, cube, worldToClip,
+             operations.get_rotation_matrix(rotation_path.evaluateSplineAllowLoop(time*3.5)) );
+
 }
 
 TestScene::~TestScene() {
