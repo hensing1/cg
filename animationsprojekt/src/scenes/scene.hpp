@@ -1,6 +1,7 @@
 #pragma once
 
 #include "classes/hermite.hpp"
+#include "classes/movable_camera.hpp"
 #include "classes/operations.hpp"
 
 #include "framework/gl/program.hpp"
@@ -15,7 +16,8 @@
 class Scene {
   public:
     Scene(); // constructor loads all required objects
-    virtual void render(int frame, float time, Program& program, Camera& camera) = 0;
+    virtual void render(int frame, float time, Program& program, MovableCamera& camera) = 0;
+    virtual void init(MovableCamera& camera);
     virtual ~Scene() = 0; // destructor unloads all objects
   protected:
     void drawMesh(float size, const vec3& pos, Program& program, Mesh& mesh, const mat4& worldToClip);
@@ -27,7 +29,8 @@ class Scene {
 class TestScene : public Scene {
   public:
     TestScene();
-    void render(int frame, float time, Program& program, Camera& camera) override;
+    void render(int frame, float time, Program& program, MovableCamera& camera) override;
+    virtual void init(MovableCamera& camera) override;
     ~TestScene();
 
   private:
@@ -51,7 +54,7 @@ class TestScene : public Scene {
 class Scene01 : public Scene {
     public:
         Scene01();
-        void render(int frame, float time, Program& program, Camera& camera) override;
+        void render(int frame, float time, Program& program, MovableCamera& camera) override;
         ~Scene01();
     private:
 
@@ -60,7 +63,7 @@ class Scene01 : public Scene {
 class Scene02 : public Scene {
     public:
         Scene02();
-        void render(int frame, float time, Program& program, Camera& camera) override;
+        void render(int frame, float time, Program& program, MovableCamera& camera) override;
         ~Scene02();
     private:
         Mesh campus;
@@ -69,7 +72,7 @@ class Scene02 : public Scene {
 class Scene03 : public Scene {
     public:
         Scene03();
-        void render(int frame, float time, Program& program, Camera& camera) override;
+        void render(int frame, float time, Program& program, MovableCamera& camera) override;
         ~Scene03();
     private:
         Mesh hoersaal;

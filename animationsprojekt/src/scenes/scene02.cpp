@@ -4,7 +4,7 @@ Scene02::Scene02() {
     campus.load("meshes/Campus.obj");
 }
 
-void Scene02::render(int frame, float time, Program& program, Camera& camera) {
+void Scene02::render(int frame, float time, Program& program, MovableCamera& camera) {
     camera.updateIfChanged();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     vec3 pos = vec3(0, 0, 0);

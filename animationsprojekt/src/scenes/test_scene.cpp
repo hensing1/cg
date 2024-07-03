@@ -49,8 +49,9 @@ TestScene::TestScene() {
 
 }
 
-void TestScene::render(int frame, float time, Program& program, Camera& camera) {
-    camera.updateIfChanged();
+void TestScene::render(int frame, float time, Program& program, MovableCamera& camera) {
+    //camera.updateIfChanged();
+    camera.setPosAlongSpline(time / 5);
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -73,9 +74,18 @@ void TestScene::render(int frame, float time, Program& program, Camera& camera) 
              smooth_sphere_path.evaluateSplineAllowLoop(time / 2),
              program, sphere, worldToClip);
     program.set("uColor", vec3(0.3, 0.02, 0.2));
-    drawMesh(2.85f, smooth_sphere_path.evaluateSplineAllowLoop(2.0 + time / 2), program, cube, worldToClip,
-             operations.get_rotation_matrix(rotation_path.evaluateSplineAllowLoop(time*3.5)) );
+    drawMesh(2.85f, smooth_sphere_path.evaluateSplineAllowLoop(2.0 + time / 2), program, donut, worldToClip,
+             operations.get_rotation_matrix(rotation_path.evaluateSplineAllowLoop(time*1.5)) );
 
+}
+
+void TestScene::init(MovableCamera &camera) {
+    std::vector path_points = {
+        quintic_hermite_point{vec3(10.0f, PI/2, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f)},
+        quintic_hermite_point{vec3(26.0f, 0.0f, PI/2), vec3(0.0f, PI / 4, 0.0f), vec3(0.0f)},
+        quintic_hermite_point{vec3(12.0f, -PI/2, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f)},
+    };
+    camera.setPath(QuinticHermite(&path_points));
 }
 
 TestScene::~TestScene() {

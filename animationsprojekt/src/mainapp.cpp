@@ -15,6 +15,7 @@ using namespace glm;
 #include "framework/imguiutil.hpp"
 
 #include "classes/hermite.hpp"
+#include "classes/movable_camera.hpp"
 
 #include "config.hpp"
 #include <iostream>
@@ -22,6 +23,8 @@ using namespace glm;
 MainApp::MainApp() : App(800, 600) {
     App::setTitle(Config::PROJECT_NAME); // set title
     App::setVSync(true); // Limit framerate
+
+    camera = MovableCamera();
 
     FRAME = 0;
     SCENE = prev_scene = 0;
@@ -35,6 +38,7 @@ MainApp::MainApp() : App(800, 600) {
     program.load("TMP_projection.vert", "TMP_lambert.frag");
 
     current_scene = std::make_unique<TestScene>();
+    current_scene -> init(camera);
 }
 
 
@@ -81,6 +85,7 @@ void MainApp::switchScene() {
         break;
     default:
         current_scene = std::make_unique<TestScene>();
+    current_scene -> init(camera);
     }
 }
 

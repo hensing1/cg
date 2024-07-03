@@ -37,5 +37,7 @@ void Scene::drawMesh(float size, const vec3& pos, Program& program, Mesh& mesh,
     operations = Operations();
 }
 
+void Scene::init(MovableCamera& camera) {}
+
 
 Scene::~Scene() {}
