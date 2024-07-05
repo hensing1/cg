@@ -20,3 +20,11 @@ void MovableCamera::setPosAlongSpline(float t) {
     sphericalPosition.z = mod(PI + sphericalPosition.z, (float) 2*PI) - PI; 
     update();
 }
+
+void MovableCamera::setViewDirPath(Hermite path) {
+    viewPath = path;
+}
+
+void MovableCamera::setViewDirAlongSpline(float t) {
+    target = viewPath.evaluateSplineAllowLoop(t);
+}

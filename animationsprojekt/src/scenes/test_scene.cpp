@@ -51,6 +51,7 @@ TestScene::TestScene() {
 
 void TestScene::render(int frame, float time, Program& program, MovableCamera& camera) {
     //camera.updateIfChanged();
+    camera.setViewDirAlongSpline(time / 5);
     camera.setPosAlongSpline(time / 5);
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
 
@@ -86,6 +87,12 @@ void TestScene::init(MovableCamera &camera) {
         quintic_hermite_point{vec3(12.0f, -PI/2, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f)},
     };
     camera.setPath(QuinticHermite(&path_points));
+    std::vector view_path_points = {
+        hermite_point{vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        hermite_point{vec3(0.0f, 5.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        hermite_point{vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+    };
+    camera.setViewDirPath(Hermite(&view_path_points));
 }
 
 TestScene::~TestScene() {
