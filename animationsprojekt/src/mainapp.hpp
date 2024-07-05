@@ -48,4 +48,5 @@ class MainApp : public App {
     bool ANIMATION_PLAYING;
 
     float prev_time;
+    float scene_start_time;
 };

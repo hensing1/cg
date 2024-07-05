@@ -37,6 +37,7 @@ MainApp::MainApp() : App(800, 600) {
     //  NOTE: Nur zu Testzwecken -> später entfernen
     program.load("TMP_projection.vert", "TMP_lambert.frag");
 
+    scene_start_time = 0.0f;
     current_scene = std::make_unique<TestScene>();
     current_scene -> init(camera);
 }
@@ -54,7 +55,7 @@ void MainApp::render() {
     
     // Framezahl erhöhen, wenn Animation abgespielt wird
     if (ANIMATION_PLAYING) FRAME++;
-    else time = prev_time;
+    else scene_start_time += time - scene_start_time;
     
     /*  NOTE:  Jede Szene nutzt eine andere Render-Funktion.
      *         Es wird empfohlen, allgemeine Funktionalität in separate Funktionen auszulagern.
@@ -62,9 +63,12 @@ void MainApp::render() {
      */
 
     if (SCENE != prev_scene) { // event listener für arme
+        scene_start_time = time;
         switchScene();
     }
-    current_scene->render(FRAME, time, program, camera);
+    current_scene->render(FRAME, time - scene_start_time, program, camera);
+    
+    
     prev_scene = SCENE;
     prev_time = time;
 
@@ -88,8 +92,8 @@ void MainApp::switchScene() {
         break;
     default:
         current_scene = std::make_unique<TestScene>();
-    current_scene -> init(camera);
     }
+    current_scene -> init(camera);
 }
 
 /*

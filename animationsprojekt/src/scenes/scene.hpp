@@ -64,6 +64,7 @@ class Scene02 : public Scene {
     public:
         Scene02();
         void render(int frame, float time, Program& program, MovableCamera& camera) override;
+        virtual void init(MovableCamera& camera) override;
         ~Scene02();
     private:
         Mesh campus;

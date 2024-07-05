@@ -2,7 +2,7 @@
 #include "movable_camera.hpp"
 
 
-#define PI 3.141592653589792
+#define PI 3.141592653589792f
 
 MovableCamera::MovableCamera() {}
 
@@ -16,8 +16,8 @@ void MovableCamera::setPath(QuinticHermite new_path) {
 
 void MovableCamera::setPosAlongSpline(float t) {
     sphericalPosition = path.evaluateSplineAllowLoop(t);
-    sphericalPosition.y = mod(PI + sphericalPosition.y, (float) 2*PI) - PI; 
-    sphericalPosition.z = mod(PI + sphericalPosition.z, (float) 2*PI) - PI; 
+    //sphericalPosition.y = mod(PI + sphericalPosition.y, (float) 2*PI) - PI; 
+    //sphericalPosition.z = mod(PI + sphericalPosition.z, (float) 2*PI) - PI; 
     update();
 }
 
