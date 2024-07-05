@@ -54,7 +54,9 @@ class Scene01 : public Scene {
         void render(int frame, float time, Program& program, Camera& camera) override;
         ~Scene01();
     private:
-
+        Mesh earth;
+        std::vector<Mesh::VertexPCN> earthVertices;
+        std::vector<unsigned int> earthIndices;
 };
 
 class Scene02 : public Scene {
