@@ -46,4 +46,6 @@ class MainApp : public App {
     int prev_scene;
     bool DEBUG_MODE;
     bool ANIMATION_PLAYING;
+
+    float prev_time;
 };

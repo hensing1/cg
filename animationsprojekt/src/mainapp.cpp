@@ -52,6 +52,10 @@ void MainApp::init() {
 
 void MainApp::render() {
     
+    // Framezahl erhöhen, wenn Animation abgespielt wird
+    if (ANIMATION_PLAYING) FRAME++;
+    else time = prev_time;
+    
     /*  NOTE:  Jede Szene nutzt eine andere Render-Funktion.
      *         Es wird empfohlen, allgemeine Funktionalität in separate Funktionen auszulagern.
      *         (Wahrscheinlich sollten diese Funktionen auch in MainApp deklariert werden)
@@ -62,9 +66,8 @@ void MainApp::render() {
     }
     current_scene->render(FRAME, time, program, camera);
     prev_scene = SCENE;
+    prev_time = time;
 
-    // Framezahl erhöhen, wenn Animation abgespielt wird
-    if (ANIMATION_PLAYING) FRAME++;
 }
 
 void MainApp::switchScene() {
