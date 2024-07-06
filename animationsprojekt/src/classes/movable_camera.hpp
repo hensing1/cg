@@ -11,10 +11,10 @@ public:
 
     void setPath(QuinticHermite path);
     void setPosAlongSpline(float t);
-    void setViewDirPath(Hermite path);
+    void setViewDirPath(QuinticHermite path);
     void setViewDirAlongSpline(float t);
 
 private:
     QuinticHermite path;
-    Hermite viewPath;
+    QuinticHermite viewPath;
 };

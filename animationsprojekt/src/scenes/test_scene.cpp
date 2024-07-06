@@ -81,18 +81,25 @@ void TestScene::render(int frame, float time, Program& program, MovableCamera& c
 }
 
 void TestScene::init(MovableCamera &camera) {
-    std::vector path_points = {
-        quintic_hermite_point{vec3(10.0f, PI/2, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f)},
-        quintic_hermite_point{vec3(26.0f, 0.0f, PI/2), vec3(0.0f, PI / 4, 0.0f), vec3(0.0f)},
-        quintic_hermite_point{vec3(12.0f, -PI/2, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f)},
+    path_points = {
+        //quintic_hermite_point{vec3(10.0f, PI/2, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f)},
+        //quintic_hermite_point{vec3(26.0f, 0.0f, PI/2), vec3(0.0f, PI / 4, 0.0f), vec3(0.0f)},
+        //quintic_hermite_point{vec3(12.0f, -PI/2, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f)},
+        quintic_hermite_point{vec3(0.2f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f)},
+        quintic_hermite_point{vec3(0.2f, PI, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f)},
+        quintic_hermite_point{vec3(0.2f, PI*2, PI), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f)},
+        quintic_hermite_point{vec3(0.2f, PI, PI*2), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f)},
+        quintic_hermite_point{vec3(0.2f, 0.0f, PI), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f)},
     };
     camera.setPath(QuinticHermite(&path_points));
-    std::vector view_path_points = {
-        hermite_point{vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
-        hermite_point{vec3(0.0f, 5.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
-        hermite_point{vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+    view_path_points = {
+        quintic_hermite_point{vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f)},
+        quintic_hermite_point{vec3(0.0f, 5.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f),vec3(0.0f)},
+        quintic_hermite_point{vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f),vec3(0.0f)},
+        quintic_hermite_point{vec3(0.0f, -5.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f),vec3(0.0f)},
+        quintic_hermite_point{vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f),vec3(0.0f)},
     };
-    camera.setViewDirPath(Hermite(&view_path_points));
+    camera.setViewDirPath(QuinticHermite(&view_path_points));
 }
 
 TestScene::~TestScene() {

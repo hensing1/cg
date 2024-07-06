@@ -20,6 +20,8 @@ class Scene {
     virtual void init(MovableCamera& camera);
     virtual ~Scene() = 0; // destructor unloads all objects
   protected:
+    std::vector<quintic_hermite_point> view_path_points;
+    std::vector<quintic_hermite_point> path_points;
     void drawMesh(float size, const vec3& pos, Program& program, Mesh& mesh, const mat4& worldToClip);
     void drawMesh(float size, const vec3& pos, Program& program, Mesh& mesh, const mat4& worldToClip, const mat4& transformation);
     
@@ -58,6 +60,7 @@ class Scene01 : public Scene {
         ~Scene01();
     private:
 
+
 };
 
 class Scene02 : public Scene {
@@ -68,6 +71,7 @@ class Scene02 : public Scene {
         ~Scene02();
     private:
         Mesh campus;
+        Mesh sphere;
 };
 
 class Scene03 : public Scene {
