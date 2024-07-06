@@ -10,7 +10,18 @@
 
 Scene01::Scene01() {
     // ObjParser::parse("meshes/icosahedron.obj", earthVertices, earthIndices);
-    std::vector<float> verts = {
+        
+    HDS icoHDS = generateIcosahedron();
+    int subidivisions = 1;
+    for (int i = 0; i < subidivisions; i++) {
+        icoHDS = icoHDS.subdivide();
+    }
+    
+    earth = icoHDS.generate_mesh();
+}
+
+HDS Scene01::generateIcosahedron() {
+    std::vector<float> icoVerts = {
         0.000000, -1.000000, 0.000000,
         0.723600, -0.447215, 0.525720,
         -0.276385, -0.447215, 0.850640,
@@ -24,7 +35,7 @@ Scene01::Scene01() {
         0.894425, 0.447215, 0.000000,
         0.000000, 1.000000, 0.000000,
     };
-    earthIndices = {
+    std::vector<unsigned int> icoInds = {
         0, 1, 2, 
         1, 0, 5, 
         0, 2, 3, 
@@ -46,20 +57,21 @@ Scene01::Scene01() {
         9, 8, 11, 
         10, 9, 11, 
     };
-
-    earthVertices = std::vector<Mesh::VertexPCN>();
-    for (size_t i = 0; i < verts.size() / 3; i++) {
+    auto icoVertPCNs = std::vector<Mesh::VertexPCN>();
+    for (size_t i = 0; i < icoVerts.size() / 3; i++) {
         glm::vec3 vec = {
-            verts[3 * i],
-            verts[3 * i + 1],
-            verts[3 * i + 2]
+            icoVerts[3 * i],
+            icoVerts[3 * i + 1],
+            icoVerts[3 * i + 2]
         };
         Mesh::VertexPCN vertex = {};
         vertex.position = vec;
         vertex.normal = glm::normalize(vec);
-        earthVertices.push_back(vertex);
+        icoVertPCNs.push_back(vertex);
     }
-    earth.load(earthVertices, earthIndices);
+
+    HDS icosahedron = HDS(icoVertPCNs, icoInds);
+    return icosahedron;
 }
 
 void Scene01::render(int frame, float time, Program& program, Camera& camera) {
