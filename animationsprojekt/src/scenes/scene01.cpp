@@ -1,20 +1,40 @@
-#include <iostream>
-#include <string>
-
 #include "glm/fwd.hpp"
-#include "glm/geometric.hpp"
-#include "glm/gtc/type_ptr.hpp"
 #include "scene.hpp"
 #include "mesh.hpp"
 #include "objparser.hpp"
 
+// HDS generateTrongle() {
+//     std::vector<float> trongleVerts {
+//         -1, 1, 0,
+//         -1, -1, 0,
+//         1, -1, 0
+//     };
+//
+//     std::vector<unsigned int> trongleInds {
+//         0,1,2,
+//         2,1,0
+//     };
+//
+//     auto positions = std::vector<glm::vec3>();
+//     for (size_t i = 0; i < trongleVerts.size() / 3; i++) {
+//         positions.push_back({
+//             trongleVerts[3 * i],
+//             trongleVerts[3 * i + 1],
+//             trongleVerts[3 * i + 2]
+//         });
+//     }
+//
+//     HDS icosahedron = HDS(positions, trongleInds);
+//     return icosahedron;
+//
+// }
+
 Scene01::Scene01() {
-    // ObjParser::parse("meshes/icosahedron.obj", earthVertices, earthIndices);
-        
     HDS icoHDS = generateIcosahedron();
-    int subidivisions = 1;
+    // HDS icoHDS = generateTrongle();
+    int subidivisions = 4;
     for (int i = 0; i < subidivisions; i++) {
-        icoHDS.subdivide();
+        icoHDS.loop_subdivision();
         // icoHDS.print();
     }
     
@@ -68,7 +88,6 @@ HDS Scene01::generateIcosahedron() {
     }
 
     HDS icosahedron = HDS(positions, icoInds);
-    icosahedron.print();
     return icosahedron;
 }
 

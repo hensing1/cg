@@ -1,7 +1,10 @@
 #include "halfedge.hpp"
+#include "glm/ext/scalar_constants.hpp"
+
+#include <iostream>
+#include <math.h>
 #include <memory>
 #include <stdexcept>
-#include <iostream>
 
 HDS::HDS(const std::vector<glm::vec3>& vertices, const std::vector<unsigned int>& indices) {
     load(vertices, indices);
@@ -14,7 +17,7 @@ void HDS::load(const std::vector<glm::vec3>& vertices,
     for (size_t i = 0; i < vertices.size(); i++) {
         auto node = std::make_shared<Node>();
         node->id = i;
-        node->vertex = vertices[i];
+        node->position = vertices[i];
         nodes.push_back(node);
     }
 
@@ -26,8 +29,8 @@ void HDS::load(const std::vector<glm::vec3>& vertices,
     set_twins(edges);
 }
 
-void HDS::set_twins(std::vector<std::shared_ptr<Halfedge>> edges) {
-    for (auto edge : edges) {
+void HDS::set_twins(std::vector<std::shared_ptr<Halfedge>>& edges) {
+    for (auto& edge : edges) {
         auto startNode = edge->start;
         auto endNode = edge->next.lock()->start;
         edge->twin = find_halfedge(endNode, startNode);
@@ -35,8 +38,8 @@ void HDS::set_twins(std::vector<std::shared_ptr<Halfedge>> edges) {
 }
 
 std::weak_ptr<HDS::Halfedge> HDS::find_halfedge(std::weak_ptr<Node> from, std::weak_ptr<Node> to) {
-    for (auto edge : to.lock()->outgoing) {
-        if (edge.lock()->next.lock()->start.lock()->id == from.lock()->id) {
+    for (auto edge : from.lock()->outgoing) {
+        if (edge.lock()->next.lock()->start.lock()->id == to.lock()->id) {
             return edge;
         }
     }
@@ -83,6 +86,19 @@ void HDS::make_triangle(std::vector<std::shared_ptr<Face>>& faceList,
     node3->outgoing.push_back(halfedge3);
 }
 
+void HDS::loop_subdivision() {
+    subdivide();
+
+    std::vector<glm::vec3> newPositions(nodes.size());
+
+    for (size_t i = 0; i < nodes.size(); i++) {
+        newPositions[i] = average(i, nodes);
+    }
+    for (size_t i = 0; i < nodes.size(); i++) {
+        nodes[i]->position = newPositions[i];
+    }
+}
+
 void HDS::subdivide() {
     std::vector<std::shared_ptr<Face>> newFaces;
     std::vector<std::shared_ptr<Halfedge>> newEdges;
@@ -99,7 +115,7 @@ void HDS::subdivide() {
     auto make_halfway_node = [&](std::shared_ptr<Node> n1, std::shared_ptr<Node> n2) {
         auto newNode = std::make_shared<Node>();
         newNode->id = nodes.size();
-        newNode->vertex = intermediate(n1->vertex, n2->vertex);
+        newNode->position = intermediate(n1->position, n2->position);
         nodes.push_back(newNode);
         halfwayNodes[n1->id][n2->id] = halfwayNodes[n2->id][n1->id] = newNode->id;
         return newNode;
@@ -142,15 +158,38 @@ glm::vec3 HDS::intermediate(glm::vec3& node1, glm::vec3& node2) {
     return newVertex;
 }
 
+glm::vec3 HDS::average(unsigned int vertIndex, std::vector<std::shared_ptr<Node>>& nodes) {
+    auto oldPosition = nodes[vertIndex]->position;
+    auto newPosition = glm::vec3{};
+
+    auto centerNode = nodes[vertIndex];
+
+    int n = nodes[vertIndex]->outgoing.size();
+    float centerWeight = n == 6 ?
+                            0.25f : (glm::pow(3 + 2 * glm::cos(2 * glm::pi<float>() / n), 2) / 32) - 0.25f;
+    float neighborWeight = n == 6 ?
+                            0.125f : (1 - centerWeight) / n;
+
+    for (const auto& neighbor : nodes[vertIndex]->outgoing) {
+        auto neighborNode = neighbor.lock()->twin.lock()->start.lock();
+        newPosition += neighborNode->position;
+    }
+
+    newPosition *= neighborWeight;
+    newPosition += centerWeight * oldPosition;
+
+    return newPosition;
+}
+
 Mesh HDS::generate_mesh() {
     auto vertices = std::vector<Mesh::VertexPCN>(3 * nodes.size());
     auto indices = std::vector<unsigned int>(3 * faces.size());
-    nodes[0]->vertex *= 3.0f;
+    // nodes[0]->position *= 3.0f;
 
     for (unsigned int i = 0; i < nodes.size(); i++) {
         vertices[i] = Mesh::VertexPCN{};
-        vertices[i].position = nodes[i]->vertex;
-        vertices[i].normal = glm::normalize(nodes[i]->vertex); // works for icosphere, so whatever
+        vertices[i].position = nodes[i]->position;
+        vertices[i].normal = glm::normalize(nodes[i]->position); // works for icosphere, so whatever
     }
     for (unsigned int i = 0; i < faces.size(); i++) {
         indices[3 * i] = faces[i]->edge.lock()->start.lock()->id;

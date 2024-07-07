@@ -22,7 +22,7 @@ class HDS {
     };
     struct Node {
         unsigned int id;
-        glm::vec3 vertex;
+        glm::vec3 position;
         std::vector<std::weak_ptr<Halfedge>> outgoing;
     };
 
@@ -32,7 +32,7 @@ class HDS {
     void load(const std::vector<glm::vec3>& vertices,
               const std::vector<unsigned int>& indices);
 
-    void subdivide();
+    void loop_subdivision();
     Mesh generate_mesh();
     void print();
 
@@ -41,7 +41,7 @@ class HDS {
     std::vector<std::shared_ptr<Halfedge>> edges;
     std::vector<std::shared_ptr<Face>> faces;
 
-    void set_twins(std::vector<std::shared_ptr<Halfedge>> edges);
+    void set_twins(std::vector<std::shared_ptr<Halfedge>>& edges);
 
     std::weak_ptr<Halfedge> find_halfedge(std::weak_ptr<Node> from, std::weak_ptr<Node> to);
 
@@ -50,5 +50,9 @@ class HDS {
                        std::shared_ptr<Node> v2, std::shared_ptr<Node> v3);
 
     glm::vec3 intermediate(glm::vec3& v1, glm::vec3& v2);
+
+    void subdivide();
+
+    glm::vec3 average(unsigned int vertIndex, std::vector<std::shared_ptr<Node>>& nodes);
 
 };
