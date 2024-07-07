@@ -5,17 +5,7 @@ Scene02::Scene02() {
     sphere.load("meshes/highpolysphere.obj");
 }
 
-void Scene02::render(int frame, float time, Program& program, MovableCamera& camera) {
-    camera.updateIfChanged();
-    camera.setViewDirAlongSpline(time / 4);
-    camera.setPosAlongSpline(time / 4);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    vec3 pos = vec3(0, 0, 0);
-    mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
-    program.set("uColor", vec3(0.25f, 0.21f, 0.4f));
-    this->drawMesh(0.5f, pos, program, campus, worldToClip);
-
-
+void Scene02::render_debug_objects(Program& program, mat4 worldToClip) {
     program.set("uColor", vec3(0.65f, 0.00f, 0.4f));
     for (int i = 0; i < view_path_points.size(); i++) {
         drawMesh(0.20f, view_path_points[i].pos, program, sphere, worldToClip);
@@ -29,8 +19,26 @@ void Scene02::render(int frame, float time, Program& program, MovableCamera& cam
     this->drawMesh(0.05f, vec3(0.0f, 3.12f, 0.0f), program, sphere, worldToClip);
     program.set("uColor", vec3(0.0f, 0.0f, 1.0f));
     this->drawMesh(0.05f, vec3(0.0f, 3.0f, 0.12f), program, sphere, worldToClip);
+}
 
+int Scene02::render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) {
+    if (!DEBUG) {
+        camera.setViewDirAlongSpline(time / 4);
+        camera.setPosAlongSpline(time / 4);
+    }
+    else camera.updateIfChanged();
 
+    mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    vec3 campus_pos(0.0f);
+    program.set("uColor", vec3(0.25f, 0.21f, 0.4f));
+    this->drawMesh(0.5f, campus_pos, program, campus, worldToClip);
+
+    if (DEBUG) render_debug_objects(program, worldToClip);
+
+    if (time >= 24.7f) return 3;
+    return 0;
 }
 
 void Scene02::init(MovableCamera &camera) {

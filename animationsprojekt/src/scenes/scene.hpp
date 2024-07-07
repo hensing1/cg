@@ -16,7 +16,7 @@
 class Scene {
   public:
     Scene(); // constructor loads all required objects
-    virtual void render(int frame, float time, Program& program, MovableCamera& camera) = 0;
+    virtual int render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) = 0;  // NOTE: returns next scene
     virtual void init(MovableCamera& camera);
     virtual ~Scene() = 0; // destructor unloads all objects
   protected:
@@ -31,7 +31,7 @@ class Scene {
 class TestScene : public Scene {
   public:
     TestScene();
-    void render(int frame, float time, Program& program, MovableCamera& camera) override;
+    int render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) override;
     virtual void init(MovableCamera& camera) override;
     ~TestScene();
 
@@ -56,7 +56,7 @@ class TestScene : public Scene {
 class Scene01 : public Scene {
     public:
         Scene01();
-        void render(int frame, float time, Program& program, MovableCamera& camera) override;
+        int render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) override;
         ~Scene01();
     private:
 
@@ -66,10 +66,11 @@ class Scene01 : public Scene {
 class Scene02 : public Scene {
     public:
         Scene02();
-        void render(int frame, float time, Program& program, MovableCamera& camera) override;
+        int render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) override;
         virtual void init(MovableCamera& camera) override;
         ~Scene02();
     private:
+        void render_debug_objects(Program& program, mat4 worldToClip);
         Mesh campus;
         Mesh sphere;
 };
@@ -77,7 +78,7 @@ class Scene02 : public Scene {
 class Scene03 : public Scene {
     public:
         Scene03();
-        void render(int frame, float time, Program& program, MovableCamera& camera) override;
+        int render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) override;
         ~Scene03();
     private:
         Mesh hoersaal;

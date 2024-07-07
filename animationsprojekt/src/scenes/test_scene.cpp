@@ -49,7 +49,7 @@ TestScene::TestScene() {
 
 }
 
-void TestScene::render(int frame, float time, Program& program, MovableCamera& camera) {
+int TestScene::render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) {
     //camera.updateIfChanged();
     camera.setViewDirAlongSpline(time / 4);
     camera.setPosAlongSpline(time / 4);
@@ -78,6 +78,7 @@ void TestScene::render(int frame, float time, Program& program, MovableCamera& c
     drawMesh(2.85f, smooth_sphere_path.evaluateSplineAllowLoop(2.0 + time / 2), program, donut, worldToClip,
              operations.get_rotation_matrix(rotation_path.evaluateSplineAllowLoop(time*1.5)) );
 
+    return 0;
 }
 
 void TestScene::init(MovableCamera &camera) {

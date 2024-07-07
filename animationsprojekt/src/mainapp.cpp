@@ -63,15 +63,16 @@ void MainApp::render() {
      */
 
     if (SCENE != prev_scene) { // event listener für arme
-        scene_start_time = time;
+        scene_start_time = floor(time);
         switchScene();
     }
-    current_scene->render(FRAME, time - scene_start_time, program, camera);
     
-    
-    prev_scene = SCENE;
-    prev_time = time;
 
+    int scene_return = current_scene->render(FRAME, time - scene_start_time, program, camera, DEBUG_MODE);
+
+    prev_scene = SCENE;
+
+    if (scene_return != 0) SCENE = scene_return; // Rückgabe = 0:  Keine Änderung;   sonst neue Scene
 }
 
 void MainApp::switchScene() {
@@ -121,6 +122,7 @@ void MainApp::buildImGui() {
     ImGui::Begin("Settings", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
     ImGui::Text("Position:  (%f|%f|%f)", camera.cartesianPosition[0], camera.cartesianPosition[1], camera.cartesianPosition[2]);
     ImGui::Text("Frame:  %u", FRAME);
+    ImGui::Text("Time:   %f", time);
     ImGui::Text("Scene:  %u", SCENE);
     ImGui::Checkbox("Debug Mode", &DEBUG_MODE);
     ImGui::Checkbox("Play Animation", &ANIMATION_PLAYING);
