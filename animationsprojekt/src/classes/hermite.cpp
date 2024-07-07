@@ -82,8 +82,25 @@ QuinticHermite::QuinticHermite() {
     HERMITE_MATRIX_RL = mat3(0.0f);
 }
 
+QuinticHermite::QuinticHermite(quintic_hermite_point first_point, std::vector<vec3> points)
+{
+    std::vector<quintic_hermite_point> result({first_point});
+    init_matrices();
+    
+    for (int i = 0; i < points.size(); i++) {
+        result.push_back(calculateVelAndAcc(result[i], points[i]));
+    }
+
+    this -> points = result;
+
+}
+
 QuinticHermite::QuinticHermite(std::vector<quintic_hermite_point> *input) {
     points = *input;
+    init_matrices();
+}
+
+void QuinticHermite::init_matrices() {
     // Mehrere Matrizen notwendig, weil 6x6-Matrix nicht von GLSM zur Verfügung gestellt.
     HERMITE_MATRIX_LU = transpose(mat3(
          1.0f,  0.0f,  0.0f,
@@ -105,8 +122,47 @@ QuinticHermite::QuinticHermite(std::vector<quintic_hermite_point> *input) {
        -15.0f,  7.0f, -1.0f,
          6.0f, -3.0f,  0.5f
     ));
-
 }
+
+
+quintic_hermite_point QuinticHermite::calculateVelAndAcc(quintic_hermite_point last_point, vec3 current_position) {
+    //float diff_squared = diff * diff;
+    //float diff_cubed = diff_squared * diff;
+
+    quintic_hermite_point res;
+    res.pos = current_position;
+
+    vec3 x_vector = vec3(0.0f, 1.0f, 2.0f);
+    vec3 y_vector = vec3(3.0f, 4.0f, 5.0f);
+
+    // Äquivalent zur Multiplikation eines 6x1-Vektors mit einer 6x6-Matrix.
+    vec3 t_vector_U = x_vector * HERMITE_MATRIX_LU + y_vector * HERMITE_MATRIX_LL;
+    vec3 t_vector_L = x_vector * HERMITE_MATRIX_RU + y_vector * HERMITE_MATRIX_RL;
+
+    res.vel.x = dot(t_vector_U, vec3(last_point.pos.x, last_point.vel.x, last_point.acc.x)) +
+            dot(t_vector_L, vec3(current_position.x,  0.0f, 0.0f));
+    res.vel.y = dot(t_vector_U, vec3(last_point.pos.y, last_point.vel.y, last_point.acc.y)) +
+            dot(t_vector_L, vec3(current_position.y,  0.0f, 0.0f));
+    res.vel.z = dot(t_vector_U, vec3(last_point.pos.z, last_point.vel.z, last_point.acc.z)) +
+            dot(t_vector_L, vec3(current_position.z,  0.0f, 0.0f));
+
+    x_vector = vec3(0.0f, 0.0f, 2.0f);
+    y_vector = vec3(6.0f, 12.0f, 20.0f);
+
+    // Äquivalent zur Multiplikation eines 6x1-Vektors mit einer 6x6-Matrix.
+    t_vector_U = x_vector * HERMITE_MATRIX_LU + y_vector * HERMITE_MATRIX_LL;
+    t_vector_L = x_vector * HERMITE_MATRIX_RU + y_vector * HERMITE_MATRIX_RL;
+
+    res.acc.x = dot(t_vector_U, vec3(last_point.pos.x, last_point.vel.x, last_point.acc.x)) +
+            dot(t_vector_L, vec3(current_position.x,  0.0f, 0.0f));
+    res.acc.y = dot(t_vector_U, vec3(last_point.pos.y, last_point.vel.y, last_point.acc.y)) +
+            dot(t_vector_L, vec3(current_position.y,  0.0f, 0.0f));
+    res.acc.z = dot(t_vector_U, vec3(last_point.pos.z, last_point.vel.z, last_point.acc.z)) +
+            dot(t_vector_L, vec3(current_position.z,  0.0f, 0.0f));
+
+    return res;
+}
+
 
 vec3 QuinticHermite::evaluateSplineAllowLoop(float t) {
 

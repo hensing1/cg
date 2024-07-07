@@ -7,8 +7,8 @@ Scene02::Scene02() {
 
 void Scene02::render(int frame, float time, Program& program, MovableCamera& camera) {
     camera.updateIfChanged();
-    camera.setViewDirAlongSpline(time / 5);
-    camera.setPosAlongSpline(time / 5);
+    camera.setViewDirAlongSpline(time / 4);
+    camera.setPosAlongSpline(time / 4);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     vec3 pos = vec3(0, 0, 0);
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
@@ -20,27 +20,52 @@ void Scene02::render(int frame, float time, Program& program, MovableCamera& cam
     for (int i = 0; i < view_path_points.size(); i++) {
         drawMesh(0.20f, view_path_points[i].pos, program, sphere, worldToClip);
     }
+    
+    program.set("uColor", vec3(0.6f, 0.6f, 0.6f));
+    this->drawMesh(0.05f, vec3(0.0f, 3.0f, 0.0f), program, sphere, worldToClip);
+    program.set("uColor", vec3(1.0f, 0.0f, 0.0f));
+    this->drawMesh(0.05f, vec3(0.12f, 3.0f, 0.0f), program, sphere, worldToClip);
+    program.set("uColor", vec3(0.0f, 1.0f, 0.0f));
+    this->drawMesh(0.05f, vec3(0.0f, 3.12f, 0.0f), program, sphere, worldToClip);
+    program.set("uColor", vec3(0.0f, 0.0f, 1.0f));
+    this->drawMesh(0.05f, vec3(0.0f, 3.0f, 0.12f), program, sphere, worldToClip);
 
 
 }
 
 void Scene02::init(MovableCamera &camera) {
     path_points = {
-        quintic_hermite_point{vec3(0.2f, 0.0f, PI/2-0.01), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(0.2f, 0.0f, PI/2-0.01), vec3(0.0f, 0.0f, -1.0f), vec3(0.0f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(0.2f, PI, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(0.2f, PI, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(0.2f, PI+0.5, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(0.2f, PI+0.5, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        // Der Fall nach unten
+        quintic_hermite_point{vec3(0.02f, 0.0f, PI/2-0.01), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, 0.0f, PI/2-0.01), vec3(0.0f, 0.0f, -1.0f), vec3(0.0f, 0.0f, 0.0f)},
+        // Positionierung am Gang
+        quintic_hermite_point{vec3(0.02f, PI, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+          //quintic_hermite_point{vec3(0.02f, PI, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, PI+0.5, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        // Flug durch den Gang
+        quintic_hermite_point{vec3(0.02f, PI+0.5, 0.0f), vec3(0.0f, PI/2, 0.0f), vec3(0.0f, -PI/16, 0.0f)},
+        // Weg zum Hörsaal
+        quintic_hermite_point{vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, -PI/8, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+          //quintic_hermite_point{vec3(0.02f, -PI/8, 0.0f), vec3(0.0f, -PI/8, 0.0f), vec3(0.0f, PI/16, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, -PI+PI/4, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, -PI+PI/4, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
     };
     camera.setPath(QuinticHermite(&path_points));
     view_path_points = {
-        quintic_hermite_point{vec3(0.0f, 20.0f, 0.0f), vec3(0.0f, -30.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(0.0f, 10.0f, 0.0f), vec3(0.0f, -10.0f, -3.0f), vec3(0.0f, 4.0f, 1.0f)},
-        quintic_hermite_point{vec3(0.0f, 2.0f, -5.0f), vec3(0.0f, -1.6f, 0.0f), vec3(0.0f, 0.3f, 0.0f)},
-        quintic_hermite_point{vec3(0.0f, 0.5f, -5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(-0.8f, 0.5f, -4.0f), vec3(0.2f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(2.8f, 0.5f, 1.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        // Der Fall nach unten
+        quintic_hermite_point{vec3(0.0f, 20.0f, 0.0f), vec3(0.0f, -10.0f, 0.0f), vec3(0.0f, -2.0f, -1.0f)},
+        quintic_hermite_point{vec3(0.0f, 10.0f, 0.0f), vec3(0.0f, -8.0f, -2.5f), vec3(0.0f, -5.5f, 0.3f)},
+        // Positionierung am Gang
+        quintic_hermite_point{vec3(0.0f, 2.0f, -5.0f), vec3(0.0f, -2.5f, 0.0f), vec3(0.0f, 1.3f, -0.2f)},
+          //quintic_hermite_point{vec3(0.0f, 0.5f, -5.0f), vec3(-0.2f, -0.3f, -1.0f), vec3(-1.0f, 0.0f, 2.2f)},
+        quintic_hermite_point{vec3(-0.8f, 0.2f, -4.0f), vec3(3.2f, 0.0f, 2.5f), vec3(0.6f, 0.0f, 2.5f)},
+        // Flug durch den Gang
+        quintic_hermite_point{vec3(2.8f, 0.2f, 1.0f), vec3(6.0f, 0.0f, 6.2f), vec3(-4.0f, 0.025f, -4.0f)},
+        // Weg zum Hörsaal
+        quintic_hermite_point{vec3(-1.6f, 0.2f, 4.0f), vec3(-3.2f, 0.05f, -1.0f), vec3(2.2f, 0.05f, -1.4f)},
+          //quintic_hermite_point{vec3(-2.3f, 0.3f, 1.3f), vec3(0.8f, 0.1f, 0.0f), vec3(0.5f, -0.05f, 0.0f)},
+        quintic_hermite_point{vec3(0.62f, 0.4f, 0.2f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(4.62f, 0.2f, 3.2f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
     };
     camera.setViewDirPath(QuinticHermite(&view_path_points));
 }

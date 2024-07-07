@@ -51,8 +51,8 @@ TestScene::TestScene() {
 
 void TestScene::render(int frame, float time, Program& program, MovableCamera& camera) {
     //camera.updateIfChanged();
-    camera.setViewDirAlongSpline(time / 10);
-    camera.setPosAlongSpline(time / 10);
+    camera.setViewDirAlongSpline(time / 4);
+    camera.setPosAlongSpline(time / 4);
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -85,19 +85,29 @@ void TestScene::init(MovableCamera &camera) {
         //quintic_hermite_point{vec3(10.0f, PI/2, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f)},
         //quintic_hermite_point{vec3(26.0f, 0.0f, PI/2), vec3(0.0f, PI / 4, 0.0f), vec3(0.0f)},
         //quintic_hermite_point{vec3(12.0f, -PI/2, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f)},
-        quintic_hermite_point{vec3(0.2f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f)},
-        quintic_hermite_point{vec3(0.2f, PI, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f)},
-        quintic_hermite_point{vec3(0.2f, PI*2, PI), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f)},
-        quintic_hermite_point{vec3(0.2f, PI, PI*2), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f)},
-        quintic_hermite_point{vec3(0.2f, 0.0f, PI), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f)},
+        quintic_hermite_point{vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, PI/4, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, PI, 0.0f), vec3(0.0f, PI/4, 0.0f), vec3(0.0f, -PI/8, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, PI*2, PI), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, PI, PI*2), vec3(0.0f, -PI/4, 0.0f), vec3(0.0f, PI/8, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, 0.0f, PI), vec3(0.0f, -PI/4, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
     };
+    
+    quintic_hermite_point starter_point = {vec3(0.2f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f)};
+    std::vector<vec3> point_list = {
+        vec3(0.02f, PI, 0.0f),
+        vec3(0.02f, PI*2, PI),
+        vec3(0.02f, PI, PI*2),
+        vec3(0.02f, 0.0f, PI),
+    };
+
     camera.setPath(QuinticHermite(&path_points));
+    //camera.setPath(QuinticHermite(starter_point, point_list));
     view_path_points = {
-        quintic_hermite_point{vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f)},
-        quintic_hermite_point{vec3(0.0f, 5.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f),vec3(0.0f)},
-        quintic_hermite_point{vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f),vec3(0.0f)},
-        quintic_hermite_point{vec3(0.0f, -5.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f),vec3(0.0f)},
-        quintic_hermite_point{vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f),vec3(0.0f)},
+        quintic_hermite_point{vec3(0.0f, 10.0f, 0.0f), vec3(0.0f, -10.0f, 0.0f), vec3(0.0f, -2.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.0f, 5.0f, 0.0f), vec3(0.0f, -5.0f, 0.0f),vec3(0.0f, -2.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f),vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.0f, -5.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f),vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f),vec3(0.0f, 0.0f, 0.0f)},
     };
     camera.setViewDirPath(QuinticHermite(&view_path_points));
 }
