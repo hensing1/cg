@@ -5,6 +5,7 @@ cmake_minimum_required(VERSION 3.26)
 set(SRC
     src/main.cpp
     src/mainapp.cpp
+    src/classes/halfedge.cpp
     src/classes/hermite.cpp
     src/classes/operations.cpp
     src/framework/app.cpp

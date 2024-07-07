@@ -1,14 +1,15 @@
 #include "halfedge.hpp"
 #include <memory>
 #include <stdexcept>
+#include <iostream>
 
-HDS::HDS(const std::vector<Mesh::VertexPCN>& vertices, const std::vector<unsigned int>& indices) {
+HDS::HDS(const std::vector<glm::vec3>& vertices, const std::vector<unsigned int>& indices) {
     load(vertices, indices);
 }
 
-void HDS::load(const std::vector<Mesh::VertexPCN>& vertices,
+void HDS::load(const std::vector<glm::vec3>& vertices,
                const std::vector<unsigned int>& indices) {
-    nodes = std::vector<std::shared_ptr<Node>>(vertices.size());
+    nodes = std::vector<std::shared_ptr<Node>>();
 
     for (size_t i = 0; i < vertices.size(); i++) {
         auto node = std::make_shared<Node>();
@@ -18,7 +19,7 @@ void HDS::load(const std::vector<Mesh::VertexPCN>& vertices,
     }
 
     for (size_t i = 0; i < indices.size() / 3; i++) { // drei Vertices pro Fläche
-        make_triangle(faces, edges, nodes[3 * i], nodes[3 * i + 1], nodes[3 * i + 2]);
+        make_triangle(faces, edges, nodes[indices[3 * i]], nodes[indices[3 * i + 1]], nodes[indices[3 * i + 2]]);
     }
 
     // Gegenkanten finden
@@ -73,10 +74,6 @@ void HDS::make_triangle(std::vector<std::shared_ptr<Face>>& faceList,
     halfedge2->face = face;
     halfedge3->face = face;
 
-    halfedge1->divided = false;
-    halfedge2->divided = false;
-    halfedge3->divided = false;
-
     edgeList.push_back(halfedge1);
     edgeList.push_back(halfedge2);
     edgeList.push_back(halfedge3);
@@ -108,6 +105,11 @@ void HDS::subdivide() {
         return newNode;
     };
 
+    // Adjazenzliste von Nodes löschen, da überall neue Nodes dazwischenkommen
+    for (const auto& node: nodes) {
+        node->outgoing.clear();
+    }
+
     for (const auto& face : faces) {
 
         std::shared_ptr<Node> node1 = face->edge.lock()->start.lock(),
@@ -122,7 +124,6 @@ void HDS::subdivide() {
              node31 = is_subdivided(node3, node1) ?
                  nodes[halfwayNodes[node3->id][node1->id]] : make_halfway_node(node3, node1);
 
-
         make_triangle(newFaces, newEdges, node1, node12, node31);
         make_triangle(newFaces, newEdges, node12, node2, node23);
         make_triangle(newFaces, newEdges, node31, node23, node3);
@@ -135,8 +136,39 @@ void HDS::subdivide() {
     faces = newFaces;
 }
 
-Mesh::VertexPCN HDS::intermediate(Mesh::VertexPCN& node1, Mesh::VertexPCN& node2) {
-    auto newVertex = Mesh::VertexPCN{};
-    newVertex.position = node1.position + 0.5f * (node2.position - node1.position);
+glm::vec3 HDS::intermediate(glm::vec3& node1, glm::vec3& node2) {
+    auto newVertex = glm::vec3{};
+    newVertex = node1 + 0.5f * (node2 - node1);
     return newVertex;
+}
+
+Mesh HDS::generate_mesh() {
+    auto vertices = std::vector<Mesh::VertexPCN>(3 * nodes.size());
+    auto indices = std::vector<unsigned int>(3 * faces.size());
+    nodes[0]->vertex *= 3.0f;
+
+    for (unsigned int i = 0; i < nodes.size(); i++) {
+        vertices[i] = Mesh::VertexPCN{};
+        vertices[i].position = nodes[i]->vertex;
+        vertices[i].normal = glm::normalize(nodes[i]->vertex); // works for icosphere, so whatever
+    }
+    for (unsigned int i = 0; i < faces.size(); i++) {
+        indices[3 * i] = faces[i]->edge.lock()->start.lock()->id;
+        indices[3 * i + 1] = faces[i]->edge.lock()->next.lock()->start.lock()->id;
+        indices[3 * i + 2] = faces[i]->edge.lock()->next.lock()->next.lock()->start.lock()->id;
+    }
+
+    Mesh mesh = Mesh();
+    mesh.load(vertices, indices);
+    return mesh;
+}
+
+void HDS::print() {
+    std::cout << "------------------" << std::endl;
+    std::cout << "Num verts: " << nodes.size() << std::endl;
+    std::cout << "Num edges: " << edges.size() << std::endl;
+    std::cout << "Num faces: " << faces.size() << std::endl;
+    for (auto& node : nodes) {
+        std::cout << node->id << ": " << node->outgoing.size() << std::endl;
+    }
 }

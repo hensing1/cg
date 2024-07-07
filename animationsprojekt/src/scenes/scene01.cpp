@@ -14,7 +14,8 @@ Scene01::Scene01() {
     HDS icoHDS = generateIcosahedron();
     int subidivisions = 1;
     for (int i = 0; i < subidivisions; i++) {
-        icoHDS = icoHDS.subdivide();
+        icoHDS.subdivide();
+        // icoHDS.print();
     }
     
     earth = icoHDS.generate_mesh();
@@ -57,20 +58,17 @@ HDS Scene01::generateIcosahedron() {
         9, 8, 11, 
         10, 9, 11, 
     };
-    auto icoVertPCNs = std::vector<Mesh::VertexPCN>();
+    auto positions = std::vector<glm::vec3>();
     for (size_t i = 0; i < icoVerts.size() / 3; i++) {
-        glm::vec3 vec = {
+        positions.push_back({
             icoVerts[3 * i],
             icoVerts[3 * i + 1],
             icoVerts[3 * i + 2]
-        };
-        Mesh::VertexPCN vertex = {};
-        vertex.position = vec;
-        vertex.normal = glm::normalize(vec);
-        icoVertPCNs.push_back(vertex);
+        });
     }
 
-    HDS icosahedron = HDS(icoVertPCNs, icoInds);
+    HDS icosahedron = HDS(positions, icoInds);
+    icosahedron.print();
     return icosahedron;
 }
 

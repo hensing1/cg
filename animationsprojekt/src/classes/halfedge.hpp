@@ -1,6 +1,5 @@
 #include "mesh.hpp"
 #include <memory>
-#include <unordered_set>
 
 /**
  * Halbkanten-Datenstruktur
@@ -17,26 +16,25 @@ class HDS {
         std::weak_ptr<Halfedge> next;
         std::weak_ptr<Halfedge> twin;
         std::weak_ptr<Face> face;
-        bool divided;
     };
     struct Face {
         std::weak_ptr<Halfedge> edge;
     };
     struct Node {
         unsigned int id;
-        Mesh::VertexPCN vertex;
-        // std::unordered_set<unsigned int> neighbors;
+        glm::vec3 vertex;
         std::vector<std::weak_ptr<Halfedge>> outgoing;
     };
 
     HDS();
-    HDS(const std::vector<Mesh::VertexPCN>& vertices, const std::vector<unsigned int>& indices);
+    HDS(const std::vector<glm::vec3>& vertices, const std::vector<unsigned int>& indices);
     // void load_mesh(Mesh mesh);
-    void load(const std::vector<Mesh::VertexPCN>& vertices,
+    void load(const std::vector<glm::vec3>& vertices,
               const std::vector<unsigned int>& indices);
 
     void subdivide();
     Mesh generate_mesh();
+    void print();
 
   private:
     std::vector<std::shared_ptr<Node>> nodes;
@@ -51,5 +49,6 @@ class HDS {
                        std::vector<std::shared_ptr<Halfedge>>& edgeList, std::shared_ptr<Node> v1,
                        std::shared_ptr<Node> v2, std::shared_ptr<Node> v3);
 
-    Mesh::VertexPCN intermediate(Mesh::VertexPCN& v1, Mesh::VertexPCN& v2);
+    glm::vec3 intermediate(glm::vec3& v1, glm::vec3& v2);
+
 };
