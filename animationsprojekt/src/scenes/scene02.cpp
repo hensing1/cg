@@ -70,7 +70,7 @@ void Scene02::init(MovableCamera &camera) {
         // Flug durch den Gang
         quintic_hermite_point{vec3(2.8f, 0.2f, 1.0f), vec3(6.0f, 0.0f, 6.2f), vec3(-4.0f, 0.025f, -4.0f)},
         // Weg zum Hörsaal
-        quintic_hermite_point{vec3(-1.6f, 0.2f, 4.0f), vec3(-3.2f, 0.05f, -1.0f), vec3(2.2f, 0.05f, -1.4f)},
+        quintic_hermite_point{vec3(-1.5f, 0.2f, 4.1f), vec3(-3.2f, 0.05f, -2.0f), vec3(2.2f, 0.05f, -1.4f)},
           //quintic_hermite_point{vec3(-2.3f, 0.3f, 1.3f), vec3(0.8f, 0.1f, 0.0f), vec3(0.5f, -0.05f, 0.0f)},
         quintic_hermite_point{vec3(0.62f, 0.4f, 0.2f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         quintic_hermite_point{vec3(4.62f, 0.2f, 3.2f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
