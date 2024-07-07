@@ -44,8 +44,8 @@ int Scene02::render(int frame, float time, Program& program, MovableCamera& came
 void Scene02::init(MovableCamera &camera) {
     path_points = {
         // Der Fall nach unten
-        quintic_hermite_point{vec3(0.02f, 0.0f, PI/2-0.01), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(0.02f, 0.0f, PI/2-0.01), vec3(0.0f, 0.0f, -1.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, 0.0f, PI/2), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, 0.0f, PI/2-0.1f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         // Positionierung am Gang
         quintic_hermite_point{vec3(0.02f, PI, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
           //quintic_hermite_point{vec3(0.02f, PI, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
