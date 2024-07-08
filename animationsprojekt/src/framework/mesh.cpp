@@ -1,8 +1,8 @@
 #include "mesh.hpp"
-
+#include <iostream>
 #include <glad/glad.h>
 #include <glm/glm.hpp>
-
+#include <filesystem>
 #include <string>
 #include <vector>
 
@@ -85,11 +85,9 @@ void Mesh::load(const std::vector<VertexPCNT>& vertices, const std::vector<unsig
     vao.unbind();
 }
 
-void Mesh::load(const std::string& filepath) {
-    std::vector<VertexPCN> vertices;
-    std::vector<unsigned int> indices;
-    ObjParser::parse(filepath, vertices, indices);
-    load(vertices, indices);
+bool Mesh::load(const std::string& filepath) {
+    ObjParser::ObjParser parser;
+    return parser.parse(filepath, *this);
 }
 
 void Mesh::loadWithTangents(const std::string& filepath) {

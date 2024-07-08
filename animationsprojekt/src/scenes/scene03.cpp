@@ -1,7 +1,8 @@
 #include "scene.hpp"
+#include <iostream>
 
 Scene03::Scene03(MovableCamera& camera) {
-    hoersaal.load("meshes/HS3.obj");
+    hoersaal.loadWithTangents("meshes/HS3.obj");
 }
 
 int Scene03::render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) {
@@ -9,6 +10,7 @@ int Scene03::render(int frame, float time, Program& program, MovableCamera& came
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     vec3 pos = vec3(0, 0, 0);
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
+    std::cout << "Hello, World!" << std::endl;
     this->drawMesh(1.0f, pos, program, hoersaal, worldToClip);
     return 0;
 }
