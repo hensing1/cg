@@ -38,8 +38,7 @@ MainApp::MainApp() : App(800, 600) {
     program.load("TMP_projection.vert", "TMP_lambert.frag");
 
     scene_start_time = 0.0f;
-    current_scene = std::make_unique<TestScene>();
-    current_scene -> init(camera);
+    current_scene = std::make_unique<TestScene>(camera);
 }
 
 
@@ -80,21 +79,21 @@ void MainApp::switchScene() {
     glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
     switch (SCENE) {
     case 0:
-        current_scene = std::make_unique<TestScene>();
+        current_scene = std::make_unique<TestScene>(camera);
         break;
     case 1:
-        current_scene = std::make_unique<Scene01>();
+        current_scene = std::make_unique<Scene01>(camera);
         break;
     case 2:
-        current_scene = std::make_unique<Scene02>();
+        current_scene = std::make_unique<Scene02>(camera);
         break;
     case 3:
-        current_scene = std::make_unique<Scene03>();
+        current_scene = std::make_unique<Scene03>(camera);
         break;
     default:
-        current_scene = std::make_unique<TestScene>();
+        current_scene = std::make_unique<TestScene>(camera);
     }
-    current_scene -> init(camera);
+    // current_scene -> init(camera);
 }
 
 /*

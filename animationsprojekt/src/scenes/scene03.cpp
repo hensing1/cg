@@ -1,6 +1,6 @@
 #include "scene.hpp"
 
-Scene03::Scene03() {
+Scene03::Scene03(MovableCamera& camera) {
     hoersaal.load("meshes/HS3.obj");
 }
 
