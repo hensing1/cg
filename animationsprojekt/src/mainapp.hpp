@@ -10,6 +10,7 @@ using namespace glm;
 #include "framework/gl/program.hpp"
 
 #include "scenes/scene.hpp"
+#include "classes/movable_camera.hpp"
 
 class MainApp : public App {
   public:
@@ -35,7 +36,7 @@ class MainApp : public App {
     void resizeCallback(const vec2 &resolution) override;
 
   private:
-    Camera camera;
+    MovableCamera camera;
     Program program;
     std::unique_ptr<Scene> current_scene;
 
@@ -45,4 +46,7 @@ class MainApp : public App {
     int prev_scene;
     bool DEBUG_MODE;
     bool ANIMATION_PLAYING;
+
+    float prev_time;
+    float scene_start_time;
 };

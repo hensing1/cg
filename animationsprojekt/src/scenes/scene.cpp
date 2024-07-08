@@ -34,8 +34,8 @@ void Scene::drawMesh(float size, const vec3& pos, Program& program, Mesh& mesh,
     program.bind();
     mesh.draw();
     srand(42); // Reset random seed for static colors
-    operations = Operations();
 }
 
+void Scene::init(MovableCamera& camera) {}
 
 Scene::~Scene() {}

@@ -15,6 +15,6 @@ public:
    //  NOTE: Erstellt eine Matrix, mit dem ein Objekt beliebig gedreht werden kann.
    // Input ist ein Vector mit den drei Eulerwinkeln (Yaw, Pitch und Roll).
    // Diese Winkel sind im Bogenmaß anzugeben -> 2*PI ist eine volle Rotation
-   mat3 get_rotation_matrix(vec3 angles);
+   static mat3 get_rotation_matrix(vec3 angles);
 
 };

@@ -7,6 +7,7 @@ set(SRC
     src/mainapp.cpp
     src/classes/halfedge.cpp
     src/classes/hermite.cpp
+    src/classes/movable_camera.cpp
     src/classes/operations.cpp
     src/framework/app.cpp
     src/framework/camera.cpp

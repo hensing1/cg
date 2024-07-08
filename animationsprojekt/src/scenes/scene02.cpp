@@ -1,15 +1,79 @@
 #include "scene.hpp"
 
-Scene02::Scene02() {
+Scene02::Scene02(MovableCamera& camera) {
     campus.load("meshes/Campus.obj");
+    sphere.load("meshes/highpolysphere.obj");
+
+    camera_path_points = {
+        // Der Fall nach unten
+        quintic_hermite_point{vec3(0.02f, 0.0f, glm::pi<float>()/2), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, 0.0f, glm::pi<float>()/2-0.1f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        // Positionierung am Gang
+        quintic_hermite_point{vec3(0.02f, glm::pi<float>(), 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+          //quintic_hermite_point{vec3(0.02f, glm::pi<float>(), 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, glm::pi<float>()+0.5, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        // Flug durch den Gang
+        quintic_hermite_point{vec3(0.02f, glm::pi<float>()+0.5, 0.0f), vec3(0.0f, glm::pi<float>()/2, 0.0f), vec3(0.0f, -glm::pi<float>()/16, 0.0f)},
+        // Weg zum Hörsaal
+        quintic_hermite_point{vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, -glm::pi<float>()/8, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+          //quintic_hermite_point{vec3(0.02f, -glm::pi<float>()/8, 0.0f), vec3(0.0f, -glm::pi<float>()/8, 0.0f), vec3(0.0f, glm::pi<float>()/16, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, -glm::pi<float>()+glm::pi<float>()/4, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, -glm::pi<float>()+glm::pi<float>()/4, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+    };
+    camera.setPath(QuinticHermite(&camera_path_points));
+    view_path_points = {
+        // Der Fall nach unten
+        quintic_hermite_point{vec3(0.0f, 20.0f, 0.0f), vec3(0.0f, -10.0f, 0.0f), vec3(0.0f, -2.0f, -1.0f)},
+        quintic_hermite_point{vec3(0.0f, 10.0f, 0.0f), vec3(0.0f, -8.0f, -2.5f), vec3(0.0f, -5.5f, 0.3f)},
+        // Positionierung am Gang
+        quintic_hermite_point{vec3(0.0f, 2.0f, -5.0f), vec3(0.0f, -2.5f, 0.0f), vec3(0.0f, 1.3f, -0.2f)},
+          //quintic_hermite_point{vec3(0.0f, 0.5f, -5.0f), vec3(-0.2f, -0.3f, -1.0f), vec3(-1.0f, 0.0f, 2.2f)},
+        quintic_hermite_point{vec3(-0.8f, 0.2f, -4.0f), vec3(3.2f, 0.0f, 2.5f), vec3(0.6f, 0.0f, 2.5f)},
+        // Flug durch den Gang
+        quintic_hermite_point{vec3(2.8f, 0.2f, 1.0f), vec3(6.0f, 0.0f, 6.2f), vec3(-4.0f, 0.025f, -4.0f)},
+        // Weg zum Hörsaal
+        quintic_hermite_point{vec3(-1.5f, 0.2f, 4.1f), vec3(-3.2f, 0.05f, -2.0f), vec3(2.2f, 0.05f, -1.4f)},
+          //quintic_hermite_point{vec3(-2.3f, 0.3f, 1.3f), vec3(0.8f, 0.1f, 0.0f), vec3(0.5f, -0.05f, 0.0f)},
+        quintic_hermite_point{vec3(0.62f, 0.4f, 0.2f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(4.62f, 0.2f, 3.2f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+    };
+    camera.setViewDirPath(QuinticHermite(&view_path_points));
 }
 
-void Scene02::render(int frame, float time, Program& program, Camera& camera) {
-    camera.updateIfChanged();
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    vec3 pos = vec3(0, 0, 0);
+void Scene02::render_debug_objects(Program& program, mat4 worldToClip) {
+    program.set("uColor", vec3(0.65f, 0.00f, 0.4f));
+    for (int i = 0; i < view_path_points.size(); i++) {
+        drawMesh(0.20f, view_path_points[i].pos, program, sphere, worldToClip);
+    }
+    
+    program.set("uColor", vec3(0.6f, 0.6f, 0.6f));
+    this->drawMesh(0.05f, vec3(0.0f, 3.0f, 0.0f), program, sphere, worldToClip);
+    program.set("uColor", vec3(1.0f, 0.0f, 0.0f));
+    this->drawMesh(0.05f, vec3(0.12f, 3.0f, 0.0f), program, sphere, worldToClip);
+    program.set("uColor", vec3(0.0f, 1.0f, 0.0f));
+    this->drawMesh(0.05f, vec3(0.0f, 3.12f, 0.0f), program, sphere, worldToClip);
+    program.set("uColor", vec3(0.0f, 0.0f, 1.0f));
+    this->drawMesh(0.05f, vec3(0.0f, 3.0f, 0.12f), program, sphere, worldToClip);
+}
+
+int Scene02::render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) {
+    if (!DEBUG) {
+        camera.setViewDirAlongSpline(time / 4);
+        camera.setPosAlongSpline(time / 4);
+    }
+    else camera.updateIfChanged();
+
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
-    this->drawMesh(0.5f, pos, program, campus, worldToClip);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    vec3 campus_pos(0.0f);
+    program.set("uColor", vec3(0.25f, 0.21f, 0.4f));
+    this->drawMesh(0.5f, campus_pos, program, campus, worldToClip);
+
+    if (DEBUG) render_debug_objects(program, worldToClip);
+
+    if (time >= 24.7f) return 3;
+    return 0;
 }
 
 Scene02::~Scene02() {}

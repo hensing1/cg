@@ -29,7 +29,7 @@
 //
 // }
 
-Scene01::Scene01() {
+Scene01::Scene01(MovableCamera& camera) {
     HDS icoHDS = generateIcosahedron();
     // HDS icoHDS = generateTrongle();
     int subidivisions = 4;
@@ -91,7 +91,7 @@ HDS Scene01::generateIcosahedron() {
     return icosahedron;
 }
 
-void Scene01::render(int frame, float time, Program& program, Camera& camera) {
+int Scene01::render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) {
     camera.updateIfChanged();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     vec3 pos = vec3(0, 0, 0);

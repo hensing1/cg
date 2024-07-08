@@ -60,6 +60,7 @@ class QuinticHermite {
 public:
    QuinticHermite();
    QuinticHermite(std::vector<quintic_hermite_point> *input);
+   QuinticHermite(quintic_hermite_point first_point, std::vector<vec3> points);
 
    /** 
     * Gibt zu einem t die passende Position im Raum gemäß der Spline zurück.
@@ -73,6 +74,9 @@ public:
    vec3 evaluateSplineAllowLoop(float t);
 
 private:
+   void init_matrices();
+   quintic_hermite_point calculateVelAndAcc(quintic_hermite_point last_point, vec3 current_position);
+
    std::vector<quintic_hermite_point> points;
    mat3 HERMITE_MATRIX_LU, HERMITE_MATRIX_RU, HERMITE_MATRIX_LL, HERMITE_MATRIX_RL;
 

@@ -15,6 +15,7 @@ using namespace glm;
 #include "framework/imguiutil.hpp"
 
 #include "classes/hermite.hpp"
+#include "classes/movable_camera.hpp"
 
 #include "config.hpp"
 #include <iostream>
@@ -22,6 +23,8 @@ using namespace glm;
 MainApp::MainApp() : App(800, 600) {
     App::setTitle(Config::PROJECT_NAME); // set title
     App::setVSync(true); // Limit framerate
+
+    camera = MovableCamera();
 
     FRAME = 0;
     SCENE = prev_scene = 1;
@@ -34,6 +37,7 @@ MainApp::MainApp() : App(800, 600) {
     //  NOTE: Nur zu Testzwecken -> später entfernen
     program.load("TMP_projection.vert", "TMP_lambert.frag");
 
+    scene_start_time = 0.0f;
     switchScene();
 }
 
@@ -48,19 +52,25 @@ void MainApp::init() {
 
 void MainApp::render() {
     
+    // Framezahl erhöhen, wenn Animation abgespielt wird
+    if (ANIMATION_PLAYING) FRAME++;
+    else scene_start_time += time - scene_start_time;
+    
     /*  NOTE:  Jede Szene nutzt eine andere Render-Funktion.
      *         Es wird empfohlen, allgemeine Funktionalität in separate Funktionen auszulagern.
      *         (Wahrscheinlich sollten diese Funktionen auch in MainApp deklariert werden)
      */
 
     if (SCENE != prev_scene) { // event listener für arme
+        scene_start_time = floor(time);
         switchScene();
     }
-    current_scene->render(FRAME, time, program, camera);
+
+    int scene_return = current_scene->render(FRAME, time - scene_start_time, program, camera, DEBUG_MODE);
+
     prev_scene = SCENE;
 
-    // Framezahl erhöhen, wenn Animation abgespielt wird
-    if (ANIMATION_PLAYING) FRAME++;
+    if (scene_return != 0) SCENE = scene_return; // Rückgabe = 0:  Keine Änderung;   sonst neue Scene
 }
 
 void MainApp::switchScene() {
@@ -68,20 +78,21 @@ void MainApp::switchScene() {
     glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
     switch (SCENE) {
     case 0:
-        current_scene = std::make_unique<TestScene>();
+        current_scene = std::make_unique<TestScene>(camera);
         break;
     case 1:
-        current_scene = std::make_unique<Scene01>();
+        current_scene = std::make_unique<Scene01>(camera);
         break;
     case 2:
-        current_scene = std::make_unique<Scene02>();
+        current_scene = std::make_unique<Scene02>(camera);
         break;
     case 3:
-        current_scene = std::make_unique<Scene03>();
+        current_scene = std::make_unique<Scene03>(camera);
         break;
     default:
-        current_scene = std::make_unique<TestScene>();
+        current_scene = std::make_unique<TestScene>(camera);
     }
+    // current_scene -> init(camera);
 }
 
 /*
@@ -109,6 +120,7 @@ void MainApp::buildImGui() {
     ImGui::Begin("Settings", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
     ImGui::Text("Position:  (%f|%f|%f)", camera.cartesianPosition[0], camera.cartesianPosition[1], camera.cartesianPosition[2]);
     ImGui::Text("Frame:  %u", FRAME);
+    ImGui::Text("Time:   %f", time);
     ImGui::Text("Scene:  %u", SCENE);
     ImGui::Checkbox("Debug Mode", &DEBUG_MODE);
     ImGui::Checkbox("Play Animation", &ANIMATION_PLAYING);
