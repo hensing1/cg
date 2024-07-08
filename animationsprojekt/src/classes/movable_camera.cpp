@@ -1,8 +1,8 @@
 
 #include "movable_camera.hpp"
 
+#include <glm/gtc/constants.hpp>
 
-#define PI 3.141592653589792f
 
 MovableCamera::MovableCamera() {}
 
@@ -17,11 +17,11 @@ void MovableCamera::setPath(QuinticHermite new_path) {
 void MovableCamera::setPosAlongSpline(float t) {
     sphericalPosition = path.evaluateSplineAllowLoop(t);
     
-    while (sphericalPosition.y < 0.0f) { sphericalPosition.y = sphericalPosition.y + 2*PI; }
-    while (sphericalPosition.z < 0.0f) { sphericalPosition.z = sphericalPosition.z + 2*PI; }
-    while (sphericalPosition.y >= 2*PI) { sphericalPosition.y = sphericalPosition.y - 2*PI; }
-    while (sphericalPosition.z >= 2*PI) { sphericalPosition.z = sphericalPosition.z - 2*PI; }
-    //sphericalPosition.z = mod(PI + sphericalPosition.z, (float) 2*PI) - PI; 
+    while (sphericalPosition.y < 0.0f) { sphericalPosition.y = sphericalPosition.y + 2*pi<float>(); }
+    while (sphericalPosition.z < 0.0f) { sphericalPosition.z = sphericalPosition.z + 2*pi<float>(); }
+    while (sphericalPosition.y >= 2*pi<float>()) { sphericalPosition.y = sphericalPosition.y - 2*pi<float>(); }
+    while (sphericalPosition.z > 2*pi<float>()) { sphericalPosition.z = sphericalPosition.z - 2*pi<float>(); }
+    //sphericalPosition.z = mod(glm::pi<float>() + sphericalPosition.z, (float) 2*glm::pi<float>()) - glm::pi<float>(); 
     update();
 }
 

@@ -3,14 +3,11 @@
 #include "classes/hermite.hpp"
 #include "classes/movable_camera.hpp"
 #include "classes/operations.hpp"
+#include <glm/gtc/constants.hpp>
 
 #include "framework/gl/program.hpp"
 #include "framework/camera.hpp"
 #include "framework/mesh.hpp"
-
-
-
-#define PI 3.141592653589793
 
 
 class Scene {
@@ -24,8 +21,6 @@ class Scene {
     std::vector<quintic_hermite_point> path_points;
     void drawMesh(float size, const vec3& pos, Program& program, Mesh& mesh, const mat4& worldToClip);
     void drawMesh(float size, const vec3& pos, Program& program, Mesh& mesh, const mat4& worldToClip, const mat4& transformation);
-    
-    Operations operations;
 };
 
 class TestScene : public Scene {
@@ -59,7 +54,6 @@ class Scene01 : public Scene {
         int render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) override;
         ~Scene01();
     private:
-
 
 };
 

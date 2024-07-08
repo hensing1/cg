@@ -44,19 +44,19 @@ int Scene02::render(int frame, float time, Program& program, MovableCamera& came
 void Scene02::init(MovableCamera &camera) {
     path_points = {
         // Der Fall nach unten
-        quintic_hermite_point{vec3(0.02f, 0.0f, PI/2), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(0.02f, 0.0f, PI/2-0.1f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, 0.0f, glm::pi<float>()/2), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, 0.0f, glm::pi<float>()/2-0.1f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         // Positionierung am Gang
-        quintic_hermite_point{vec3(0.02f, PI, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
-          //quintic_hermite_point{vec3(0.02f, PI, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(0.02f, PI+0.5, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, glm::pi<float>(), 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+          //quintic_hermite_point{vec3(0.02f, glm::pi<float>(), 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, glm::pi<float>()+0.5, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         // Flug durch den Gang
-        quintic_hermite_point{vec3(0.02f, PI+0.5, 0.0f), vec3(0.0f, PI/2, 0.0f), vec3(0.0f, -PI/16, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, glm::pi<float>()+0.5, 0.0f), vec3(0.0f, glm::pi<float>()/2, 0.0f), vec3(0.0f, -glm::pi<float>()/16, 0.0f)},
         // Weg zum Hörsaal
-        quintic_hermite_point{vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, -PI/8, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
-          //quintic_hermite_point{vec3(0.02f, -PI/8, 0.0f), vec3(0.0f, -PI/8, 0.0f), vec3(0.0f, PI/16, 0.0f)},
-        quintic_hermite_point{vec3(0.02f, -PI+PI/4, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(0.02f, -PI+PI/4, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, -glm::pi<float>()/8, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+          //quintic_hermite_point{vec3(0.02f, -glm::pi<float>()/8, 0.0f), vec3(0.0f, -glm::pi<float>()/8, 0.0f), vec3(0.0f, glm::pi<float>()/16, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, -glm::pi<float>()+glm::pi<float>()/4, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, -glm::pi<float>()+glm::pi<float>()/4, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
     };
     camera.setPath(QuinticHermite(&path_points));
     view_path_points = {

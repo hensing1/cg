@@ -39,9 +39,9 @@ TestScene::TestScene() {
     smooth_sphere_path = QuinticHermite(&smooth_sphere_path_points);
 
     rotation_path_points = {
-        hermite_point{vec3(0.0f, PI, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
-        hermite_point{vec3(0.0f, 0.0f, PI), vec3(0.0f, 0.0f, 0.0f)},
-        hermite_point{vec3(PI, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        hermite_point{vec3(0.0f, glm::pi<float>(), 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        hermite_point{vec3(0.0f, 0.0f, glm::pi<float>()), vec3(0.0f, 0.0f, 0.0f)},
+        hermite_point{vec3(glm::pi<float>(), 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
     };
     rotation_path = Hermite(&rotation_path_points);
 
@@ -76,29 +76,29 @@ int TestScene::render(int frame, float time, Program& program, MovableCamera& ca
              program, sphere, worldToClip);
     program.set("uColor", vec3(0.3, 0.02, 0.2));
     drawMesh(2.85f, smooth_sphere_path.evaluateSplineAllowLoop(2.0 + time / 2), program, donut, worldToClip,
-             operations.get_rotation_matrix(rotation_path.evaluateSplineAllowLoop(time*1.5)) );
+             Operations::get_rotation_matrix(rotation_path.evaluateSplineAllowLoop(time*1.5)) );
 
     return 0;
 }
 
 void TestScene::init(MovableCamera &camera) {
     path_points = {
-        //quintic_hermite_point{vec3(10.0f, PI/2, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f)},
-        //quintic_hermite_point{vec3(26.0f, 0.0f, PI/2), vec3(0.0f, PI / 4, 0.0f), vec3(0.0f)},
-        //quintic_hermite_point{vec3(12.0f, -PI/2, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f)},
-        quintic_hermite_point{vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, PI/4, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(0.02f, PI, 0.0f), vec3(0.0f, PI/4, 0.0f), vec3(0.0f, -PI/8, 0.0f)},
-        quintic_hermite_point{vec3(0.02f, PI*2, PI), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(0.02f, PI, PI*2), vec3(0.0f, -PI/4, 0.0f), vec3(0.0f, PI/8, 0.0f)},
-        quintic_hermite_point{vec3(0.02f, 0.0f, PI), vec3(0.0f, -PI/4, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        //quintic_hermite_point{vec3(10.0f, glm::pi<float>()/2, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f)},
+        //quintic_hermite_point{vec3(26.0f, 0.0f, glm::pi<float>()/2), vec3(0.0f, glm::pi<float>() / 4, 0.0f), vec3(0.0f)},
+        //quintic_hermite_point{vec3(12.0f, -glm::pi<float>()/2, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f)},
+        quintic_hermite_point{vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, glm::pi<float>()/4, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, glm::pi<float>(), 0.0f), vec3(0.0f, glm::pi<float>()/4, 0.0f), vec3(0.0f, -glm::pi<float>()/8, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, glm::pi<float>()*2, glm::pi<float>()), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, glm::pi<float>(), glm::pi<float>()*2), vec3(0.0f, -glm::pi<float>()/4, 0.0f), vec3(0.0f, glm::pi<float>()/8, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, 0.0f, glm::pi<float>()), vec3(0.0f, -glm::pi<float>()/4, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
     };
     
     quintic_hermite_point starter_point = {vec3(0.2f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f)};
     std::vector<vec3> point_list = {
-        vec3(0.02f, PI, 0.0f),
-        vec3(0.02f, PI*2, PI),
-        vec3(0.02f, PI, PI*2),
-        vec3(0.02f, 0.0f, PI),
+        vec3(0.02f, glm::pi<float>(), 0.0f),
+        vec3(0.02f, glm::pi<float>()*2, glm::pi<float>()),
+        vec3(0.02f, glm::pi<float>(), glm::pi<float>()*2),
+        vec3(0.02f, 0.0f, glm::pi<float>()),
     };
 
     camera.setPath(QuinticHermite(&path_points));

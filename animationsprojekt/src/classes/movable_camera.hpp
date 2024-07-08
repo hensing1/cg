@@ -3,6 +3,7 @@
 
 #include "framework/camera.hpp"
 #include "hermite.hpp"
+#include <glm/glm.hpp>
 
 class MovableCamera : public Camera {
 public:
