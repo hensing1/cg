@@ -27,9 +27,9 @@ MainApp::MainApp() : App(800, 600) {
     camera = MovableCamera();
 
     FRAME = 0;
-    SCENE = prev_scene = 0;
+    SCENE = prev_scene = 1;
     DEBUG_MODE = false;
-    ANIMATION_PLAYING = true;
+    ANIMATION_PLAYING = false;
 
     App::imguiEnabled = true;
     camera.cartesianPosition = vec3(0.0f, 0.0f, 0.0f);
@@ -38,7 +38,7 @@ MainApp::MainApp() : App(800, 600) {
     program.load("TMP_projection.vert", "TMP_lambert.frag");
 
     scene_start_time = 0.0f;
-    current_scene = std::make_unique<TestScene>(camera);
+    switchScene();
 }
 
 
@@ -65,7 +65,6 @@ void MainApp::render() {
         scene_start_time = floor(time);
         switchScene();
     }
-    
 
     int scene_return = current_scene->render(FRAME, time - scene_start_time, program, camera, DEBUG_MODE);
 

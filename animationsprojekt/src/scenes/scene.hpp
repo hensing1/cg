@@ -4,11 +4,11 @@
 #include "classes/movable_camera.hpp"
 #include "classes/operations.hpp"
 #include <glm/gtc/constants.hpp>
+#include "classes/halfedge.hpp"
 
-#include "framework/gl/program.hpp"
 #include "framework/camera.hpp"
+#include "framework/gl/program.hpp"
 #include "framework/mesh.hpp"
-
 
 class Scene {
   public:
@@ -28,7 +28,6 @@ class TestScene : public Scene {
   public:
     TestScene(MovableCamera& camera);
     int render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) override;
-    // virtual void init(MovableCamera& camera) override;
     ~TestScene();
 
   private:
@@ -56,6 +55,11 @@ class Scene01 : public Scene {
         ~Scene01();
     private:
 
+  private:
+    HDS generateIcosahedron();
+    Mesh earth;
+    // std::vector<Mesh::VertexPCN> earthVertices;
+    // std::vector<unsigned int> earthIndices;
 };
 
 class Scene02 : public Scene {
@@ -78,4 +82,5 @@ class Scene03 : public Scene {
     private:
         Mesh hoersaal;
         Mesh laptop;
+
 };

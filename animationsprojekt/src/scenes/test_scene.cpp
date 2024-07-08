@@ -81,6 +81,7 @@ int TestScene::render(int frame, float time, Program& program, MovableCamera& ca
     //camera.updateIfChanged();
     camera.setViewDirAlongSpline(time / 4);
     camera.setPosAlongSpline(time / 4);
+
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
