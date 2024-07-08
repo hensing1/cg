@@ -24,9 +24,9 @@ MainApp::MainApp() : App(800, 600) {
     App::setVSync(true); // Limit framerate
 
     FRAME = 0;
-    SCENE = prev_scene = 0;
+    SCENE = prev_scene = 1;
     DEBUG_MODE = false;
-    ANIMATION_PLAYING = true;
+    ANIMATION_PLAYING = false;
 
     App::imguiEnabled = true;
     camera.cartesianPosition = vec3(0.0f, 0.0f, 0.0f);
@@ -34,7 +34,7 @@ MainApp::MainApp() : App(800, 600) {
     //  NOTE: Nur zu Testzwecken -> später entfernen
     program.load("TMP_projection.vert", "TMP_lambert.frag");
 
-    current_scene = std::make_unique<TestScene>();
+    switchScene();
 }
 
 
