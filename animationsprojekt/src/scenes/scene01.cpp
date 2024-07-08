@@ -98,6 +98,8 @@ int Scene01::render(int frame, float time, Program& program, MovableCamera& came
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
     this->drawMesh(2.f, pos, program, earth, worldToClip);
 
+    return 0;
+
 }
 
 Scene01::~Scene01() {}
