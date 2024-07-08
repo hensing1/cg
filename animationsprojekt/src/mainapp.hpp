@@ -22,6 +22,7 @@ class MainApp : public App {
     void render_scene_01();
     void render_scene_02();
     void render_scene_03();
+    void reset_time_in_scene();
 
   protected:
     void init() override;
@@ -34,6 +35,7 @@ class MainApp : public App {
     void moveCallback(const vec2 &movement, bool leftButton, bool rightButton,
                       bool middleButton) override;
     void resizeCallback(const vec2 &resolution) override;
+    void wasdCallback(const vec3 &movement);
 
   private:
     MovableCamera camera;
@@ -48,5 +50,6 @@ class MainApp : public App {
     bool ANIMATION_PLAYING;
 
     float prev_time;
+    float current_time;
     float scene_start_time;
 };
