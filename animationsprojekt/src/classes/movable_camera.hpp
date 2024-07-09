@@ -14,6 +14,9 @@ public:
     void setPosAlongSpline(float t);
     void setViewDirPath(QuinticHermite path);
     void setViewDirAlongSpline(float t);
+    vec3 getViewDirAlongSpline(float t);
+
+    void move_target(const vec3 &movement);
 
 private:
     QuinticHermite path;

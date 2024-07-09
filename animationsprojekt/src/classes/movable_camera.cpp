@@ -22,7 +22,7 @@ void MovableCamera::setPosAlongSpline(float t) {
     while (sphericalPosition.y >= 2*pi<float>()) { sphericalPosition.y = sphericalPosition.y - 2*pi<float>(); }
     while (sphericalPosition.z > 2*pi<float>()) { sphericalPosition.z = sphericalPosition.z - 2*pi<float>(); }
     //sphericalPosition.z = mod(glm::pi<float>() + sphericalPosition.z, (float) 2*glm::pi<float>()) - glm::pi<float>(); 
-    update();
+    invalidate();
 }
 
 void MovableCamera::setViewDirPath(QuinticHermite path) {
@@ -31,4 +31,14 @@ void MovableCamera::setViewDirPath(QuinticHermite path) {
 
 void MovableCamera::setViewDirAlongSpline(float t) {
     target = viewPath.evaluateSplineAllowLoop(t);
+    invalidate();
+}
+
+vec3 MovableCamera::getViewDirAlongSpline(float t) {
+    return viewPath.evaluateSplineAllowLoop(t);
+}
+
+void MovableCamera::move_target(const vec3 &movement) {
+    target += (sphericalPosition.x / 15) * movement * mat3(projectionMatrix * viewMatrix);
+    invalidate();
 }
