@@ -1,47 +1,98 @@
 #include "glm/fwd.hpp"
+#include "csv.hpp"
+#include "glm/trigonometric.hpp"
 #include "scene.hpp"
 #include "mesh.hpp"
 #include "objparser.hpp"
-
-// HDS generateTrongle() {
-//     std::vector<float> trongleVerts {
-//         -1, 1, 0,
-//         -1, -1, 0,
-//         1, -1, 0
-//     };
-//
-//     std::vector<unsigned int> trongleInds {
-//         0,1,2,
-//         2,1,0
-//     };
-//
-//     auto positions = std::vector<glm::vec3>();
-//     for (size_t i = 0; i < trongleVerts.size() / 3; i++) {
-//         positions.push_back({
-//             trongleVerts[3 * i],
-//             trongleVerts[3 * i + 1],
-//             trongleVerts[3 * i + 2]
-//         });
-//     }
-//
-//     HDS icosahedron = HDS(positions, trongleInds);
-//     return icosahedron;
-//
-// }
+#include <algorithm>
+#include <cmath>
+#include <iostream>
 
 Scene01::Scene01(MovableCamera& camera) {
-    HDS icoHDS = generateIcosahedron();
+    HDS icoHDS = generate_icosahedron();
     // HDS icoHDS = generateTrongle();
-    int subidivisions = 4;
+    int subidivisions = 0;
     for (int i = 0; i < subidivisions; i++) {
         icoHDS.loop_subdivision();
         // icoHDS.print();
     }
     
-    earth = icoHDS.generate_mesh();
+    HDS::VaoData sphere_data = icoHDS.generate_vao_data();
+    elevation_map = load_elevation_map();
+
+    calculate_texture_coordinates(sphere_data.vertices);
+
+    earth = Mesh();
+    earth.load(sphere_data.vertices, sphere_data.indices);
 }
 
-HDS Scene01::generateIcosahedron() {
+int Scene01::render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) {
+    camera.updateIfChanged();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    vec3 pos = vec3(0, 0, 0);
+    mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
+    this->drawMesh(2.f, pos, program, earth, worldToClip);
+
+    return 0;
+}
+
+void Scene01::calculate_texture_coordinates(std::vector<Mesh::VertexPCN>& sphere_vertices) {
+    float pi = glm::pi<float>();
+    for (auto& vertex : sphere_vertices) {
+        float latitude = asin(vertex.position.y / length(vertex.position));
+
+        vec2 pointOnLatitudeCircle = vec2{vertex.position.x, vertex.position.z};
+        float longitude = length(pointOnLatitudeCircle) == 0 ? 
+            0 :
+            vertex.position.z >= 0 ?
+                acos(vertex.position.x / length(pointOnLatitudeCircle)) :
+                -acos(vertex.position.x / length(pointOnLatitudeCircle));
+
+        vertex.texCoord = vec2{
+            (pi + longitude) / (2 * pi),
+            (pi / 2 + latitude) / pi
+        };
+    }
+}
+
+std::vector<std::vector<float>> Scene01::load_elevation_map() {
+    auto values = CSV::read_csv("textures/elevation.csv");
+
+    float oceanMarker = 99999.0f;
+    float max = -INFINITY;
+    float min = INFINITY;
+
+    for (size_t row = 0; row < values.size(); row++) {
+        for (size_t col = 0; col < values[row].size(); col++) {
+            if (values[row][col] == oceanMarker) {
+                continue;
+            }
+            max = std::max(max, values[row][col]);
+            min = std::min(min, values[row][col]);
+        }
+    }
+
+    float newOceanHeight = min - 50.0f;
+
+    for (size_t row = 0; row < values.size(); row++) {
+        for (size_t col = 0; col < values[row].size(); col++) {
+            if (values[row][col] == oceanMarker) {
+                values[row][col] = newOceanHeight;
+            }
+        }
+    }
+
+    // remap to interval [0,1]
+    for (size_t row = 0; row < values.size(); row++) {
+        for (size_t col = 0; col < values[row].size(); col++) {
+            values[row][col] = (values[row][col] - newOceanHeight) / (max - newOceanHeight);
+        }
+    }
+
+    return values;
+}
+
+HDS Scene01::generate_icosahedron() {
     std::vector<float> icoVerts = {
         0.000000, -1.000000, 0.000000,
         0.723600, -0.447215, 0.525720,
@@ -91,15 +142,30 @@ HDS Scene01::generateIcosahedron() {
     return icosahedron;
 }
 
-int Scene01::render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) {
-    camera.updateIfChanged();
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    vec3 pos = vec3(0, 0, 0);
-    mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
-    this->drawMesh(2.f, pos, program, earth, worldToClip);
-
-    return 0;
-
-}
+// HDS generateTrongle() {
+//     std::vector<float> trongleVerts {
+//         -1, 1, 0,
+//         -1, -1, 0,
+//         1, -1, 0
+//     };
+//
+//     std::vector<unsigned int> trongleInds {
+//         0,1,2,
+//         2,1,0
+//     };
+//
+//     auto positions = std::vector<glm::vec3>();
+//     for (size_t i = 0; i < trongleVerts.size() / 3; i++) {
+//         positions.push_back({
+//             trongleVerts[3 * i],
+//             trongleVerts[3 * i + 1],
+//             trongleVerts[3 * i + 2]
+//         });
+//     }
+//
+//     HDS icosahedron = HDS(positions, trongleInds);
+//     return icosahedron;
+//
+// }
 
 Scene01::~Scene01() {}
