@@ -12,9 +12,7 @@ using namespace glm;
 #include <unordered_map>
 #include <iostream>
 #include <stdexcept>
-#include <filesystem>
-#include <sstream>
-#include <fstream>
+
 #include "mesh.hpp"
 #include "common.hpp"
 
@@ -206,74 +204,4 @@ void ObjParser::parse(const std::string& filepath, std::vector<Mesh::VertexPCNT>
     for (uint i = 0; i < vertices.size(); i++) {
         if (triangleCount[i] > 0.0f) vertices[i].tangent /= triangleCount[i];
     }
-}
-bool ObjParser::parse(const std::string& filePath, Mesh& mesh) {
-    std::ifstream objFile(filePath);
-    std::string mtlFilePath;
-
-    if (!objFile.is_open()) {
-        std::cerr << "Failed to open OBJ file: " << filePath << std::endl;
-        return false;
-    }
-
-    std::vector<glm::vec3> vertices;
-    std::vector<glm::vec2> uvs;
-    std::vector<glm::vec3> normals;
-    std::string currentMaterial;
-
-    std::string line;
-    while (std::getline(objFile, line)) {
-        std::istringstream ss(line);
-        std::string keyword;
-        ss >> keyword;
-
-        if (keyword == "mtllib") {
-            ss >> mtlFilePath;
-        }
-        else if (keyword == "v") {
-            glm::vec3 vertex;
-            ss >> vertex.x >> vertex.y >> vertex.z;
-            vertices.push_back(vertex);
-        }
-        else if (keyword == "vt") {
-            glm::vec2 uv;
-            ss >> uv.x >> uv.y;
-            uvs.push_back(uv);
-        }
-        else if (keyword == "vn") {
-            glm::vec3 normal;
-            ss >> normal.x >> normal.y >> normal.z;
-            normals.push_back(normal);
-        }
-        else if (keyword == "usemtl") {
-            ss >> currentMaterial;
-        }
-        else if (keyword == "f") {
-            std::string vertexData;
-            Face face;
-            while (ss >> vertexData) {
-                std::istringstream vs(vertexData);
-                std::string v, t, n;
-                std::getline(vs, v, '/');
-                std::getline(vs, t, '/');
-                std::getline(vs, n, '/');
-                Vertex vertex;
-                vertex.position = vertices[std::stoi(v) - 1];
-                if (!t.empty()) vertex.uv = uvs[std::stoi(t) - 1];
-                if (!n.empty()) vertex.normal = normals[std::stoi(n) - 1];
-                face.vertices.push_back(vertex);
-            }
-            face.material = currentMaterial;
-            mesh.data.faces.push_back(face);
-        }
-    }
-
-    if (!mtlFilePath.empty()) {
-        std::filesystem::path objPath(filePath);
-        std::filesystem::path objDir = objPath.parent_path();
-        std::filesystem::path mtlFullPath = objDir / mtlFilePath;
-        parseMtl(mtlFullPath.string(), mesh.data.materials);
-    }
-
-    return true;
 }
