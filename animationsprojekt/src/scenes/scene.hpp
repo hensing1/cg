@@ -56,8 +56,11 @@ class Scene01 : public Scene {
     private:
 
   private:
-    HDS generateIcosahedron();
+    HDS generate_icosahedron();
+    std::vector<std::vector<float>> load_elevation_map();
+    void calculate_texture_coordinates(std::vector<Mesh::VertexPCN>& sphere_data);
     Mesh earth;
+    std::vector<std::vector<float>> elevation_map;
     // std::vector<Mesh::VertexPCN> earthVertices;
     // std::vector<unsigned int> earthIndices;
 };
