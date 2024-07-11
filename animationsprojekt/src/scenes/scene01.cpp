@@ -1,55 +1,26 @@
 #include "csv.hpp"
+#include "gl/shader.hpp"
 #include "glm/fwd.hpp"
 #include "mesh.hpp"
 #include "objparser.hpp"
 #include "scene.hpp"
 #include <algorithm>
 #include <cmath>
-//#include <stb_image.h>
 #include <iostream>
 
-Scene01::Scene01(Program& program, MovableCamera& camera) {
+Scene01::Scene01(Program& program, MovableCamera& camera) :
+    vertexShader(Shader::Type::VERTEX_SHADER), fragmentShader(Shader::Type::FRAGMENT_SHADER) {
+
+    vertexShader.load("earth.vert");
+    fragmentShader.load("earth.frag");
+
+    // program.l
     program.load("earth.vert", "earth.frag");
-    HDS icoHDS = generate_icosahedron();
-    // HDS icoHDS = generateTrongle();
-    int subidivisions = 6;
-    for (int i = 0; i < subidivisions; i++) {
-        icoHDS.loop_subdivision();
-    // icoHDS.print();
-    }
 
-    HDS::VaoData sphere_data = icoHDS.generate_vao_data();
-    elevation_map = load_elevation_map(); // std::vector<std::vector<float>>
+    int num_subdivisions = 6;
+    earth = generate_sphere(num_subdivisions);
 
-    size_t width = elevation_map[0].size();
-    size_t height = elevation_map.size();
-
-    calculate_texture_coordinates(sphere_data.vertices);
-
-    // internal format: GL_R32F
-    // base format: GL_RED
-
-    std::vector<float> contiguous_elevation_map;
-    contiguous_elevation_map.reserve(width * height);
-
-    for (size_t y = 0; y < height; y++) {
-        for (size_t x = 0; x < width; x++) {
-            contiguous_elevation_map[y * width + x] = elevation_map[height - 1 - y][width - 1 - x];
-        }
-    }
-
-    glGenTextures(1, &textureHandle);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, textureHandle);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, width, height, 0, GL_RED, GL_FLOAT,
-                 contiguous_elevation_map.data());
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    //stbi_set_flip_vertically_on_load(true);
-
-    earth = Mesh();
-    earth.load(sphere_data.vertices, sphere_data.indices);
+    textureHandle = generate_and_apply_heightmap();
 }
 
 int Scene01::render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) {
@@ -60,6 +31,55 @@ int Scene01::render(int frame, float time, Program& program, MovableCamera& came
     this->drawMesh(2.f, pos, program, earth, worldToClip);
 
     return 0;
+}
+
+Mesh Scene01::generate_sphere(int subidivisions) {
+    HDS icoHDS = generate_icosahedron();
+
+    for (int i = 0; i < subidivisions; i++) {
+        icoHDS.loop_subdivision();
+    }
+
+    HDS::VaoData sphere_data = icoHDS.generate_vao_data();
+    calculate_texture_coordinates(sphere_data.vertices);
+
+    Mesh sphereMesh = Mesh();
+    sphereMesh.load(sphere_data.vertices, sphere_data.indices);
+    return sphereMesh;
+}
+
+GLuint Scene01::generate_and_apply_heightmap() {
+
+    std::vector<std::vector<float>> elevation_map = load_elevation_map(); 
+
+    size_t width = elevation_map[0].size();
+    size_t height = elevation_map.size();
+
+    std::vector<float> contiguous_elevation_map;
+    contiguous_elevation_map.reserve(width * height);
+
+    for (size_t y = 0; y < height; y++) {
+        for (size_t x = 0; x < width; x++) {
+            contiguous_elevation_map[y * width + x] = elevation_map[height - 1 - y][width - 1 - x]; // openGL lädt die Texturdaten rückwärts
+        }
+    }
+
+    GLuint handle;
+    glGenTextures(1, &handle);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, handle);
+    
+    // internal format: GL_R32F
+    // base format: GL_RED, da nur eine float value (nur roter Kanal)
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, width, height, 0, GL_RED, GL_FLOAT,
+                 contiguous_elevation_map.data());
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    return handle;
+
 }
 
 void Scene01::calculate_texture_coordinates(std::vector<Mesh::VertexPCN>& sphere_vertices) {
@@ -107,7 +127,7 @@ std::vector<std::vector<float>> Scene01::load_elevation_map() {
     // remap to interval [0,1]
     for (size_t row = 0; row < values.size(); row++) {
         for (size_t col = 0; col < values[row].size(); col++) {
-            values[row][col] = (values[row][col] - newOceanHeight) / (max - newOceanHeight);
+            values[row][col] = (values[row][col] - newOceanHeight) / (max - newOceanHeight); 
         }
     }
 
