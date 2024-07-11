@@ -115,6 +115,12 @@ void MainApp::keyCallback(Key key, Action action) {
     else if (key == Key::A          && action == Action::PRESS) wasdCallback(vec3(-1.0f, 0.0f,  0.0f));
     else if (key == Key::LEFT_SHIFT && action == Action::PRESS) wasdCallback(vec3( 0.0f,-1.0f,  0.0f));
     else if (key == Key::SPACE      && action == Action::PRESS) wasdCallback(vec3( 0.0f, 1.0f,  0.0f));
+    else if (key == Key::W          && (action == Action::PRESS || action == Action::REPEAT)) wasdCallback(vec3( 0.0f, 0.0f, 1.0f));
+    else if (key == Key::S          && (action == Action::PRESS || action == Action::REPEAT)) wasdCallback(vec3( 0.0f, 0.0f, -1.0f));
+    else if (key == Key::D          && (action == Action::PRESS || action == Action::REPEAT)) wasdCallback(vec3( 1.0f, 0.0f,  0.0f));
+    else if (key == Key::A          && (action == Action::PRESS || action == Action::REPEAT)) wasdCallback(vec3(-1.0f, 0.0f,  0.0f));
+    else if (key == Key::LEFT_SHIFT && (action == Action::PRESS || action == Action::REPEAT)) wasdCallback(vec3( 0.0f,-1.0f,  0.0f));
+    else if (key == Key::SPACE      && (action == Action::PRESS || action == Action::REPEAT)) wasdCallback(vec3( 0.0f, 1.0f,  0.0f));
 }
 
 
