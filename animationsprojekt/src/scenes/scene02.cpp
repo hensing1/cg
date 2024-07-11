@@ -1,6 +1,6 @@
 #include "scene.hpp"
 
-Scene02::Scene02(Program& program, MovableCamera& camera) {
+Scene02::Scene02(MovableCamera& camera) {
     program.load("TMP_projection.vert", "TMP_lambert.frag");
     campus.load("meshes/Campus.obj");
     sphere.load("meshes/highpolysphere.obj");
@@ -41,7 +41,7 @@ Scene02::Scene02(Program& program, MovableCamera& camera) {
     camera.setViewDirPath(QuinticHermite(&view_path_points));
 }
 
-void Scene02::render_debug_objects(Program& program, mat4 worldToClip) {
+void Scene02::render_debug_objects(mat4 worldToClip) {
     program.set("uColor", vec3(0.65f, 0.00f, 0.4f));
     for (int i = 0; i < view_path_points.size(); i++) {
         drawMesh(0.20f, view_path_points[i].pos, program, sphere, worldToClip);
@@ -57,7 +57,7 @@ void Scene02::render_debug_objects(Program& program, mat4 worldToClip) {
     this->drawMesh(0.05f, vec3(0.0f, 3.0f, 0.12f), program, sphere, worldToClip);
 }
 
-int Scene02::render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) {
+int Scene02::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     if (!DEBUG) {
         camera.setViewDirAlongSpline(time / 4);
         camera.setPosAlongSpline(time / 4);
@@ -71,7 +71,7 @@ int Scene02::render(int frame, float time, Program& program, MovableCamera& came
     program.set("uColor", vec3(0.25f, 0.21f, 0.4f));
     this->drawMesh(0.5f, campus_pos, program, campus, worldToClip);
 
-    if (DEBUG) render_debug_objects(program, worldToClip);
+    if (DEBUG) render_debug_objects(worldToClip);
 
     if (time >= 24.7f) return 3;
     return 0;

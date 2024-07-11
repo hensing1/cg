@@ -1,6 +1,6 @@
 #include "scene.hpp"
 
-TestScene::TestScene(Program& program, MovableCamera& camera) {
+TestScene::TestScene(MovableCamera& camera) {
     program.load("TMP_projection.vert", "TMP_lambert.frag");
     donut.load("meshes/donut.obj");
     cube.load("meshes/cube.obj");
@@ -78,7 +78,7 @@ TestScene::TestScene(Program& program, MovableCamera& camera) {
 
 }
 
-int TestScene::render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) {
+int TestScene::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     //camera.updateIfChanged();
     camera.setViewDirAlongSpline(time / 4);
     camera.setPosAlongSpline(time / 4);

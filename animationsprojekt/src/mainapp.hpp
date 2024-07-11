@@ -36,11 +36,10 @@ class MainApp : public App {
     void resizeCallback(const vec2 &resolution) override;
 
   private:
+    // NOTE: Globale Variablen
     MovableCamera camera;
-    Program program;
     std::unique_ptr<Scene> current_scene;
 
-    // NOTE: Globale Variablen
     int FRAME;
     int SCENE;
     int prev_scene;

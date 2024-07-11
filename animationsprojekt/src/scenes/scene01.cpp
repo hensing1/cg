@@ -8,13 +8,11 @@
 #include <cmath>
 #include <iostream>
 
-Scene01::Scene01(Program& program, MovableCamera& camera) :
-    vertexShader(Shader::Type::VERTEX_SHADER), fragmentShader(Shader::Type::FRAGMENT_SHADER) {
+Scene01::Scene01(MovableCamera& camera) {
 
-    vertexShader.load("earth.vert");
-    fragmentShader.load("earth.frag");
+    // vertexShader.load("earth.vert");
+    // fragmentShader.load("earth.frag");
 
-    // program.l
     program.load("earth.vert", "earth.frag");
 
     int num_subdivisions = 6;
@@ -23,7 +21,7 @@ Scene01::Scene01(Program& program, MovableCamera& camera) :
     textureHandle = generate_and_apply_heightmap();
 }
 
-int Scene01::render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) {
+int Scene01::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     camera.updateIfChanged();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     vec3 pos = vec3(0, 0, 0);

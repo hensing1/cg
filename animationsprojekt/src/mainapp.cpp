@@ -66,7 +66,7 @@ void MainApp::render() {
         switchScene();
     }
 
-    int scene_return = current_scene->render(FRAME, time - scene_start_time, program, camera, DEBUG_MODE);
+    int scene_return = current_scene->render(FRAME, time - scene_start_time, camera, DEBUG_MODE);
 
     prev_scene = SCENE;
 
@@ -78,19 +78,19 @@ void MainApp::switchScene() {
     glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
     switch (SCENE) {
     case 0:
-        current_scene = std::make_unique<TestScene>(program, camera);
+        current_scene = std::make_unique<TestScene>(camera);
         break;
     case 1:
-        current_scene = std::make_unique<Scene01>(program, camera);
+        current_scene = std::make_unique<Scene01>(camera);
         break;
     case 2:
-        current_scene = std::make_unique<Scene02>(program, camera);
+        current_scene = std::make_unique<Scene02>(camera);
         break;
     case 3:
-        current_scene = std::make_unique<Scene03>(program, camera);
+        current_scene = std::make_unique<Scene03>(camera);
         break;
     default:
-        current_scene = std::make_unique<TestScene>(program, camera);
+        current_scene = std::make_unique<TestScene>(camera);
     }
     // current_scene -> init(camera);
 }
