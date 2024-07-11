@@ -8,12 +8,13 @@
 
 #include "framework/camera.hpp"
 #include "framework/gl/program.hpp"
+#include "framework/gl/texture.hpp"
 #include "framework/mesh.hpp"
 
 class Scene {
   public:
     Scene(); // constructor loads all required objects
-    Scene(MovableCamera& camera);
+    Scene(MovableCamera& camera, Program& program);
     virtual int render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) = 0;  // NOTE: returns next scene
     virtual void init(MovableCamera& camera);
     virtual ~Scene() = 0; // destructor unloads all objects
@@ -26,7 +27,7 @@ class Scene {
 
 class TestScene : public Scene {
   public:
-    TestScene(MovableCamera& camera);
+    TestScene(MovableCamera& camera, Program& program);
     int render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) override;
     ~TestScene();
 
@@ -50,7 +51,7 @@ class TestScene : public Scene {
 
 class Scene01 : public Scene {
     public:
-        Scene01(MovableCamera& camera);
+        Scene01(MovableCamera& camera, Program& program);
         int render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) override;
         ~Scene01();
     private:
@@ -64,7 +65,7 @@ class Scene01 : public Scene {
 
 class Scene02 : public Scene {
     public:
-        Scene02(MovableCamera& camera);
+        Scene02(MovableCamera& camera, Program& program);
         int render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) override;
         // virtual void init(MovableCamera& camera) override;
         ~Scene02();
@@ -76,11 +77,12 @@ class Scene02 : public Scene {
 
 class Scene03 : public Scene {
     public:
-        Scene03(MovableCamera& camera);
+        Scene03(MovableCamera& camera, Program& program);
         int render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) override;
         ~Scene03();
     private:
         Mesh hoersaal;
         Mesh laptop;
+        Texture hullin;
 
 };

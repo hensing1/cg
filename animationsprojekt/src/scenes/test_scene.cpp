@@ -1,6 +1,6 @@
 #include "scene.hpp"
 
-TestScene::TestScene(MovableCamera& camera) {
+TestScene::TestScene(MovableCamera& camera, Program &program) {
     donut.load("meshes/donut.obj");
     cube.load("meshes/cube.obj");
     sphere.load("meshes/highpolysphere.obj");

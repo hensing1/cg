@@ -29,7 +29,7 @@
 //
 // }
 
-Scene01::Scene01(MovableCamera& camera) {
+Scene01::Scene01(MovableCamera& camera, Program &program) {
     HDS icoHDS = generateIcosahedron();
     // HDS icoHDS = generateTrongle();
     int subidivisions = 4;

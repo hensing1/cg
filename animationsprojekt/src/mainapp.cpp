@@ -9,16 +9,15 @@
 using namespace glm;
 
 #include "framework/app.hpp"
-#include "framework/camera.hpp"
+//#include "framework/camera.hpp"
 #include "framework/gl/program.hpp"
-#include "framework/mesh.hpp"
+//#include "framework/mesh.hpp"
 #include "framework/imguiutil.hpp"
 
-#include "classes/hermite.hpp"
+//#include "classes/hermite.hpp"
 #include "classes/movable_camera.hpp"
 
 #include "config.hpp"
-#include <iostream>
 
 MainApp::MainApp() : App(800, 600) {
     App::setTitle(Config::PROJECT_NAME); // set title
@@ -83,19 +82,19 @@ void MainApp::switchScene() {
     glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
     switch (SCENE) {
     case 0:
-        current_scene = std::make_unique<TestScene>(camera);
+        current_scene = std::make_unique<TestScene>(camera, program);
         break;
     case 1:
-        current_scene = std::make_unique<Scene01>(camera);
+        current_scene = std::make_unique<Scene01>(camera, program);
         break;
     case 2:
-        current_scene = std::make_unique<Scene02>(camera);
+        current_scene = std::make_unique<Scene02>(camera, program);
         break;
     case 3:
-        current_scene = std::make_unique<Scene03>(camera);
+        current_scene = std::make_unique<Scene03>(camera, program);
         break;
     default:
-        current_scene = std::make_unique<TestScene>(camera);
+        current_scene = std::make_unique<TestScene>(camera, program);
     }
     // current_scene -> init(camera);
 }

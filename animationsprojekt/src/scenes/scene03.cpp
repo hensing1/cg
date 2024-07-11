@@ -1,7 +1,9 @@
 #include "scene.hpp"
 
-Scene03::Scene03(MovableCamera& camera) {
+Scene03::Scene03(MovableCamera& camera, Program& program) {
     hoersaal.load("meshes/HS3.obj");
+    hullin.load(Texture::Format::SRGB8, "textures/Hullin.png", 0);
+    hullin.bind(Texture::Type::TEX2D);
 }
 
 int Scene03::render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) {

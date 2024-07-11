@@ -1,6 +1,6 @@
 #include "scene.hpp"
 
-Scene02::Scene02(MovableCamera& camera) {
+Scene02::Scene02(MovableCamera& camera, Program& program) {
     campus.load("meshes/Campus.obj");
     sphere.load("meshes/highpolysphere.obj");
 
