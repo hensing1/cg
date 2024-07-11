@@ -9,12 +9,9 @@
 using namespace glm;
 
 #include "framework/app.hpp"
-#include "framework/camera.hpp"
 #include "framework/gl/program.hpp"
-#include "framework/mesh.hpp"
 #include "framework/imguiutil.hpp"
 
-#include "classes/hermite.hpp"
 #include "classes/movable_camera.hpp"
 
 #include "config.hpp"
@@ -25,6 +22,9 @@ MainApp::MainApp() : App(800, 600) {
     App::setVSync(true); // Limit framerate
 
     camera = MovableCamera();
+
+    oceanColor = vec3(0, 46, 212) / 255.f;
+    landColor = vec3(32, 226, 0) / 255.f;
 
     FRAME = 0;
     SCENE = prev_scene = 1;
@@ -55,15 +55,15 @@ void MainApp::render() {
     // Framezahl erhöhen, wenn Animation abgespielt wird
     if (ANIMATION_PLAYING) FRAME++;
     else scene_start_time += time - scene_start_time;
-    
-    /*  NOTE:  Jede Szene nutzt eine andere Render-Funktion.
-     *         Es wird empfohlen, allgemeine Funktionalität in separate Funktionen auszulagern.
-     *         (Wahrscheinlich sollten diese Funktionen auch in MainApp deklariert werden)
-     */
 
     if (SCENE != prev_scene) { // event listener für arme
         scene_start_time = floor(time);
         switchScene();
+    }
+    
+    if (SCENE == 1) {
+        current_scene->program.set("oceanColor", oceanColor);
+        current_scene->program.set("landColor", landColor);
     }
 
     int scene_return = current_scene->render(FRAME, time - scene_start_time, camera, DEBUG_MODE);
@@ -126,6 +126,11 @@ void MainApp::buildImGui() {
     ImGui::Checkbox("Play Animation", &ANIMATION_PLAYING);
     ImGui::RadioButton("Test scene", &SCENE, 0);
     ImGui::RadioButton("Scene 1", &SCENE, 1);
+    if (ImGui::CollapsingHeader("Options for scene 1")) {
+        ImGui::ColorPicker3("Ocean color", (float*) &oceanColor);
+        ImGui::ColorPicker3("Land color", (float*) &landColor);
+        // ImGui::TreePop();
+    }
     ImGui::RadioButton("Scene 2", &SCENE, 2);
     ImGui::RadioButton("Scene 3", &SCENE, 3);
     ImGui::End();

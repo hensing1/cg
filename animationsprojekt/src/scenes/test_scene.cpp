@@ -1,5 +1,7 @@
 #include "scene.hpp"
 
+#include "classes/operations.hpp"
+
 TestScene::TestScene(MovableCamera& camera) {
     program.load("TMP_projection.vert", "TMP_lambert.frag");
     donut.load("meshes/donut.obj");

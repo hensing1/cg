@@ -9,12 +9,15 @@ uniform sampler2D heightmap;
 
 uniform vec3 uLightDir = normalize(vec3(1.0));
 uniform vec3 uColor = vec3(1.0);
+uniform vec3 oceanColor;
+uniform vec3 landColor;
 
 void main() {
-    vec3 normal = normalize(interpNormal);
-    vec3 lighting = uColor * max(dot(normal, uLightDir), max(dot(normal, -uLightDir), 0.0));
-    lighting = lighting * texture(heightmap, interpTexCoord).r;
-    fragColor = lighting;
+    float height = texture(heightmap, interpTexCoord).r;
 
-    // float height = texture(heightmap, interpTexCoord).r;
+    vec3 color = height > 0.15 ? landColor : oceanColor;
+
+    vec3 normal = normalize(interpNormal);
+    vec3 lighting = color * max(dot(normal, uLightDir), 0.05);
+    fragColor = lighting;
 }

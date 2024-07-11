@@ -3,12 +3,13 @@
 #include "classes/halfedge.hpp"
 #include "classes/hermite.hpp"
 #include "classes/movable_camera.hpp"
-#include "classes/operations.hpp"
 #include <glm/gtc/constants.hpp>
 
-#include "framework/camera.hpp"
 #include "framework/gl/program.hpp"
 #include "framework/mesh.hpp"
+
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/string_cast.hpp>
 
 class Scene {
   public:
@@ -18,9 +19,9 @@ class Scene {
                        bool DEBUG) = 0; // NOTE: returns next scene
     virtual void init(MovableCamera& camera);
     virtual ~Scene() = 0; // destructor unloads all objects
+    Program program;
 
   protected:
-    Program program;
     std::vector<quintic_hermite_point> view_path_points;
     std::vector<quintic_hermite_point> camera_path_points;
 
@@ -64,23 +65,17 @@ class Scene01 : public Scene {
     GLuint textureHandle;
     Mesh earth;
 
-    // Shader vertexShader;
-    // Shader fragmentShader;
-
     Mesh generate_sphere(int subdivisions);
     GLuint generate_and_apply_heightmap();
     HDS generate_icosahedron();
     std::vector<std::vector<float>> load_elevation_map();
     void calculate_texture_coordinates(std::vector<Mesh::VertexPCN>& sphere_data);
-    // std::vector<Mesh::VertexPCN> earthVertices;
-    // std::vector<unsigned int> earthIndices;
 };
 
 class Scene02 : public Scene {
   public:
     Scene02(MovableCamera& camera);
     int render(int frame, float time, MovableCamera& camera, bool DEBUG) override;
-    // virtual void init(MovableCamera& camera) override;
     ~Scene02();
 
   private:

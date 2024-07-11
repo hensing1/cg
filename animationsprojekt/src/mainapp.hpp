@@ -48,4 +48,7 @@ class MainApp : public App {
 
     float prev_time;
     float scene_start_time;
+
+    vec3 oceanColor;
+    vec3 landColor;
 };

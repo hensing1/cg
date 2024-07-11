@@ -1,16 +1,5 @@
 #include "scene.hpp"
 
-// #include <glad/glad.h>
-// #include <glm/glm.hpp>
-// using namespace glm;
-
-#include "framework/gl/program.hpp"
-#include "framework/mesh.hpp"
-
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/string_cast.hpp>
-// #include <string>
-
 Scene::Scene() {}
 
 //  NOTE: Nur zu Testzwecken -> später entfernen

@@ -1,6 +1,9 @@
 #include "csv.hpp"
 #include "gl/shader.hpp"
 #include "glm/fwd.hpp"
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 #include "mesh.hpp"
 #include "objparser.hpp"
 #include "scene.hpp"
@@ -9,9 +12,6 @@
 #include <iostream>
 
 Scene01::Scene01(MovableCamera& camera) {
-
-    // vertexShader.load("earth.vert");
-    // fragmentShader.load("earth.frag");
 
     program.load("earth.vert", "earth.frag");
 
@@ -25,8 +25,14 @@ int Scene01::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     camera.updateIfChanged();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     vec3 pos = vec3(0, 0, 0);
+
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
-    this->drawMesh(2.f, pos, program, earth, worldToClip);
+    mat4 localToWorld = scale(translate(mat4(1.0f), pos), vec3(2.f));
+
+    program.set("uLocalToWorld", localToWorld);
+    program.set("uLocalToClip", worldToClip * localToWorld);
+    program.bind();
+    earth.draw();
 
     return 0;
 }
@@ -112,7 +118,7 @@ std::vector<std::vector<float>> Scene01::load_elevation_map() {
         }
     }
 
-    float newOceanHeight = min - 50.0f;
+    float newOceanHeight = min - (max - min) / 5;
 
     for (size_t row = 0; row < values.size(); row++) {
         for (size_t col = 0; col < values[row].size(); col++) {
