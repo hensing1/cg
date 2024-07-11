@@ -1,6 +1,7 @@
 #include "scene.hpp"
 
-Scene03::Scene03(MovableCamera& camera) {
+Scene03::Scene03(Program& program, MovableCamera& camera) {
+    program.load("TMP_projection.vert", "TMP_lambert.frag");
     hoersaal.load("meshes/HS3.obj");
 }
 

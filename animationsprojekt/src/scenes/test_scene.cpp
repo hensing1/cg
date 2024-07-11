@@ -1,6 +1,7 @@
 #include "scene.hpp"
 
-TestScene::TestScene(MovableCamera& camera) {
+TestScene::TestScene(Program& program, MovableCamera& camera) {
+    program.load("TMP_projection.vert", "TMP_lambert.frag");
     donut.load("meshes/donut.obj");
     cube.load("meshes/cube.obj");
     sphere.load("meshes/highpolysphere.obj");

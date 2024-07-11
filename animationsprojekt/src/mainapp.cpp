@@ -35,7 +35,7 @@ MainApp::MainApp() : App(800, 600) {
     camera.cartesianPosition = vec3(0.0f, 0.0f, 0.0f);
     
     //  NOTE: Nur zu Testzwecken -> später entfernen
-    program.load("TMP_projection.vert", "TMP_lambert.frag");
+    // program.load("TMP_projection.vert", "TMP_lambert.frag");
 
     scene_start_time = 0.0f;
     switchScene();
@@ -78,19 +78,19 @@ void MainApp::switchScene() {
     glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
     switch (SCENE) {
     case 0:
-        current_scene = std::make_unique<TestScene>(camera);
+        current_scene = std::make_unique<TestScene>(program, camera);
         break;
     case 1:
-        current_scene = std::make_unique<Scene01>(camera);
+        current_scene = std::make_unique<Scene01>(program, camera);
         break;
     case 2:
-        current_scene = std::make_unique<Scene02>(camera);
+        current_scene = std::make_unique<Scene02>(program, camera);
         break;
     case 3:
-        current_scene = std::make_unique<Scene03>(camera);
+        current_scene = std::make_unique<Scene03>(program, camera);
         break;
     default:
-        current_scene = std::make_unique<TestScene>(camera);
+        current_scene = std::make_unique<TestScene>(program, camera);
     }
     // current_scene -> init(camera);
 }
