@@ -81,8 +81,10 @@ class Scene03 : public Scene {
         int render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) override;
         ~Scene03();
     private:
+        void render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition, vec3 target);
         Mesh hoersaal;
         Mesh laptop;
         Texture hullin;
+        Mesh sphere;
 
 };
