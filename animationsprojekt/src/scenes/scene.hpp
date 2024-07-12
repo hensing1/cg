@@ -4,6 +4,7 @@
 #include "classes/hermite.hpp"
 #include "classes/movable_camera.hpp"
 #include <glm/gtc/constants.hpp>
+#include "gl/texture.hpp"
 
 #include "framework/gl/program.hpp"
 #include "framework/mesh.hpp"
@@ -93,4 +94,5 @@ class Scene03 : public Scene {
   private:
     Mesh hoersaal;
     Mesh laptop;
+    Texture holztexture;
 };

@@ -18,6 +18,7 @@ using namespace glm;
 #include <iostream>
 
 MainApp::MainApp() : App(800, 600) {
+    
     App::setTitle(Config::PROJECT_NAME); // set title
     App::setVSync(true); // Limit framerate
 
@@ -27,7 +28,7 @@ MainApp::MainApp() : App(800, 600) {
     landColor = vec3(32, 226, 0) / 255.f;
 
     FRAME = 0;
-    SCENE = prev_scene = 1;
+    SCENE = prev_scene = 3;
     DEBUG_MODE = false;
     ANIMATION_PLAYING = true;
 
