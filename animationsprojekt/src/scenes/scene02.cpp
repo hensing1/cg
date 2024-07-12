@@ -1,7 +1,7 @@
 #include "scene.hpp"
 
 Scene02::Scene02(MovableCamera& camera) {
-    program.load("earth.vert", "earth.frag");
+    program.load("TMP_projection.vert", "TMP_lambert.frag");
     campus.load("meshes/Campus.obj");
     sphere.load("meshes/highpolysphere.obj");
 

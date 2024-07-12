@@ -5,6 +5,7 @@
 #include "classes/movable_camera.hpp"
 #include <glm/gtc/constants.hpp>
 #include "gl/texture.hpp"
+
 #include "framework/gl/program.hpp"
 #include "framework/mesh.hpp"
 
@@ -89,7 +90,6 @@ class Scene03 : public Scene {
     Scene03(MovableCamera& camera);
     int render(int frame, float time, MovableCamera& camera, bool DEBUG) override;
     ~Scene03();
-
 
   private:
     Mesh hoersaal;
