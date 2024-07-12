@@ -38,11 +38,10 @@ class MainApp : public App {
     void wasdCallback(const vec3 &movement);
 
   private:
+    // NOTE: Globale Variablen
     MovableCamera camera;
-    Program program;
     std::unique_ptr<Scene> current_scene;
 
-    // NOTE: Globale Variablen
     int FRAME;
     int SCENE;
     int prev_scene;
@@ -52,4 +51,7 @@ class MainApp : public App {
     float prev_time;
     float current_time;
     float scene_start_time;
+
+    vec3 oceanColor;
+    vec3 landColor;
 };

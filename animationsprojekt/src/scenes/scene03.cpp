@@ -3,7 +3,8 @@
 
 #define PI glm::pi<float>()
 
-Scene03::Scene03(MovableCamera& camera, Program& program) {
+Scene03::Scene03(MovableCamera& camera) {
+    program.load("TMP_projection.vert", "TMP_lambert.frag");
     hoersaal.load("meshes/HS3.obj");
     //hullin.load(Texture::Format::SRGB8, "textures/Hullin.png", 0);
     //hullin.bind(Texture::Type::TEX2D);
@@ -48,12 +49,12 @@ Scene03::Scene03(MovableCamera& camera, Program& program) {
 
 }
 
-int Scene03::render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) {
+int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     if (!DEBUG) {
         camera.setViewDirAlongSpline(time / 2);
         camera.setPosAlongSpline(time / 2);
     }
-    camera.updateIfChanged();
+    else camera.updateIfChanged();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
