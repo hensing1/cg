@@ -18,8 +18,8 @@ Scene02::Scene02(MovableCamera& camera) {
         // Weg zum Hörsaal
         quintic_hermite_point{vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, -glm::pi<float>()/8, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
           //quintic_hermite_point{vec3(0.02f, -glm::pi<float>()/8, 0.0f), vec3(0.0f, -glm::pi<float>()/8, 0.0f), vec3(0.0f, glm::pi<float>()/16, 0.0f)},
-        quintic_hermite_point{vec3(0.02f, -glm::pi<float>()+glm::pi<float>()/4, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(0.02f, -glm::pi<float>()+glm::pi<float>()/4, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, -glm::pi<float>()+glm::pi<float>()/3, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, -glm::pi<float>()+glm::pi<float>()/3, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
     };
     camera.setPath(QuinticHermite(&camera_path_points));
     view_path_points = {
@@ -41,7 +41,7 @@ Scene02::Scene02(MovableCamera& camera) {
     camera.setViewDirPath(QuinticHermite(&view_path_points));
 }
 
-void Scene02::render_debug_objects(mat4 worldToClip) {
+void Scene02::render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition) {
     program.set("uColor", vec3(0.65f, 0.00f, 0.4f));
     for (int i = 0; i < view_path_points.size(); i++) {
         drawMesh(0.20f, view_path_points[i].pos, program, sphere, worldToClip);
@@ -55,6 +55,8 @@ void Scene02::render_debug_objects(mat4 worldToClip) {
     this->drawMesh(0.05f, vec3(0.0f, 3.12f, 0.0f), program, sphere, worldToClip);
     program.set("uColor", vec3(0.0f, 0.0f, 1.0f));
     this->drawMesh(0.05f, vec3(0.0f, 3.0f, 0.12f), program, sphere, worldToClip);
+    program.set("uColor", vec3(0.0f, 1.0f, 1.0f));
+    this->drawMesh(0.02f, playerPosition, program, sphere, worldToClip);
 }
 
 int Scene02::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
@@ -62,7 +64,7 @@ int Scene02::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
         camera.setViewDirAlongSpline(time / 4);
         camera.setPosAlongSpline(time / 4);
     }
-    else camera.updateIfChanged();
+    camera.updateIfChanged();
 
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -70,8 +72,8 @@ int Scene02::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     vec3 campus_pos(0.0f);
     program.set("uColor", vec3(0.25f, 0.21f, 0.4f));
     this->drawMesh(0.5f, campus_pos, program, campus, worldToClip);
-
-    if (DEBUG) render_debug_objects(worldToClip);
+    
+    if (DEBUG) render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 4));
 
     if (time >= 24.7f) return 3;
     return 0;

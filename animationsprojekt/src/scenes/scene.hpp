@@ -76,12 +76,12 @@ class Scene02 : public Scene {
   public:
     Scene02(MovableCamera& camera);
     int render(int frame, float time, MovableCamera& camera, bool DEBUG) override;
-    ~Scene02();
-
-  private:
-    void render_debug_objects(mat4 worldToClip);
-    Mesh campus;
-    Mesh sphere;
+        // virtual void init(MovableCamera& camera) override;
+        ~Scene02();
+    private:
+        void render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition);
+        Mesh campus;
+        Mesh sphere;
 };
 
 class Scene03 : public Scene {
