@@ -54,7 +54,7 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
         camera.setViewDirAlongSpline(time / 2);
         camera.setPosAlongSpline(time / 2);
     }
-    else camera.updateIfChanged();
+    camera.updateIfChanged();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;

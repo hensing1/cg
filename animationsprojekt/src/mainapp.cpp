@@ -54,8 +54,10 @@ void MainApp::render() {
 
     
     // Framezahl erhöhen, wenn Animation abgespielt wird
-    if (ANIMATION_PLAYING) FRAME++;
-    else scene_start_time += time - scene_start_time;
+    if (ANIMATION_PLAYING) {
+        FRAME++;
+        current_time = current_time + (time - prev_time);   // Current Time läuft nur, wenn Animation spielt
+    }
 
     if (SCENE != prev_scene) { // event listener für arme
         switchScene();
@@ -67,7 +69,7 @@ void MainApp::render() {
         current_scene->program.set("landColor", landColor);
     }
 
-    int scene_return = current_scene->render(FRAME, time - scene_start_time, camera, DEBUG_MODE);
+    int scene_return = current_scene->render(FRAME, current_time, camera, DEBUG_MODE);
 
     prev_scene = SCENE;
     prev_time = time;
