@@ -126,13 +126,13 @@ void MainApp::buildImGui() {
     ImGui::Checkbox("Play Animation", &ANIMATION_PLAYING);
     ImGui::RadioButton("Test scene", &SCENE, 0);
     ImGui::RadioButton("Scene 1", &SCENE, 1);
+    ImGui::RadioButton("Scene 2", &SCENE, 2);
+    ImGui::RadioButton("Scene 3", &SCENE, 3);
     if (ImGui::CollapsingHeader("Options for scene 1")) {
         ImGui::ColorPicker3("Ocean color", (float*) &oceanColor);
         ImGui::ColorPicker3("Land color", (float*) &landColor);
         // ImGui::TreePop();
     }
-    ImGui::RadioButton("Scene 2", &SCENE, 2);
-    ImGui::RadioButton("Scene 3", &SCENE, 3);
     ImGui::End();
 }
 
