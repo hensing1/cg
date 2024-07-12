@@ -1,33 +1,40 @@
 #pragma once
 
+#include "classes/halfedge.hpp"
 #include "classes/hermite.hpp"
 #include "classes/movable_camera.hpp"
-#include "classes/operations.hpp"
 #include <glm/gtc/constants.hpp>
-#include "classes/halfedge.hpp"
-
-#include "framework/camera.hpp"
+#include "gl/texture.hpp"
 #include "framework/gl/program.hpp"
 #include "framework/mesh.hpp"
+
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/string_cast.hpp>
 
 class Scene {
   public:
     Scene(); // constructor loads all required objects
     Scene(MovableCamera& camera);
-    virtual int render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) = 0;  // NOTE: returns next scene
+    virtual int render(int frame, float time, MovableCamera& camera,
+                       bool DEBUG) = 0; // NOTE: returns next scene
     virtual void init(MovableCamera& camera);
     virtual ~Scene() = 0; // destructor unloads all objects
+    Program program;
+
   protected:
     std::vector<quintic_hermite_point> view_path_points;
     std::vector<quintic_hermite_point> camera_path_points;
-    void drawMesh(float size, const vec3& pos, Program& program, Mesh& mesh, const mat4& worldToClip);
-    void drawMesh(float size, const vec3& pos, Program& program, Mesh& mesh, const mat4& worldToClip, const mat4& transformation);
+
+    void drawMesh(float size, const vec3& pos, Program& program, Mesh& mesh,
+                  const mat4& worldToClip);
+    void drawMesh(float size, const vec3& pos, Program& program, Mesh& mesh,
+                  const mat4& worldToClip, const mat4& transformation);
 };
 
 class TestScene : public Scene {
   public:
     TestScene(MovableCamera& camera);
-    int render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) override;
+    int render(int frame, float time, MovableCamera& camera, bool DEBUG) override;
     ~TestScene();
 
   private:
@@ -49,23 +56,26 @@ class TestScene : public Scene {
 };
 
 class Scene01 : public Scene {
-    public:
-        Scene01(MovableCamera& camera);
-        int render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) override;
-        ~Scene01();
-    private:
+  public:
+    Scene01(MovableCamera& camera);
+    int render(int frame, float time, MovableCamera& camera, bool DEBUG) override;
+    ~Scene01();
 
   private:
-    HDS generateIcosahedron();
+    GLuint textureHandle;
     Mesh earth;
-    // std::vector<Mesh::VertexPCN> earthVertices;
-    // std::vector<unsigned int> earthIndices;
+
+    Mesh generate_sphere(int subdivisions);
+    GLuint generate_and_apply_heightmap();
+    HDS generate_icosahedron();
+    std::vector<std::vector<float>> load_elevation_map();
+    void calculate_texture_coordinates(std::vector<Mesh::VertexPCN>& sphere_data);
 };
 
 class Scene02 : public Scene {
-    public:
-        Scene02(MovableCamera& camera);
-        int render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) override;
+  public:
+    Scene02(MovableCamera& camera);
+    int render(int frame, float time, MovableCamera& camera, bool DEBUG) override;
         // virtual void init(MovableCamera& camera) override;
         ~Scene02();
     private:
@@ -75,12 +85,14 @@ class Scene02 : public Scene {
 };
 
 class Scene03 : public Scene {
-    public:
-        Scene03(MovableCamera& camera);
-        int render(int frame, float time, Program& program, MovableCamera& camera, bool DEBUG) override;
-        ~Scene03();
-    private:
-        Mesh hoersaal;
-        Mesh laptop;
+  public:
+    Scene03(MovableCamera& camera);
+    int render(int frame, float time, MovableCamera& camera, bool DEBUG) override;
+    ~Scene03();
 
+
+  private:
+    Mesh hoersaal;
+    Mesh laptop;
+    Texture holztexture;
 };

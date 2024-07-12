@@ -181,8 +181,8 @@ glm::vec3 HDS::average(unsigned int vertIndex, std::vector<std::shared_ptr<Node>
     return newPosition;
 }
 
-Mesh HDS::generate_mesh() {
-    auto vertices = std::vector<Mesh::VertexPCN>(3 * nodes.size());
+HDS::VaoData HDS::generate_vao_data() {
+    auto vertices = std::vector<Mesh::VertexPCN>(nodes.size());
     auto indices = std::vector<unsigned int>(3 * faces.size());
     // nodes[0]->position *= 3.0f;
 
@@ -197,8 +197,15 @@ Mesh HDS::generate_mesh() {
         indices[3 * i + 2] = faces[i]->edge.lock()->next.lock()->next.lock()->start.lock()->id;
     }
 
+    return VaoData{vertices, indices};
+}
+
+Mesh HDS::generate_mesh() {
+    
+    VaoData data = generate_vao_data();
+
     Mesh mesh = Mesh();
-    mesh.load(vertices, indices);
+    mesh.load(data.vertices, data.indices);
     return mesh;
 }
 

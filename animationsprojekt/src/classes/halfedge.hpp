@@ -26,6 +26,11 @@ class HDS {
         std::vector<std::weak_ptr<Halfedge>> outgoing;
     };
 
+    struct VaoData {
+        std::vector<Mesh::VertexPCN> vertices;
+        std::vector<unsigned int> indices;
+    };
+
     HDS();
     HDS(const std::vector<glm::vec3>& vertices, const std::vector<unsigned int>& indices);
     // void load_mesh(Mesh mesh);
@@ -34,6 +39,7 @@ class HDS {
 
     void loop_subdivision();
     Mesh generate_mesh();
+    VaoData generate_vao_data();
     void print();
 
   private:

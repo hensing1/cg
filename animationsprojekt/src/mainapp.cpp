@@ -9,25 +9,26 @@
 using namespace glm;
 
 #include "framework/app.hpp"
-#include "framework/camera.hpp"
 #include "framework/gl/program.hpp"
-#include "framework/mesh.hpp"
 #include "framework/imguiutil.hpp"
 
-#include "classes/hermite.hpp"
 #include "classes/movable_camera.hpp"
 
 #include "config.hpp"
 #include <iostream>
 
 MainApp::MainApp() : App(800, 600) {
+    
     App::setTitle(Config::PROJECT_NAME); // set title
     App::setVSync(true); // Limit framerate
-    int width, height, depth;
+
     camera = MovableCamera();
-    unsigned char* data = stbi_load("textures/wood07_W400xH400_L151xV151.btf", &width, &height, &depth, 0);
+
+    oceanColor = vec3(0, 46, 212) / 255.f;
+    landColor = vec3(32, 226, 0) / 255.f;
+
     FRAME = 0;
-    SCENE = prev_scene = 1;
+    SCENE = prev_scene = 3;
     DEBUG_MODE = false;
     ANIMATION_PLAYING = true;
 
@@ -35,7 +36,7 @@ MainApp::MainApp() : App(800, 600) {
     camera.cartesianPosition = vec3(0.0f, 0.0f, 0.0f);
     
     //  NOTE: Nur zu Testzwecken -> später entfernen
-    program.load("TMP_projection.vert", "TMP_lambert.frag");
+    // program.load("TMP_projection.vert", "TMP_lambert.frag");
 
     scene_start_time = 0.0f;
     current_time = 0.0f;
@@ -55,22 +56,20 @@ void MainApp::render() {
 
     
     // Framezahl erhöhen, wenn Animation abgespielt wird
-    if (ANIMATION_PLAYING) {
-        FRAME++;
-        current_time = current_time + (time - prev_time);   // Current Time läuft nur, wenn Animation spielt
-    }
-    
-    /*  NOTE:  Jede Szene nutzt eine andere Render-Funktion.
-     *         Es wird empfohlen, allgemeine Funktionalität in separate Funktionen auszulagern.
-     *         (Wahrscheinlich sollten diese Funktionen auch in MainApp deklariert werden)
-     */
+    if (ANIMATION_PLAYING) FRAME++;
+    else scene_start_time += time - scene_start_time;
 
     if (SCENE != prev_scene) { // event listener für arme
         switchScene();
         reset_time_in_scene();
     }
+    
+    if (SCENE == 1) {
+        current_scene->program.set("oceanColor", oceanColor);
+        current_scene->program.set("landColor", landColor);
+    }
 
-    int scene_return = current_scene->render(FRAME, current_time, program, camera, DEBUG_MODE);
+    int scene_return = current_scene->render(FRAME, time - scene_start_time, camera, DEBUG_MODE);
 
     prev_scene = SCENE;
     prev_time = time;
@@ -144,6 +143,11 @@ void MainApp::buildImGui() {
     ImGui::RadioButton("Scene 1", &SCENE, 1);
     ImGui::RadioButton("Scene 2", &SCENE, 2);
     ImGui::RadioButton("Scene 3", &SCENE, 3);
+    if (ImGui::CollapsingHeader("Options for scene 1")) {
+        ImGui::ColorPicker3("Ocean color", (float*) &oceanColor);
+        ImGui::ColorPicker3("Land color", (float*) &landColor);
+        // ImGui::TreePop();
+    }
     ImGui::End();
 }
 
