@@ -9,13 +9,14 @@ uniform sampler2D heightmap;
 
 uniform mat4 uLocalToClip = mat4(1.0);
 uniform mat4 uLocalToWorld = mat4(1.0);
+uniform bool applyHeightmap;
 
 out vec3 interpNormal;
 out vec2 interpTexCoord;
 
 void main() {
-    vec3 newPosition = normal * (1 + 0.055f * texture(heightmap, texCoord).r);
+    vec3 newPosition = applyHeightmap ? normal * (1 + 0.055f * texture(heightmap, texCoord).r) : normal;
     gl_Position = uLocalToClip * vec4(newPosition, 1.0);
-    interpNormal = (uLocalToWorld * vec4(normal, 0.0)).xyz;
+    interpNormal = (uLocalToWorld * vec4(normalize(normal), 0.0)).xyz;
     interpTexCoord = texCoord;
 }

@@ -54,4 +54,7 @@ class MainApp : public App {
 
     vec3 oceanColor;
     vec3 landColor;
+    vec3 mountainColor;
+    float landThreshold;
+    bool applyHeightmap;
 };

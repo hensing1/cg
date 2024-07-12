@@ -25,10 +25,13 @@ MainApp::MainApp() : App(800, 600) {
     camera = MovableCamera();
 
     oceanColor = vec3(0, 46, 212) / 255.f;
-    landColor = vec3(32, 226, 0) / 255.f;
+    landColor = vec3(10, 71, 0) / 255.f;
+    mountainColor = vec3(1,1,1);
+    landThreshold = 0.15f;
+    applyHeightmap = true;
 
     FRAME = 0;
-    SCENE = prev_scene = 3;
+    SCENE = prev_scene = 1;
     DEBUG_MODE = false;
     ANIMATION_PLAYING = true;
 
@@ -67,6 +70,9 @@ void MainApp::render() {
     if (SCENE == 1) {
         current_scene->program.set("oceanColor", oceanColor);
         current_scene->program.set("landColor", landColor);
+        current_scene->program.set("mountainColor", mountainColor);
+        current_scene->program.set("landThreshold", landThreshold);
+        current_scene->program.set("applyHeightmap", applyHeightmap);
     }
 
     int scene_return = current_scene->render(FRAME, time - scene_start_time, camera, DEBUG_MODE);
@@ -144,9 +150,11 @@ void MainApp::buildImGui() {
     ImGui::RadioButton("Scene 2", &SCENE, 2);
     ImGui::RadioButton("Scene 3", &SCENE, 3);
     if (ImGui::CollapsingHeader("Options for scene 1")) {
+        ImGui::Checkbox("Apply heightmap", &applyHeightmap);
+        ImGui::SliderFloat("Land threshold", &landThreshold, 0.01, 1);
         ImGui::ColorPicker3("Ocean color", (float*) &oceanColor);
         ImGui::ColorPicker3("Land color", (float*) &landColor);
-        // ImGui::TreePop();
+        ImGui::ColorPicker3("Mountain color", (float*) &mountainColor);
     }
     ImGui::End();
 }

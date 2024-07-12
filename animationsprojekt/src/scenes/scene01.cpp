@@ -78,9 +78,11 @@ GLuint Scene01::generate_and_apply_heightmap() {
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, width, height, 0, GL_RED, GL_FLOAT,
                  contiguous_elevation_map.data());
-
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     return handle;
 
@@ -97,7 +99,11 @@ void Scene01::calculate_texture_coordinates(std::vector<Mesh::VertexPCN>& sphere
                               ? acos(vertex.position.x / length(pointOnLatitudeCircle))
                               : -acos(vertex.position.x / length(pointOnLatitudeCircle));
 
-        vertex.texCoord = vec2{(pi + longitude) / (2 * pi), (pi / 2 + latitude) / pi};
+        float x = longitude / (2 * pi) + 0.5f;
+        float y = latitude / pi + 0.5f;
+
+        vertex.texCoord = vec2{x, y};
+
     }
 }
 
