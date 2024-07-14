@@ -106,5 +106,5 @@ void main() {
     vec3 brdfColor = principledBRDF(N, L, V, H, NdotL, NdotV, NdotH, HdotV,baseColor,uRoughness,uMetallness);
 
 
-    fragColor = brdfColor; // Combine BRDF result with ambient light
+    fragColor = brdfColor;
 }

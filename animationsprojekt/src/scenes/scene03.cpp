@@ -14,9 +14,7 @@ glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     float metallness = 0.0f;
     bool useOrenNayar = true;
     float roughness = 1.0f;
-glm::vec3 cameraPos = glm::vec3(1.0f, 1.0f, 1.0f);
 program.set("uLightDir", lightDir);
-program.set("uCameraPos", cameraPos);
 program.set("uRoughness", roughness);
 program.set("uMetallness", metallness);
 program.set("uUseOrenNayar", useOrenNayar);
@@ -24,6 +22,8 @@ program.set("uUseOrenNayar", useOrenNayar);
 
 int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     camera.updateIfChanged();
+    glm::vec3 cameraPos = camera.cartesianPosition;
+    program.set("uCameraPos", cameraPos);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     vec3 pos = vec3(0, 0, 0);
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
