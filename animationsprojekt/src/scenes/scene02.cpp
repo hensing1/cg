@@ -1,9 +1,23 @@
 #include "scene.hpp"
+#include "framework/gl/texture.hpp"
+#include <glm/glm.hpp>
+#include <glad/glad.h>
 
 Scene02::Scene02(MovableCamera& camera) {
-    program.load("TMP_projection.vert", "TMP_lambert.frag");
+    program.load("Scene2.vert", "Scene2.frag");
     campus.load("meshes/Campus.obj");
     sphere.load("meshes/highpolysphere.obj");
+    textures[0].load(Texture::Format::SRGB8,"textures/Baumrinde.jpg",0);
+    textures[1].load(Texture::Format::SRGB8,"textures/Blaetter.jpg",0);
+    textures[2].load(Texture::Format::SRGB8,"textures/Wand.jpg",0);
+    textures[3].load(Texture::Format::SRGB8,"textures/Boden.jpg",0);
+    program.set("texture1", 0);
+    program.set("texture2", 1);
+    program.set("texture3", 2);
+    program.set("texture4", 3);
+
+
+    
 
     camera_path_points = {
         // Der Fall nach unten
@@ -72,7 +86,6 @@ int Scene02::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     vec3 campus_pos(0.0f);
     program.set("uColor", vec3(0.25f, 0.21f, 0.4f));
     this->drawMesh(0.5f, campus_pos, program, campus, worldToClip);
-    
     if (DEBUG) render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 4));
 
     if (time >= 24.7f) return 3;
