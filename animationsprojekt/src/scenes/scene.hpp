@@ -95,4 +95,5 @@ class Scene03 : public Scene {
     Mesh hoersaal;
     Mesh laptop;
     Texture holztexture;
+    float roughness;
 };
