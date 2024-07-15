@@ -7,10 +7,10 @@ in vec3 worldPos;
 out vec3 fragColor;
 
 uniform sampler2D holztexture;
-vec3 L = normalize(vec3(1.0, 0.0, 0.0));
 uniform vec3 uColor = vec3(1.0);
 uniform vec3 uCameraPos;
 uniform vec3 uLightDir;
+vec3 L = normalize(uLightDir);
 uniform int uDebugView = 0;
 uniform int uDistribution = 0;
 uniform bool uUseOrenNayar = true;
@@ -88,23 +88,23 @@ vec3 principledBRDF(vec3 N, vec3 L, vec3 V, vec3 H, float NdotL, float NdotV, fl
 
 
 void main() {
-    vec3 N = normalize(interpNormal);
-    vec3 V = normalize(uCameraPos - worldPos);
-    vec3 H = normalize(L + V);
-    vec3 F0 = vec3(0.04);
-     if (dot(N, V) < 0.0) {
+    vec3 N = normalize(interpNormal);  // Normalized normal vector
+    vec3 V = normalize(uCameraPos - worldPos);  // View direction
+    vec3 L = normalize(uLightDir);  // Normalized light direction
+
+    // Ensure the normal points in the correct direction
+    if (dot(N, V) < 0.0) {
         N = -N;
     }
+
+    // Clamp the dot product to avoid negative values
     float NdotL = max(dot(N, L), 0.0);
-    float NdotV = max(dot(N, V), 0.0);
-    float NdotH = max(dot(N, H), 0.0);
-    float HdotV = max(dot(H, V), 0.0);
-    vec3 texture = texture(holztexture,interpTexCoords).rgb;
-    vec3 normal = normalize(interpNormal);
-    vec3 baseColor = texture * max(dot(normal, uLightDir), max(dot(normal, -uLightDir), 0.0));
 
-    vec3 brdfColor = principledBRDF(N, L, V, H, NdotL, NdotV, NdotH, HdotV,baseColor,uRoughness,uMetallness);
+    // Basic diffuse lighting with ambient component
+    vec3 baseColor = texture(holztexture, interpTexCoords).rgb;
+    vec3 ambient = 0.2 * baseColor;  // Ambient light component
+    vec3 diffuse = NdotL * baseColor;
 
-
-    fragColor = brdfColor;
+    // Combine ambient and diffuse lighting
+    fragColor = ambient + diffuse;
 }

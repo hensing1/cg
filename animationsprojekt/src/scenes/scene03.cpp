@@ -13,7 +13,7 @@ glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
  glm::vec3 lightDir = glm::normalize(glm::vec3(1.0f, 1.0f, 1.0f));
     float metallness = 0.0f;
-    bool useOrenNayar = true;
+    bool useOrenNayar = false;
     float roughness = 1.0f;
 program.set("uLightDir", lightDir);
 program.set("uRoughness", roughness);
