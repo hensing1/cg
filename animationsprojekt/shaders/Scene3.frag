@@ -94,12 +94,11 @@ void main() {
 
     float NdotL = max(dot(N, L), 0.0);
     float NdotV = max(dot(N, V), 0.0);
-    float NdotH = max(dot(N, H), 0.0);
+    float NdotH = max(dot(N, H), EPSILON);
     float HdotV = max(dot(H, V), 0.0);
 
 
     vec3 baseColor = texture(holztexture, interpTexCoords).rgb;
     vec3 brdfColor = principledBRDF(N, L, V, H, NdotL, NdotV, NdotH, HdotV, baseColor, uRoughness, uMetallness);
-
     fragColor = brdfColor;
 }
