@@ -29,12 +29,11 @@ MainApp::MainApp() : App(800, 600) {
     landColor = vec3(10, 71, 0) / 255.f;
     mountainColor = vec3(1,1,1);
     landThreshold = 0.15f;
-    applyHeightmap = true;
 
     FRAME = 0;
     SCENE = prev_scene = 1;
     DEBUG_MODE = false;
-    ANIMATION_PLAYING = false;
+    ANIMATION_PLAYING = true;
 
     App::imguiEnabled = true;
     camera.cartesianPosition = vec3(0.0f, 0.0f, 0.0f);
@@ -73,8 +72,8 @@ void MainApp::render() {
         current_scene->program.set("landColor", landColor);
         current_scene->program.set("mountainColor", mountainColor);
         current_scene->program.set("landThreshold", landThreshold);
-        current_scene->program.set("applyHeightmap", applyHeightmap);
-        current_scene->program.set("uSomeSlider", someSlider);
+
+        current_scene->program.set("uEpsilon", epsilon);
     }
 
     int scene_return = current_scene->render(FRAME, time - scene_start_time, camera, DEBUG_MODE);
@@ -152,15 +151,13 @@ void MainApp::buildImGui() {
     ImGui::RadioButton("Scene 2", &SCENE, 2);
     ImGui::RadioButton("Scene 3", &SCENE, 3);
     if (ImGui::CollapsingHeader("Options for earth")) {
-        ImGui::Checkbox("Apply heightmap", &applyHeightmap);
         ImGui::SliderFloat("Land threshold", &landThreshold, 0.01, 1);
         ImGui::ColorPicker3("Ocean color", (float*) &oceanColor);
         ImGui::ColorPicker3("Land color", (float*) &landColor);
         ImGui::ColorPicker3("Mountain color", (float*) &mountainColor);
     }
     if (ImGui::CollapsingHeader("Options for clouds")) {
-        //ImGui::Checkbox("enable", &enableClouds);
-        ImGui::SliderFloat("Some slider", &someSlider, 0.95f, 0.99f);
+        ImGui::SliderFloat("epsilon", &epsilon, 0.0, 1.0);
     }
     ImGui::End();
 }

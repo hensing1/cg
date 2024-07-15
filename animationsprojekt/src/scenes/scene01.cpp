@@ -45,12 +45,13 @@ int Scene01::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
+    cloudProgram.set("uTime", time);
+
     if (cameraChanged) {
+        cloudProgram.set("uCameraPosition", camera.cartesianPosition);
         cloudProgram.set("uCameraMatrix", camera.cameraMatrix);
         cloudProgram.set("uAspectRatio", camera.aspectRatio);
         cloudProgram.set("uFocalLength", camera.focalLength);
-        cloudProgram.set("uCameraPosition", camera.cartesianPosition);
-        cloudProgram.set("uProjectionMatrix", camera.projectionMatrix);
         cloudProgram.set("uNear", camera.near);
         cloudProgram.set("uFar", camera.far);
     }
