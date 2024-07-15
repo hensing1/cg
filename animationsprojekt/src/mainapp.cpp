@@ -137,6 +137,7 @@ void MainApp::buildImGui() {
     ImGui::StatisticsWindow(App::delta, App::resolution);
     ImGui::Begin("Settings", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
     ImGui::Text("Position:  (%f|%f|%f)", camera.cartesianPosition[0], camera.cartesianPosition[1], camera.cartesianPosition[2]);
+    ImGui::Text("Spherical: (%f|%f|%f)", camera.sphericalPosition[0], camera.sphericalPosition[1], camera.sphericalPosition[2]);
     ImGui::Text("Target:    (%f|%f|%f)", camera.target[0], camera.target[1], camera.target[2]);
 
     ImGui::Text("Frame:  %u    \t\t|   Scene:  %u", FRAME, SCENE);

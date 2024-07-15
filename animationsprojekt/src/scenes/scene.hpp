@@ -12,6 +12,8 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/string_cast.hpp>
 
+#define PI glm::pi<float>()
+
 class Scene {
   public:
     Scene(); // constructor loads all required objects
@@ -65,7 +67,9 @@ class Scene01 : public Scene {
   private:
     GLuint textureHandle;
     Mesh earth;
+    Mesh sphere;
 
+    void render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition, vec3 target);
     Mesh generate_sphere(int subdivisions);
     GLuint generate_and_apply_heightmap();
     HDS generate_icosahedron();
