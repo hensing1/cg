@@ -18,6 +18,8 @@ const std::vector<unsigned int> FULLSCREEN_INDICES = {
     0, 1, 2,
 };
 
+
+
 class Mesh {
    public:
     /**

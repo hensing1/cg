@@ -11,6 +11,7 @@
 Scene01::Scene01(MovableCamera& camera) {
 
     program.load("earth.vert", "earth.frag");
+    sphere.load("meshes/highpolysphere.obj");
 
     int num_subdivisions = 6;
     earth = generate_sphere(num_subdivisions);
@@ -20,11 +21,52 @@ Scene01::Scene01(MovableCamera& camera) {
     cloudProgram.load("clouds.vert", "clouds.frag");
     cloudProgram.set("uEpsilon", 0.01f);
     cloudCanvas.load(FULLSCREEN_VERTICES, FULLSCREEN_INDICES);
+
+    camera_path_points = {
+        // Flug auf die Erde zu
+        quintic_hermite_point{vec3(1.5f, 0.0f, 0.0f), vec3(-0.3f, 0.0f, 0.0f), vec3(-0.4f, 0.0f, 0.0f)},
+          //quintic_hermite_point{vec3(1.5f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(-0.3f, 0.0f, 0.0f)},
+          //quintic_hermite_point{vec3(1.2f, PI/8, PI/16), vec3(-0.3f, PI/4, PI/8), vec3(0.0f, 0.0f, 0.0f)},
+          //quintic_hermite_point{vec3(0.8f, PI/2, PI/4), vec3(-0.3f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+          //quintic_hermite_point{vec3(0.5f, PI/2, PI/4), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+          //quintic_hermite_point{vec3(0.5f, PI/2, PI/4), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+          //quintic_hermite_point{vec3(0.5f, PI/2, PI/4), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(1.0f, 0.191163f, 0.100583f), vec3(0.0f, 0.6f, 0.4f), vec3(0.0f, 0.5f, 0.3f)},
+        quintic_hermite_point{vec3(1.0f, 0.881166f, 0.690583f), vec3(0.0f, 0.9f, 0.2f), vec3(0.0f, -0.2f, -0.2f)},
+        // Zoom in die Kugel hinein
+        quintic_hermite_point{vec3(0.99f, 1.711159f, 0.910796f), vec3(-0.400f, 0.0f, 0.0f), vec3(-0.2f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.60f, 1.711159f, 0.910796f), vec3(-0.350f, 0.0f, 0.0f), vec3( 0.310f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.30f, 1.711159f, 0.910796f), vec3(-0.225f, 0.0f, 0.0f), vec3( 0.235f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.15f, 1.711159f, 0.910796f), vec3(-0.125f, 0.0f, 0.0f), vec3( 0.135f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.10f, 1.711159f, 0.910796f), vec3(-0.050f, 0.0f, 0.0f), vec3( 0.085f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.05f, 1.711159f, 0.910796f), vec3(-0.050f, 0.0f, 0.0f), vec3( 0.0f, 0.0f, 0.0f)},
+    };
+    camera.setPath(QuinticHermite(&camera_path_points));
+    view_path_points = {
+        // Flug auf die Erde zu
+        quintic_hermite_point{vec3(0.0f, 0.0f, 10.0f), vec3(0.0f, 0.0f, -6.0f), vec3(0.0f, 0.0f, 0.0f)},
+        //quintic_hermite_point{vec3(0.0f, 0.3f, 04.0f), vec3(0.0f, 0.3f, 0.0f), vec3(0.0f, 0.2f, 0.0f)},
+        quintic_hermite_point{vec3(0.8f, 0.8f, 04.0f), vec3(0.65f, 0.3f, -3.0f), vec3(0.0f, 0.2f, 0.0f)},
+        quintic_hermite_point{vec3(1.256274f, 1.366754f,  1.154455f), vec3(0.09f, 0.025f, -1.38f), vec3(0.0f, 0.0f, 0.0f)},
+        // View-Point ändert sich nicht mehr
+        quintic_hermite_point{vec3(1.241977f, 1.491430f, -0.177268f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(1.241977f, 1.491430f, -0.177268f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(1.241977f, 1.491430f, -0.177268f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(1.241977f, 1.491430f, -0.177268f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(1.241977f, 1.491430f, -0.177268f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(1.241977f, 1.491430f, -0.177268f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+    };
+    camera.setViewDirPath(QuinticHermite(&view_path_points));
+
+
 }
 
 int Scene01::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
+    if (!DEBUG) {
+        camera.setViewDirAlongSpline(time / 2);
+        camera.setPosAlongSpline(time / 2);
+    }
     bool cameraChanged = camera.updateIfChanged();
-
 
     // Erde rendern
     program.bind();
@@ -55,12 +97,31 @@ int Scene01::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
         cloudProgram.set("uNear", camera.near);
         cloudProgram.set("uFar", camera.far);
     }
+    if (DEBUG) render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 2), camera.target);
+    cloudCanvas.draw();
 
-    if (!DEBUG) {
-        cloudCanvas.draw();
-    }
-
+    if (time >= 11.3f) return 2;
     return 0;
+}
+
+void Scene01::render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition, vec3 target) {
+    program.set("uColor", vec3(0.65f, 0.00f, 0.4f));
+    for (int i = 0; i < view_path_points.size(); i++) {
+        drawMesh(0.10f, view_path_points[i].pos, program, sphere, worldToClip);
+    }
+    
+    program.set("uColor", vec3(0.6f, 0.6f, 0.6f));
+    this->drawMesh(0.1f, vec3(0.0f, 0.0f, 0.0f), program, sphere, worldToClip);
+    program.set("uColor", vec3(1.0f, 0.0f, 0.0f));
+    this->drawMesh(0.1f, vec3(0.12f, 0.0f, 0.0f), program, sphere, worldToClip);
+    program.set("uColor", vec3(0.0f, 1.0f, 0.0f));
+    this->drawMesh(0.1f, vec3(0.0f, 0.12f, 0.0f), program, sphere, worldToClip);
+    program.set("uColor", vec3(0.0f, 0.0f, 1.0f));
+    this->drawMesh(0.1f, vec3(0.0f, 0.0f, 0.12f), program, sphere, worldToClip);
+    program.set("uColor", vec3(0.0f, 1.0f, 1.0f));
+    this->drawMesh(0.03f, playerPosition, program, sphere, worldToClip);
+    program.set("uColor", vec3(1.0f, 1.0f, 0.0f));
+    this->drawMesh(0.01f, target, program, sphere, worldToClip);
 }
 
 Mesh Scene01::generate_sphere(int subidivisions) {

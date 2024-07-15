@@ -58,4 +58,5 @@ class MainApp : public App {
     float landThreshold;
 
     float epsilon;
+    float roughness;
 };
