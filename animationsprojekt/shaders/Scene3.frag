@@ -68,6 +68,7 @@ float orenNayarTerm(float sigma2, float NdotV, float NdotL, vec3 N, vec3 L, vec3
 }
 
 vec3 principledBRDF(vec3 N, vec3 L, vec3 V, vec3 H, float NdotL, float NdotV, float NdotH, float HdotV, vec3 baseColor, float roughness, float metallness) {
+
     // Calculate the Fresnel term using Schlick's approximation
     vec3 R0 = mix(vec3(0.04), baseColor, metallness);
     vec3 F = F_schlickApprox(HdotV, R0);
@@ -81,6 +82,7 @@ vec3 principledBRDF(vec3 N, vec3 L, vec3 V, vec3 H, float NdotL, float NdotV, fl
     // Calculate diffuse and specular components
     vec3 diffuse = baseColor / PI;
     vec3 specular = F * D * G / (4.0 * NdotL * NdotV + EPSILON); // Add epsilon to avoid division by zero
+
 
     return diffuse + specular;
 }
@@ -103,3 +105,4 @@ void main() {
     vec3 brdfColor = principledBRDF(N, L, V, H, NdotL, NdotV, NdotH, HdotV, baseColor, uRoughness, uMetallness);
     fragColor = brdfColor;
 }
+
