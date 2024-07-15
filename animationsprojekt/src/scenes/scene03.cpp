@@ -10,6 +10,7 @@ Scene03::Scene03(MovableCamera& camera) {
     hoersaal.load("meshes/HS3.obj");
     bunny.load("meshes/bunny.obj");
     holztexture.load(Texture::Format::SRGB8,"textures/Wood.png",0);
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     blaetter.load(Texture::Format::SRGB8,"textures/Blaetter.jpg",0);
@@ -19,9 +20,7 @@ Scene03::Scene03(MovableCamera& camera) {
     float metallness = 0.0f;
     bool useOrenNayar = true;
 program.set("uLightDir", lightDir);
-program.set("uMetallness", metallness);
-program.set("uUseOrenNayar", useOrenNayar);
-}
+
 
 int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     camera.updateIfChanged();
