@@ -54,4 +54,5 @@ class MainApp : public App {
 
     vec3 oceanColor;
     vec3 landColor;
+    float roughness;
 };

@@ -7,15 +7,15 @@ in vec3 worldPos;
 out vec3 fragColor;
 
 uniform sampler2D holztexture;
-uniform vec3 uLightDir = normalize(vec3(1.0));
+vec3 L = normalize(vec3(1.0, 0.0, 0.0));
 uniform vec3 uColor = vec3(1.0);
 uniform vec3 uCameraPos;
+uniform vec3 uLightDir;
 uniform int uDebugView = 0;
 uniform int uDistribution = 0;
 uniform bool uUseOrenNayar = true;
 uniform float uRoughness;
 uniform float uMetallness;
-uniform vec3 uAlbedo;
 const float PI = 3.14159265359;
 
 vec3 F_schlickApprox(float HdotV, vec3 R0) {
@@ -67,34 +67,44 @@ float orenNayarTerm(float sigma2, float NdotV, float NdotL, vec3 N, vec3 L, vec3
     return orenNayar;
 }
 
-vec3 principledBRDF(float roughness, float metallness, vec3 albedo,  float NdotL, float NdotV, float NdotH, float HdotV, vec3 N, vec3 L, vec3 V) {
-    float sigma = roughness * roughness;
-    float sigma2 = sigma * sigma;
-
-    // Most dielectrics have an IoR near 1.5 => R0 = ((1 - 1.5) / (1 + 1.5))^2 = 0.04, for conductors we use the albedo as R0
-    vec3 R0 = mix(vec3(0.04), albedo, metallness);
+vec3 principledBRDF(vec3 N, vec3 L, vec3 V, vec3 H, float NdotL, float NdotV, float NdotH, float HdotV, vec3 baseColor, float roughness, float metallness) {
+    vec3 R0 = mix(vec3(0.04), baseColor, metallness);
 
     vec3 F = F_schlickApprox(HdotV, R0);
-    float D, G;
-        /* Beckmann distribution */
-        D = D_beckmannDistribution(NdotH, sigma2);
-        G = G_geometricAttenuation(NdotL, NdotV, NdotH, HdotV);
+    float D = D_beckmannDistribution(NdotH, roughness);
+    float G = G_geometricAttenuation(NdotL, NdotV, NdotH, HdotV);
 
-    vec3 specular = F * G * D / (4.0 * NdotV * NdotL);
+    vec3 diffuse = vec3(0.0);
+    if (uUseOrenNayar) {
+        diffuse = orenNayarTerm(roughness, NdotV, NdotL, N, L, V) * baseColor / PI;
+    } else {
+        diffuse = baseColor / PI;
+    }
 
-    vec3 diffuse = albedo / PI; // Lambertian diffuse
-    float orenNayar = orenNayarTerm(sigma2, NdotV, NdotL, N, L, V);
-    if (uUseOrenNayar) diffuse *= orenNayar;
-    diffuse *= (1.0 - F) * (1.0 - metallness); // diffuse is only applied to dielectrics
+    vec3 specular = F * G * D / (4.0 * NdotL * NdotV + 0.001);
 
-
-    return specular + diffuse;
+    return diffuse + specular;
 }
 
 
 void main() {
-    vec3 Color = texture(holztexture,interpTexCoords).rgb;
+    vec3 N = normalize(interpNormal);
+    vec3 V = normalize(uCameraPos - worldPos);
+    vec3 H = normalize(L + V);
+    vec3 F0 = vec3(0.04);
+     if (dot(N, V) < 0.0) {
+        N = -N;
+    }
+    float NdotL = max(dot(N, L), 0.0);
+    float NdotV = max(dot(N, V), 0.0);
+    float NdotH = max(dot(N, H), 0.0);
+    float HdotV = max(dot(H, V), 0.0);
+    vec3 texture = texture(holztexture,interpTexCoords).rgb;
     vec3 normal = normalize(interpNormal);
-    vec3 lighting = Color * max(dot(normal, uLightDir), max(dot(normal, -uLightDir), 0.0));
-    fragColor = lighting;
+    vec3 baseColor = texture * max(dot(normal, uLightDir), max(dot(normal, -uLightDir), 0.0));
+
+    vec3 brdfColor = principledBRDF(N, L, V, H, NdotL, NdotV, NdotH, HdotV,baseColor,uRoughness,uMetallness);
+
+
+    fragColor = brdfColor;
 }
