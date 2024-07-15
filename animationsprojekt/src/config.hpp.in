@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <string>
 #include <vector>
+#include <iostream>
 
 // Enable DEBUG switches in DEBUG mode
 // NDEBUG is defined in RELEASE mode
@@ -37,6 +38,8 @@ inline void setWorkingDirectory() {
     #ifdef USE_ABSOLUTE_PATHS
         const std::filesystem::path RES_DIR{"${CMAKE_SOURCE_DIR}"};
         std::filesystem::current_path(RES_DIR);
+        std::cout << "Current path set to: " << std::filesystem::current_path().string() << std::endl;
+
     #endif
 }
 

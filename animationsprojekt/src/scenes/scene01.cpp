@@ -131,7 +131,7 @@ GLuint Scene01::generate_and_apply_heightmap() {
 
     for (size_t y = 0; y < height; y++) {
         for (size_t x = 0; x < width; x++) {
-            contiguous_elevation_map[y * width + x] = elevation_map[height - 1 - y][width - 1 - x]; // openGL lädt die Texturdaten rückwärts
+            contiguous_elevation_map.push_back(elevation_map[height - 1 - y][width - 1 - x]); // openGL lädt die Texturdaten rückwärts
         }
     }
 

@@ -4,6 +4,7 @@
 #include "classes/hermite.hpp"
 #include "classes/movable_camera.hpp"
 #include <glm/gtc/constants.hpp>
+#include "gl/texture.hpp"
 
 #include "framework/gl/program.hpp"
 #include "framework/gl/texture.hpp"
@@ -84,9 +85,10 @@ class Scene02 : public Scene {
         // virtual void init(MovableCamera& camera) override;
     ~Scene02();
   private:
-      void render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition);
-      Mesh campus;
-      Mesh sphere;
+    void render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition);
+    Mesh campus;
+    Mesh sphere;
+    Texture textures[4];
 };
 
 class Scene03 : public Scene {
@@ -101,4 +103,8 @@ class Scene03 : public Scene {
     Mesh laptop;
     Texture hullin;
     Mesh sphere;
+    Mesh bunny;
+    Texture blaetter;
+    Texture holztexture;
+    float roughness;
 };

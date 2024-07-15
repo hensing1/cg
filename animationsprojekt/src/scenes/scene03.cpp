@@ -1,12 +1,31 @@
 #include "scene.hpp"
 #include "classes/hermite.hpp"
+#include "framework/gl/texture.hpp"
+#include <glm/glm.hpp>
+#include <glad/glad.h>
+#include <iostream>
+
 
 Scene03::Scene03(MovableCamera& camera) {
-    program.load("TMP_projection.vert", "TMP_lambert.frag");
+    program.load("Scene3.vert", "Scene3.frag");
     hoersaal.load("meshes/HS3.obj");
     //hullin.load(Texture::Format::SRGB8, "textures/Hullin.png", 0);
     //hullin.bind(Texture::Type::TEX2D);
     sphere.load("meshes/highpolysphere.obj");
+    bunny.load("meshes/bunny.obj");
+
+    holztexture.load(Texture::Format::SRGB8,"textures/Wood.png",0);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    blaetter.load(Texture::Format::SRGB8,"textures/Blaetter.jpg",0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glm::vec3 lightDir = glm::normalize(glm::vec3(1.0f, -1.0f, 0.0f));
+    float metallness = 0.0f;
+    bool useOrenNayar = true;
+    program.set("uLightDir", lightDir);
+
 
     camera_path_points = {
         // Der Fall nach unten
@@ -52,15 +71,20 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
         camera.setPosAlongSpline(time / 2);
     }
     camera.updateIfChanged();
-
+    program.set("uCameraPos", camera.cartesianPosition);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
     vec3 hoersaalpos = vec3(0, -3, 0);
 
-    program.set("uColor", vec3(0.5f, 0.5f, 0.5f));
+    glActiveTexture(GL_TEXTURE0);
+    holztexture.bind(Texture::Type::TEX2D);
+    program.set("holztexture", 0);
     this->drawMesh(1.0f, hoersaalpos, program, hoersaal, worldToClip);
+    glActiveTexture(GL_TEXTURE1);
+    blaetter.bind(Texture::Type::TEX2D);
+    program.set("holztexture", 1);
+    this->drawMesh(1.0f, hoersaalpos, program, bunny, worldToClip);
     
-
     if (DEBUG) render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 2), camera.target);
 
     return 0;

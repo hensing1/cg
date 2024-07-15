@@ -17,6 +17,7 @@ using namespace glm;
 #include "config.hpp"
 
 MainApp::MainApp() : App(800, 600) {
+    
     App::setTitle(Config::PROJECT_NAME); // set title
     App::setVSync(true); // Limit framerate
 
@@ -24,9 +25,10 @@ MainApp::MainApp() : App(800, 600) {
 
     oceanColor = vec3(0, 46, 212) / 255.f;
     landColor = vec3(32, 226, 0) / 255.f;
+    roughness = 0.5f;
 
     FRAME = 0;
-    SCENE = prev_scene = 1;
+    SCENE = prev_scene = 3;
     DEBUG_MODE = false;
     ANIMATION_PLAYING = true;
 
@@ -67,6 +69,9 @@ void MainApp::render() {
     if (SCENE == 1) {
         current_scene->program.set("oceanColor", oceanColor);
         current_scene->program.set("landColor", landColor);
+    }
+    if (SCENE == 3) {
+        current_scene->program.set("uRoughness",roughness);
     }
 
     int scene_return = current_scene->render(FRAME, current_time, camera, DEBUG_MODE);
@@ -151,6 +156,7 @@ void MainApp::buildImGui() {
     ImGui::RadioButton("Scene 1", &SCENE, 1);
     ImGui::RadioButton("Scene 2", &SCENE, 2);
     ImGui::RadioButton("Scene 3", &SCENE, 3);
+    ImGui::SliderFloat("Roughness", &roughness, 0.0f, 1.0f);
     if (ImGui::CollapsingHeader("Options for scene 1")) {
         ImGui::ColorPicker3("Ocean color", (float*) &oceanColor);
         ImGui::ColorPicker3("Land color", (float*) &landColor);
