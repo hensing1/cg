@@ -97,8 +97,22 @@ vec3 colorScene(vec3 pos, float ID) {
 
 /* Returns the normalized gradient of the signed distance field of our scene */
 vec3 normalScene(vec3 pos) {
-    // TODO: implement normal calculation, see https://iquilezles.org/articles/normalsSDF/
-    return uLightDir;
+    // https://iquilezles.org/articles/normalsSDF/
+
+    // vec2 h = vec2(uEpsilon, 0);
+    // vec3 normal =  normalize(vec3(
+    //     sdScene(pos + h.xyy).x - sdScene(pos - h.xyy).x,
+    //     sdScene(pos + h.yxy).x - sdScene(pos - h.yxy).x,
+    //     sdScene(pos + h.yyx).x - sdScene(pos - h.yyx).x
+    // ));
+    // return normal;
+
+    float h = 0.0001;
+    vec2 k = vec2(1, -1);
+    return normalize( k.xyy*sdScene( pos + k.xyy*h ).x + 
+                      k.yyx*sdScene( pos + k.yyx*h ).x + 
+                      k.yxy*sdScene( pos + k.yxy*h ).x + 
+                      k.xxx*sdScene( pos + k.xxx*h ).x );
 }
 
 /* Raymarch the scene, returns a vec3(depth, steps, ID) */
@@ -108,9 +122,17 @@ vec3 raymarchScene(vec3 rayOrigin, vec3 rayDir, float near, float far) {
     vec2 result; // vec2(distance, ID)
     // Advance depth until far plane is reached, steps are exhausted or we hit the scene
     for (float steps = 0.0; steps < uSteps; steps++) {
-        // TODO: Return vec3(Inf, steps, SKY_ID), if we exceed the far plane
-        vec3 p; // TODO: Get the current position on the ray
-        result = vec2(Inf, SKY_ID); // TODO: Get distance to scene at position p
+        // far plane exceeded?
+        if (depth > far) {
+            return vec3(Inf, steps, SKY_ID);
+        }
+
+        vec3 p = rayOrigin + depth * rayDir;
+
+        result = sdScene(p);
+        if (result.x <= uEpsilon) {
+            return vec3(depth, steps, result.y);
+        }
         // TODO: Return vec3(depth, steps, result.y), if we hit the scene
         depth += result.x; // Otherwise, advance depth by the distance to the scene
     }
