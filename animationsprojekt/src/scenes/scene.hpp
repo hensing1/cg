@@ -7,10 +7,13 @@
 #include "gl/texture.hpp"
 
 #include "framework/gl/program.hpp"
+#include "framework/gl/texture.hpp"
 #include "framework/mesh.hpp"
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/string_cast.hpp>
+
+#define PI glm::pi<float>()
 
 class Scene {
   public:
@@ -65,7 +68,9 @@ class Scene01 : public Scene {
   private:
     GLuint textureHandle;
     Mesh earth;
+    Mesh sphere;
 
+    void render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition, vec3 target);
     Mesh generate_sphere(int subdivisions);
     GLuint generate_and_apply_heightmap();
     HDS generate_icosahedron();
@@ -78,12 +83,12 @@ class Scene02 : public Scene {
     Scene02(MovableCamera& camera);
     int render(int frame, float time, MovableCamera& camera, bool DEBUG) override;
         // virtual void init(MovableCamera& camera) override;
-        ~Scene02();
-    private:
-        void render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition);
-        Mesh campus;
-        Mesh sphere;
-        Texture textures[4];
+    ~Scene02();
+  private:
+    void render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition);
+    Mesh campus;
+    Mesh sphere;
+    Texture textures[4];
 };
 
 class Scene03 : public Scene {
@@ -93,8 +98,11 @@ class Scene03 : public Scene {
     ~Scene03();
 
   private:
+    void render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition, vec3 target);
     Mesh hoersaal;
     Mesh laptop;
+    Texture hullin;
+    Mesh sphere;
     Mesh bunny;
     Texture blaetter;
     Texture holztexture;

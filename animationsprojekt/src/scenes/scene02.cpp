@@ -32,8 +32,8 @@ Scene02::Scene02(MovableCamera& camera) {
         // Weg zum Hörsaal
         quintic_hermite_point{vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, -glm::pi<float>()/8, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
           //quintic_hermite_point{vec3(0.02f, -glm::pi<float>()/8, 0.0f), vec3(0.0f, -glm::pi<float>()/8, 0.0f), vec3(0.0f, glm::pi<float>()/16, 0.0f)},
-        quintic_hermite_point{vec3(0.02f, -glm::pi<float>()+glm::pi<float>()/3, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(0.02f, -glm::pi<float>()+glm::pi<float>()/3, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, -glm::pi<float>()+glm::pi<float>()/4, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, -glm::pi<float>()+glm::pi<float>()/4, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
     };
     camera.setPath(QuinticHermite(&camera_path_points));
     view_path_points = {
@@ -91,5 +91,6 @@ int Scene02::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     if (time >= 24.7f) return 3;
     return 0;
 }
+
 
 Scene02::~Scene02() {}
