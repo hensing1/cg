@@ -33,7 +33,7 @@ MainApp::MainApp() : App(800, 600) {
     FRAME = 0;
     SCENE = prev_scene = 1;
     DEBUG_MODE = false;
-    ANIMATION_PLAYING = true;
+    ANIMATION_PLAYING = false;
 
     App::imguiEnabled = true;
     camera.cartesianPosition = vec3(0.0f, 0.0f, 0.0f);

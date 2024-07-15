@@ -17,6 +17,6 @@ out vec2 interpTexCoord;
 void main() {
     vec3 newPosition = applyHeightmap ? normal * (1 + 0.055f * texture(heightmap, texCoord).r) : normal;
     gl_Position = uLocalToClip * vec4(newPosition, 1.0);
-    interpNormal = (uLocalToWorld * vec4(normalize(normal), 0.0)).xyz;
+    interpNormal = (uLocalToWorld * vec4(normal, 0.0)).xyz;
     interpTexCoord = texCoord;
 }

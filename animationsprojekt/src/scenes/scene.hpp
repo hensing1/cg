@@ -63,8 +63,10 @@ class Scene01 : public Scene {
     ~Scene01();
 
   private:
-    GLuint textureHandle;
+    Program cloudProgram;
+    GLuint heightmapHandle;
     Mesh earth;
+    Mesh cloudCanvas;
 
     Mesh generate_sphere(int subdivisions);
     GLuint generate_and_apply_heightmap();

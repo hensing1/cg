@@ -1,9 +1,6 @@
 #include "csv.hpp"
 #include "gl/shader.hpp"
 #include "glm/fwd.hpp"
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
 #include "mesh.hpp"
 #include "objparser.hpp"
 #include "scene.hpp"
@@ -18,21 +15,43 @@ Scene01::Scene01(MovableCamera& camera) {
     int num_subdivisions = 6;
     earth = generate_sphere(num_subdivisions);
 
-    textureHandle = generate_and_apply_heightmap();
+    heightmapHandle = generate_and_apply_heightmap();
+
+    cloudProgram.load("clouds.vert", "clouds.frag");
+    cloudProgram.set("uEpsilon", 0.01f);
+    cloudCanvas.load(FULLSCREEN_VERTICES, FULLSCREEN_INDICES);
 }
 
 int Scene01::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
-    camera.updateIfChanged();
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    vec3 pos = vec3(0, 0, 0);
+    bool cameraChanged = camera.updateIfChanged();
 
+
+    // Erde rendern
+    program.bind();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    vec3 pos = vec3(0, 0, 0);
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
     mat4 localToWorld = scale(translate(mat4(1.0f), pos), vec3(2.f));
 
     program.set("uLocalToWorld", localToWorld);
     program.set("uLocalToClip", worldToClip * localToWorld);
-    program.bind();
     earth.draw();
+
+    // Wolken rendern
+    cloudProgram.bind();
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    if (cameraChanged) {
+        cloudProgram.set("uCameraMatrix", camera.cameraMatrix);
+        cloudProgram.set("uAspectRatio", camera.aspectRatio);
+        cloudProgram.set("uFocalLength", camera.focalLength);
+        cloudProgram.set("uCameraPosition", camera.cartesianPosition);
+    }
+
+    cloudCanvas.draw();
 
     return 0;
 }
@@ -89,7 +108,6 @@ GLuint Scene01::generate_and_apply_heightmap() {
 }
 
 void Scene01::calculate_texture_coordinates(std::vector<Mesh::VertexPCN>& sphere_vertices) {
-    float pi = glm::pi<float>();
     for (auto& vertex : sphere_vertices) {
         float latitude = asin(vertex.position.y / length(vertex.position));
 
@@ -99,8 +117,8 @@ void Scene01::calculate_texture_coordinates(std::vector<Mesh::VertexPCN>& sphere
                               ? acos(vertex.position.x / length(pointOnLatitudeCircle))
                               : -acos(vertex.position.x / length(pointOnLatitudeCircle));
 
-        float x = longitude / (2 * pi) + 0.5f;
-        float y = latitude / pi + 0.5f;
+        float x = longitude / tau<float>() + 0.5f;
+        float y = latitude / pi<float>() + 0.5f;
 
         vertex.texCoord = vec2{x, y};
 
