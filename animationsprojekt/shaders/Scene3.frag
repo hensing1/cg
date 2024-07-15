@@ -13,6 +13,7 @@ vec3 L = normalize(uLightDir);
 uniform bool uUseOrenNayar;
 uniform float uRoughness;
 uniform float uMetallness;
+uniform bool useBlaetter;
 const float PI = 3.14159265359;
 const float EPSILON = 1e-5;
 
@@ -37,8 +38,8 @@ float D_beckmannDistribution(float NdotH, float sigma2) {
 float G_geometricAttenuation(float NdotL, float NdotV) {
     // Geometric attenuation function
     float k = uRoughness / 2.0;
-    float G1L = NdotL / (NdotL * (1.0 - k) + k + EPSILON); // Add epsilon to avoid division by zero
-    float G1V = NdotV / (NdotV * (1.0 - k) + k + EPSILON); // Add epsilon to avoid division by zero
+    float G1L = NdotL / (NdotL * (1.0 - k) + k); // Add epsilon to avoid division by zero
+    float G1V = NdotV / (NdotV * (1.0 - k) + k); // Add epsilon to avoid division by zero
     return G1L * G1V;
 }
 
@@ -91,6 +92,7 @@ void main() {
     vec3 V = normalize(uCameraPos - worldPos);
     vec3 L = normalize(uLightDir);
     vec3 H = normalize(L + V);
+    vec3 baseColor;
 
     float NdotL = max(dot(N, L), 0.0);
     float NdotV = max(dot(N, V), 0.0);
@@ -98,7 +100,7 @@ void main() {
     float HdotV = max(dot(H, V), 0.0);
 
 
-    vec3 baseColor = texture(holztexture, interpTexCoords).rgb;
+    baseColor = texture(holztexture, interpTexCoords).rgb;
     vec3 brdfColor = principledBRDF(N, L, V, H, NdotL, NdotV, NdotH, HdotV, baseColor, uRoughness, uMetallness);
     fragColor = brdfColor;
 }
