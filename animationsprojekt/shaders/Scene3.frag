@@ -13,7 +13,6 @@ vec3 L = normalize(uLightDir);
 uniform bool uUseOrenNayar;
 uniform float uRoughness;
 uniform float uMetallness;
-uniform bool useBlaetter;
 const float PI = 3.14159265359;
 const float EPSILON = 1e-5;
 

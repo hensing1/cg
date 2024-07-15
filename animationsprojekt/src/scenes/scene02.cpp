@@ -7,15 +7,10 @@ Scene02::Scene02(MovableCamera& camera) {
     program.load("Scene2.vert", "Scene2.frag");
     campus.load("meshes/Campus.obj");
     sphere.load("meshes/highpolysphere.obj");
-    textures[0].load(Texture::Format::SRGB8,"textures/Baumrinde.jpg",0);
-    textures[1].load(Texture::Format::SRGB8,"textures/Blaetter.jpg",0);
-    textures[2].load(Texture::Format::SRGB8,"textures/Wand.jpg",0);
-    textures[3].load(Texture::Format::SRGB8,"textures/Boden.jpg",0);
-    program.set("texture1", 0);
-    program.set("texture2", 1);
-    program.set("texture3", 2);
-    program.set("texture4", 3);
-
+    boden.load(Texture::Format::SRGB8,"textures/Wood.png",0);
+    buildings.load(Texture::Format::SRGB8,"textures/Blaetter.jpg",0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     
 
@@ -84,7 +79,9 @@ int Scene02::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     vec3 campus_pos(0.0f);
-    program.set("uColor", vec3(0.25f, 0.21f, 0.4f));
+    glActiveTexture(GL_TEXTURE0);
+    buildings.bind(Texture::Type::TEX2D);
+    program.set("uTexture", 0);
     this->drawMesh(0.5f, campus_pos, program, campus, worldToClip);
     if (DEBUG) render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 4));
 

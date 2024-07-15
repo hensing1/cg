@@ -83,7 +83,8 @@ class Scene02 : public Scene {
         void render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition);
         Mesh campus;
         Mesh sphere;
-        Texture textures[4];
+        Texture buildings;
+        Texture boden;
 };
 
 class Scene03 : public Scene {
