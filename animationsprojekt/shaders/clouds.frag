@@ -4,13 +4,26 @@ in vec3 viewDir;
 out vec4 fragColor;
 
 uniform vec3 uCameraPosition;
+<<<<<<< HEAD
 uniform float uEpsilon;
+=======
+uniform mat4 uProjectionMatrix;
+uniform float uEpsilon;
+uniform float uNear;
+uniform float uFar;
+uniform float uSomeSlider;
+>>>>>>> 52e8eaf (raymarching WIP)
 
 const float maxSteps = 100.0;
 
 const int SKY_ID = 0;
 const int CLOUD_ID = 1;
 const float Inf = 1.0 / 0.0;
+<<<<<<< HEAD
+=======
+const float near = 0.01;
+const float far = 200;
+>>>>>>> 52e8eaf (raymarching WIP)
 
 float sdSphere(vec3 position, vec3 sphereCenter, float radius) {
     return length(position - sphereCenter) - radius;
@@ -54,9 +67,15 @@ void main() {
     // Generate camera ray
     vec3 rayDir = normalize(viewDir); // Renormalize after interpolation
     vec3 rayOrigin = uCameraPosition;
+<<<<<<< HEAD
 
     // Raymarch the scene, result = vec3(depth, steps, ID)
     vec3 result = raymarchScene(rayOrigin, rayDir, 0.01, 100);
+=======
+    
+    // Raymarch the scene, result = vec3(depth, steps, ID)
+    vec3 result = raymarchScene(rayOrigin, rayDir, uNear, uFar);
+>>>>>>> 52e8eaf (raymarching WIP)
 
     if (!isinf(result.x)) {
         // We hit something
@@ -64,7 +83,27 @@ void main() {
         // Get the position where we hit the scene
         vec3 pos = rayOrigin + rayDir * depth;
 
+<<<<<<< HEAD
         fragColor = vec4(1.f,1.f,1.f, 0.9f);
     }
     fragColor = vec4(0, 0, 0, 0);
+=======
+        float a = (uFar+uNear)/(uFar-uNear);
+        float b = 2.0*uFar*uNear/(uFar-uNear);
+        //gl_FragDepth = a + b / pos.z;
+        //gl_FragDepth = 0.99;
+        //gl_FragDepth = (2.0 * (depth - uNear) / (uFar - uNear)) - 1.0;
+        vec4 tpoint = uProjectionMatrix * vec4(pos, 1.0);
+        gl_FragDepth = (tpoint.z/tpoint.w+1.0)*0.5;
+
+        //float zc = ( uProjectionMatrix * vec4( pos, 1.0 ) ).z;
+        //float wc = ( uProjectionMatrix * vec4( pos, 1.0 ) ).w;
+        //gl_FragDepth = zc/wc;
+        fragColor = vec4(1.f,1.f,1.f, 0.5f);
+    }
+    else {
+        //gl_FragDepth = uSomeSlider;
+        fragColor = vec4(0, 0, 0, 0);
+    }
+>>>>>>> 52e8eaf (raymarching WIP)
 }

@@ -57,4 +57,5 @@ class MainApp : public App {
     vec3 mountainColor;
     float landThreshold;
     bool applyHeightmap;
+    float someSlider;
 };

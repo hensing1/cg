@@ -28,6 +28,7 @@ int Scene01::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
 
     // Erde rendern
     program.bind();
+    glDisable(GL_BLEND);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     vec3 pos = vec3(0, 0, 0);
@@ -42,16 +43,21 @@ int Scene01::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     cloudProgram.bind();
 
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
     if (cameraChanged) {
         cloudProgram.set("uCameraMatrix", camera.cameraMatrix);
         cloudProgram.set("uAspectRatio", camera.aspectRatio);
         cloudProgram.set("uFocalLength", camera.focalLength);
         cloudProgram.set("uCameraPosition", camera.cartesianPosition);
+        cloudProgram.set("uProjectionMatrix", camera.projectionMatrix);
+        cloudProgram.set("uNear", camera.near);
+        cloudProgram.set("uFar", camera.far);
     }
 
-    cloudCanvas.draw();
+    if (!DEBUG) {
+        cloudCanvas.draw();
+    }
 
     return 0;
 }
@@ -210,4 +216,6 @@ HDS Scene01::generate_icosahedron() {
 //
 // }
 
-Scene01::~Scene01() {}
+Scene01::~Scene01() {
+    glDisable(GL_BLEND);
+}

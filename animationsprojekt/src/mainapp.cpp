@@ -1,6 +1,7 @@
 #include "mainapp.hpp"
 #include "scenes/scene.hpp"
 
+#include <cwchar>
 #include <glad/glad.h>
 #include <imgui.h>
 #include <glm/glm.hpp>
@@ -73,6 +74,7 @@ void MainApp::render() {
         current_scene->program.set("mountainColor", mountainColor);
         current_scene->program.set("landThreshold", landThreshold);
         current_scene->program.set("applyHeightmap", applyHeightmap);
+        current_scene->program.set("uSomeSlider", someSlider);
     }
 
     int scene_return = current_scene->render(FRAME, time - scene_start_time, camera, DEBUG_MODE);
@@ -149,12 +151,16 @@ void MainApp::buildImGui() {
     ImGui::RadioButton("Scene 1", &SCENE, 1);
     ImGui::RadioButton("Scene 2", &SCENE, 2);
     ImGui::RadioButton("Scene 3", &SCENE, 3);
-    if (ImGui::CollapsingHeader("Options for scene 1")) {
+    if (ImGui::CollapsingHeader("Options for earth")) {
         ImGui::Checkbox("Apply heightmap", &applyHeightmap);
         ImGui::SliderFloat("Land threshold", &landThreshold, 0.01, 1);
         ImGui::ColorPicker3("Ocean color", (float*) &oceanColor);
         ImGui::ColorPicker3("Land color", (float*) &landColor);
         ImGui::ColorPicker3("Mountain color", (float*) &mountainColor);
+    }
+    if (ImGui::CollapsingHeader("Options for clouds")) {
+        //ImGui::Checkbox("enable", &enableClouds);
+        ImGui::SliderFloat("Some slider", &someSlider, 0.95f, 0.99f);
     }
     ImGui::End();
 }
