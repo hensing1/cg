@@ -95,6 +95,8 @@ class Scene03 : public Scene {
   private:
     Mesh hoersaal;
     Mesh laptop;
+    Mesh bunny;
+    Texture blaetter;
     Texture holztexture;
     float roughness;
 };
