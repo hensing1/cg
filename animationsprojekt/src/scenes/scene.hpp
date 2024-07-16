@@ -81,10 +81,11 @@ class Scene02 : public Scene {
         ~Scene02();
     private:
         void render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition);
-        Mesh campus;
+        Mesh campusBoden;
         Mesh sphere;
-        Texture buildings;
-        Texture boden;
+        Mesh buildings;
+        Texture buildingsTex;
+        Texture bodenTex;
 };
 
 class Scene03 : public Scene {

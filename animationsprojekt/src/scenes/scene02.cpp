@@ -5,12 +5,13 @@
 
 Scene02::Scene02(MovableCamera& camera) {
     program.load("Scene2.vert", "Scene2.frag");
-    campus.load("meshes/Campus.obj");
+    campusBoden.load("meshes/CampusBoden.obj");
     sphere.load("meshes/highpolysphere.obj");
-    boden.load(Texture::Format::SRGB8,"textures/Wood.png",0);
+    buildings.load("meshes/buildings.obj");
+    bodenTex.load(Texture::Format::SRGB8,"textures/karte.png",0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    buildings.load(Texture::Format::SRGB8,"textures/Blaetter.jpg",0);
+    buildingsTex.load(Texture::Format::SRGB8,"textures/Windows2.png",0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
@@ -82,9 +83,13 @@ int Scene02::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
 
     vec3 campus_pos(0.0f);
     glActiveTexture(GL_TEXTURE0);
-    buildings.bind(Texture::Type::TEX2D);
+    bodenTex.bind(Texture::Type::TEX2D);
     program.set("uTexture", 0);
-    this->drawMesh(0.5f, campus_pos, program, campus, worldToClip);
+    this->drawMesh(0.5f, campus_pos, program, campusBoden, worldToClip);
+    glActiveTexture(GL_TEXTURE1);
+    buildingsTex.bind(Texture::Type::TEX2D);
+    program.set("uTexture", 1);
+    this->drawMesh(0.5f, campus_pos, program, buildings, worldToClip);
     if (DEBUG) render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 4));
 
     if (time >= 24.7f) return 3;
