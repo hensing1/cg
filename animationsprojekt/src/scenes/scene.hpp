@@ -84,8 +84,12 @@ class Scene02 : public Scene {
         Mesh campusBoden;
         Mesh sphere;
         Mesh buildings;
+        Mesh kronen;
+        Mesh stamm;
         Texture buildingsTex;
         Texture bodenTex;
+        Texture kronenTex;
+        Texture stammTex;
 };
 
 class Scene03 : public Scene {

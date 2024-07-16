@@ -8,13 +8,20 @@ Scene02::Scene02(MovableCamera& camera) {
     campusBoden.load("meshes/CampusBoden.obj");
     sphere.load("meshes/highpolysphere.obj");
     buildings.load("meshes/buildings.obj");
+    kronen.load("meshes/Baumkronen.obj");
+    stamm.load("meshes/Baumstamm.obj");
     bodenTex.load(Texture::Format::SRGB8,"textures/karte.png",0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     buildingsTex.load(Texture::Format::SRGB8,"textures/Windows2.png",0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
+    stammTex.load(Texture::Format::SRGB8,"textures/Baumrinde.jpg",0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    kronenTex.load(Texture::Format::SRGB8,"textures/Blaetter.jpg",0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     
 
     camera_path_points = {
@@ -90,6 +97,15 @@ int Scene02::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     buildingsTex.bind(Texture::Type::TEX2D);
     program.set("uTexture", 1);
     this->drawMesh(0.5f, campus_pos, program, buildings, worldToClip);
+    glActiveTexture(GL_TEXTURE2);
+    kronenTex.bind(Texture::Type::TEX2D);
+    program.set("uTexture", 2);
+    this->drawMesh(0.5f, campus_pos, program, kronen, worldToClip);
+    glActiveTexture(GL_TEXTURE3);
+    stammTex.bind(Texture::Type::TEX2D);
+    program.set("uTexture", 3);
+    this->drawMesh(0.5f, campus_pos, program, stamm, worldToClip);
+
     if (DEBUG) render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 4));
 
     if (time >= 24.7f) return 3;
