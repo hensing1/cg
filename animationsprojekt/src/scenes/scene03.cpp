@@ -11,6 +11,7 @@ Scene03::Scene03(MovableCamera& camera) {
     walls.load("meshes/walls.obj");
     boden.load("meshes/BodenHS.obj");
     holz.load("meshes/holzObjekte.obj");
+    sphere.load("meshes/highpolysphere.obj");
     //hullin.load(Texture::Format::SRGB8, "textures/Hullin.png", 0);
     //hullin.bind(Texture::Type::TEX2D);
     holztexture.load(Texture::Format::SRGB8, "textures/Wood.png", 0);
@@ -73,11 +74,11 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
         camera.setPosAlongSpline(time / 2);
     }
     camera.updateIfChanged();
-    program.set("uCameraPos", camera.cartesianPosition);
+    glm::vec3 cameraPos = camera.cartesianPosition;
+    program.set("uCameraPos", cameraPos);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    vec3 pos = vec3(0, 0, 0);
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
-    vec3 hoersaalpos = vec3(0, -3, 0);
-
     glActiveTexture(GL_TEXTURE0);
     holztexture.bind(Texture::Type::TEX2D);
     program.set("holztexture", 0);
@@ -90,7 +91,8 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     wallTex.bind(Texture::Type::TEX2D);
     program.set("holztexture", 2);
     this->drawMesh(1.0f, pos, program, walls, worldToClip);
-      if (DEBUG) render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 2), camera.target);
+
+    if (DEBUG) render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 2), camera.target);
     return 0;
 }
 
