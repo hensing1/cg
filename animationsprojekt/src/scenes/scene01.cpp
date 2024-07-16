@@ -85,7 +85,7 @@ int Scene01::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     cloudProgram.bind();
 
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     cloudProgram.set("uTime", time);
 

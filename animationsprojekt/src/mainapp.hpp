@@ -56,14 +56,16 @@ class MainApp : public App {
     float scene_start_time;
 
     // Szene 1
+    vec3 sc1_lightDir;
+
     vec3 sc1_oceanColor;
     vec3 sc1_landColor;
     vec3  sc1_mountainColor;
     float sc1_landThreshold;
 
     float sc1_epsilon;
-    vec3 sc1_lightDir;
-
+    float sc1_alpha;
+    float sc1_beta;
     // Szene 3
     float sc3_roughness;
 };

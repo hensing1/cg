@@ -29,11 +29,13 @@ MainApp::MainApp() : App(800, 600) {
     // scene_02 = std::make_shared<Scene02>();
     // scene_03 = std::make_shared<Scene03>();
 
-    sc1_oceanColor = vec3(0, 46, 212) / 255.f;
+    sc1_oceanColor = vec3(0, 8, 69) / 255.f;
     sc1_landColor = vec3(10, 71, 0) / 255.f;
     sc1_mountainColor = vec3(1, 1, 1);
     sc1_landThreshold = 0.15f;
-    sc1_lightDir = normalize(vec3(1, 0.2, 0.3));
+    sc1_lightDir = normalize(vec3(0.6, 0.2, 0.8));
+    sc1_alpha = -0.883f;
+    sc1_beta = 6.181f;
     sc3_roughness = 0.5f;
 
     FRAME = 0;
@@ -48,7 +50,7 @@ MainApp::MainApp() : App(800, 600) {
     // program.load("TMP_projection.vert", "TMP_lambert.frag");
 
     scene_start_time = 0.0f;
-    current_time = 0.0f;
+    current_time = 2.4f;
     switchScene();
 }
 
@@ -82,6 +84,8 @@ void MainApp::render() {
 
         scene->cloudProgram.set("uLightDir", sc1_lightDir);
         scene->cloudProgram.set("uEpsilon", sc1_epsilon);
+        scene->cloudProgram.set("uAlpha", sc1_alpha);
+        scene->cloudProgram.set("uBeta", sc1_beta);
     }
     if (SCENE == 3) {
         current_scene->program.set("uRoughness", sc3_roughness);
@@ -204,6 +208,8 @@ void MainApp::buildImGui() {
         }
         if (ImGui::CollapsingHeader("Cloud options")) {
             ImGui::SliderFloat("epsilon", &sc1_epsilon, 0.0, 1.0);
+            ImGui::SliderFloat("alpha", &sc1_alpha, -1.57, 1.57);
+            ImGui::SliderFloat("beta", &sc1_beta, 0.0, 6.28);
         }
     }
     else if (SCENE == 3) {

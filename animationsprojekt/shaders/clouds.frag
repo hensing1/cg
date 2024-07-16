@@ -9,9 +9,14 @@ uniform float uTime;
 uniform vec3 uLightDir = normalize(vec3(1.0));
 uniform vec3 uCameraPosition;
 
+uniform vec4 shadowColor = vec4(0, 0, 0, 0.3);
+
 uniform float uEarthRadius;
 uniform float uNear;
 uniform float uFar;
+
+uniform float uAlpha;
+uniform float uBeta;
 
 const float maxSteps = 100.0;
 
@@ -30,16 +35,46 @@ float sdSphere(vec3 position, vec3 sphereCenter, float radius) {
     return length(position - sphereCenter) - radius;
 }
 
-// float sdCloud(float height, float lat, float lon) {
-//     
-// }
+mat3 rotY(float alpha) {
+    return mat3(
+        cos(alpha), 0, sin(alpha),
+        0, 1, 0,
+        -sin(alpha), 0, cos(alpha)
+    );
+}
+
+mat3 rotZ(float alpha) {
+    return mat3(
+        cos(alpha), -sin(alpha), 0,
+        sin(alpha), cos(alpha), 0,
+        0, 0, 1
+    );
+}
+
+// alpha: Inklination der Umlaufbahn
+// beta: Position auf Umlaufbahn
+float sdCloud(vec3 pos, float height, float alpha, float beta, float scale) {
+    vec3 posCenter = vec3(uEarthRadius + height, 0, 0);
+    float offset = scale * 0.09;
+    vec3 posLeft = rotY(offset) * posCenter;
+    vec3 posRight = rotY(-offset) * posCenter;
+
+    mat3 inclination = rotZ(alpha) * rotY(beta);
+    posCenter = inclination * posCenter;
+    posLeft = inclination * posLeft;
+    posRight = inclination * posRight;
+
+    return min(sdSphere(pos, posLeft, 0.12 * scale), min(sdSphere(pos, posCenter, 0.2 * scale), sdSphere(pos, posRight, 0.12 * scale)));
+}
 
 /* Returns the signed distance from pos to the scene and the ID of the closest object */
 vec2 sdScene(vec3 pos) {
     vec2 result = vec2(Inf, intBitsToFloat(SKY_ID));
-    result = combine(result, sdSphere(pos, vec3(0., 0., 2.5), 0.2), CLOUD_ID);
-    result = combine(result, sdSphere(pos, vec3(-0.25, 0., 2.5), 0.12), CLOUD_ID);
-    result = combine(result, sdSphere(pos, vec3(0.25, 0., 2.5), 0.12), CLOUD_ID);
+    result = combine(result, sdCloud(pos, 0.5, 0, 0, 1.2), CLOUD_ID);
+    result = combine(result, sdCloud(pos, 0.7, 2, 4, 0.9), CLOUD_ID);
+    result = combine(result, sdCloud(pos, 0.1, uAlpha, uBeta, 0.3), CLOUD_ID); // diese Wolke ist über Deutschland
+    // result = combine(result, sdCloud(pos, 0.5, 0.3, 6), CLOUD_ID);
+    // result = combine(result, sdCloud(pos, 0.5, 5.45, 4), CLOUD_ID);
     return result; // vec2(distance, ID)
 }
 
@@ -80,19 +115,45 @@ vec3 normalScene(vec3 pos) {
                       k.xxx*sdScene( pos + k.xxx*h ).x );
 }
 
+vec3 normalEarth(vec3 pos) {
+    float h = 0.0001;
+    vec2 k = vec2(1, -1);
+    return normalize( k.xyy*sdEarth( pos + k.xyy*h ).x + 
+                      k.yyx*sdEarth( pos + k.yyx*h ).x + 
+                      k.yxy*sdEarth( pos + k.yxy*h ).x + 
+                      k.xxx*sdEarth( pos + k.xxx*h ).x );
+}
+
+vec4 blend(vec4 source, vec4 destination) {
+    vec4 s = vec4(source.a);
+    vec4 d = vec4(1 - source.a);
+    return s * source + d * destination;
+}
+
 void main() {
     // Generate camera ray
     vec3 rayDir = normalize(viewDir); // Renormalize after interpolation
     vec3 rayOrigin = uCameraPosition;
 
-    // first: raymarch earth
     vec4 color = vec4(0);
-
-    vec3 distToEarth = raymarchScene(rayOrigin, rayDir, uNear, uFar, true);
-    
-    // Raymarch the scene, result = vec3(depth, steps, ID)
-    vec3 result = raymarchScene(rayOrigin, rayDir, uNear, min(uFar, distToEarth.x), false);
     vec4 border = vec4(0);
+    bool isEarthShadow = false;
+
+    // first: raymarch earth
+    vec3 distToEarth = raymarchScene(rayOrigin, rayDir, uNear, uFar, true);
+
+    // draw shadow
+    if (!isinf(distToEarth.x)) {
+        vec3 pos = rayOrigin + rayDir * distToEarth.x;
+        if (!isinf(raymarchScene(pos, uLightDir, uNear, uFar, false).x) &&
+            dot(normalEarth(pos), uLightDir) > 0) {
+            color = shadowColor;
+            isEarthShadow = true;
+        }
+    }
+    
+    // then: Raymarch the scene, result = vec3(depth, steps, ID)
+    vec3 result = raymarchScene(rayOrigin, rayDir, uNear, min(uFar, distToEarth.x), false);
 
     if (!isinf(result.x)) {
         // We hit something
@@ -106,23 +167,15 @@ void main() {
 
         color = vec4(lighting, 0.5f);
 
-        // vec4 border = vec4(0, 0, 0, result.y / maxSteps);
-
-        // fragColor = color + border;
-
-        // float a = (uFar+uNear)/(uFar-uNear);
-        // float b = 2.0*uFar*uNear/(uFar-uNear);
-        //
-        // vec4 vPos = uViewMatrix * vec4(pos, 1.0);
-        // gl_FragDepth = a + b / vPos.z; // not works :(
-        // 
-        // float zc = ( uWorldToClip * vec4( pos, 1.0 ) ).z;
-        // float wc = ( uWorldToClip * vec4( pos, 1.0 ) ).w;
-        // gl_FragDepth = zc;
     }
-    vec3 borderColor = vec3(0.5);
+    vec3 glowColor = vec3(0.5);
     float x = result.y / 50;
-    border = vec4(borderColor, 0.5 + 0.5 * tanh(10 * (x - 0.5)));
-
-    fragColor = color + border;
+    vec4 glow = vec4(glowColor, 0.5 + 0.5 * tanh(10 * (x - 0.45)));
+    
+    if (isEarthShadow && isinf(result.x)) {
+        fragColor = blend(glow, color); 
+    }
+    else {
+        fragColor = glow + color;
+    }
 }
