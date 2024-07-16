@@ -7,20 +7,27 @@
 
 Scene03::Scene03(MovableCamera& camera) {
     program.load("Scene3.vert", "Scene3.frag");
-    hoersaal.load("meshes/HS3.obj");
-    bunny.load("meshes/bunny.obj");
-    holztexture.load(Texture::Format::SRGB8,"textures/Wood.png",0);
-
+    walls.load("meshes/walls.obj");
+    boden.load("meshes/boden.obj");
+    holz.load("meshes/holzObjekte.obj");
+    holztexture.load(Texture::Format::SRGB8, "textures/Wood.png", 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    blaetter.load(Texture::Format::SRGB8,"textures/Blaetter.jpg",0);
+    bodenTex.load(Texture::Format::SRGB8, "textures/Boden.jpg", 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
- glm::vec3 lightDir = glm::normalize(glm::vec3(1.0f, -1.0f, 0.0f));
+    wallTex.load(Texture::Format::SRGB8, "textures/Boden.jpg", 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glm::vec3 lightDir = glm::normalize(glm::vec3(1.0f, -1.0f, -1.0f));
     float metallness = 0.0f;
     bool useOrenNayar = true;
-program.set("uLightDir", lightDir);
-
+    float roughness = 0.5f;
+    program.set("uLightDir", lightDir);
+    program.set("uRoughness",roughness);
+    program.set("uUseOrenNayar", useOrenNayar);
+    program.set("uMetallness", metallness);
+}
 
 int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     camera.updateIfChanged();
@@ -32,11 +39,15 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     glActiveTexture(GL_TEXTURE0);
     holztexture.bind(Texture::Type::TEX2D);
     program.set("holztexture", 0);
-    this->drawMesh(1.0f, pos, program, hoersaal, worldToClip);
+    this->drawMesh(1.0f, pos, program, holz, worldToClip);
     glActiveTexture(GL_TEXTURE1);
-    blaetter.bind(Texture::Type::TEX2D);
+    bodenTex.bind(Texture::Type::TEX2D);
     program.set("holztexture", 1);
-    this->drawMesh(1.0f, pos, program, bunny, worldToClip);
+    this->drawMesh(1.0f, pos, program, boden, worldToClip);
+    glActiveTexture(GL_TEXTURE2);
+    wallTex.bind(Texture::Type::TEX2D);
+    program.set("holztexture", 2);
+    this->drawMesh(1.0f, pos, program, walls, worldToClip);
     return 0;
 }
 

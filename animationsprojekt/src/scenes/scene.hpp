@@ -94,10 +94,11 @@ class Scene03 : public Scene {
     ~Scene03();
 
   private:
-    Mesh hoersaal;
+    Mesh boden;
+    Mesh walls;
     Mesh laptop;
-    Mesh bunny;
-    Texture blaetter;
+    Mesh holz;
+    Texture bodenTex;
+    Texture wallTex;
     Texture holztexture;
-    float roughness;
 };

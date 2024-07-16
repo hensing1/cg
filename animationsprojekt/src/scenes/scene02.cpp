@@ -8,6 +8,8 @@ Scene02::Scene02(MovableCamera& camera) {
     campus.load("meshes/Campus.obj");
     sphere.load("meshes/highpolysphere.obj");
     boden.load(Texture::Format::SRGB8,"textures/Wood.png",0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     buildings.load(Texture::Format::SRGB8,"textures/Blaetter.jpg",0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
