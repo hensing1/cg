@@ -16,7 +16,7 @@ Scene03::Scene03(MovableCamera& camera) {
     bodenTex.load(Texture::Format::SRGB8, "textures/Boden.jpg", 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    wallTex.load(Texture::Format::SRGB8, "textures/Boden.jpg", 0);
+    wallTex.load(Texture::Format::SRGB8, "textures/Wand.jpg", 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glm::vec3 lightDir = glm::normalize(glm::vec3(1.0f, -1.0f, -1.0f));
