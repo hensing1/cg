@@ -77,7 +77,7 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     glm::vec3 cameraPos = camera.cartesianPosition;
     program.set("uCameraPos", cameraPos);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    vec3 pos = vec3(0, 0, 0);
+    vec3 pos = vec3(0.0f, -3.0f, 0.0f);
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
     glActiveTexture(GL_TEXTURE0);
     holztexture.bind(Texture::Type::TEX2D);
