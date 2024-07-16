@@ -83,12 +83,18 @@ class Scene02 : public Scene {
     Scene02(MovableCamera& camera);
     int render(int frame, float time, MovableCamera& camera, bool DEBUG) override;
         // virtual void init(MovableCamera& camera) override;
-    ~Scene02();
-  private:
-    void render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition);
-    Mesh campus;
-    Mesh sphere;
-    Texture textures[4];
+        ~Scene02();
+    private:
+        void render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition);
+        Mesh campusBoden;
+        Mesh sphere;
+        Mesh buildings;
+        Mesh kronen;
+        Mesh stamm;
+        Texture buildingsTex;
+        Texture bodenTex;
+        Texture kronenTex;
+        Texture stammTex;
 };
 
 class Scene03 : public Scene {
@@ -99,12 +105,13 @@ class Scene03 : public Scene {
 
   private:
     void render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition, vec3 target);
-    Mesh hoersaal;
+    Mesh boden;
+    Mesh walls;
     Mesh laptop;
+    Mesh holz;
+    Mesh hoersaal;
+    Texture bodenTex;
+    Texture wallTex;
     Texture hullin;
-    Mesh sphere;
-    Mesh bunny;
-    Texture blaetter;
     Texture holztexture;
-    float roughness;
 };
