@@ -105,14 +105,21 @@ class Scene03 : public Scene {
 
   private:
     void render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition, vec3 target);
+
     Mesh boden;
     Mesh walls;
     Mesh laptop;
     Mesh holz;
     Mesh hoersaal;
+    Mesh hullin;
     Mesh sphere;
+
     Texture bodenTex;
     Texture wallTex;
-    Texture hullin;
+    Texture hullinTex;
     Texture holztexture;
+
+    Hermite hullinPath;
+    Hermite hullinRotationPath;
+    vec3 hullinPos;
 };

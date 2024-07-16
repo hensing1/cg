@@ -1,9 +1,10 @@
+#include "operations.hpp"
 #include "scene.hpp"
 #include "classes/hermite.hpp"
 #include "framework/gl/texture.hpp"
 #include <glm/glm.hpp>
 #include <glad/glad.h>
-#include <iostream>
+#include <vector>
 
 
 Scene03::Scene03(MovableCamera& camera) {
@@ -12,8 +13,8 @@ Scene03::Scene03(MovableCamera& camera) {
     boden.load("meshes/BodenHS.obj");
     holz.load("meshes/holzObjekte.obj");
     sphere.load("meshes/highpolysphere.obj");
-    //hullin.load(Texture::Format::SRGB8, "textures/Hullin.png", 0);
-    //hullin.bind(Texture::Type::TEX2D);
+    hullin.load("meshes/plane.obj");
+    
     holztexture.load(Texture::Format::SRGB8, "textures/Wood.png", 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -23,6 +24,10 @@ Scene03::Scene03(MovableCamera& camera) {
     wallTex.load(Texture::Format::SRGB8, "textures/Wand.jpg", 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    hullinTex.load(Texture::Format::SRGB8, "textures/Hullin.png", 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
     glm::vec3 lightDir = glm::normalize(glm::vec3(1.0f, -1.0f, 0.0f));
     float metallness = 0.0f;
     bool useOrenNayar = true;
@@ -66,7 +71,22 @@ Scene03::Scene03(MovableCamera& camera) {
 
     };
     camera.setViewDirPath(QuinticHermite(&view_path_points));
+
+
+
+    std::vector<hermite_point> hullinPathPoints = {
+        hermite_point{vec3(0.0f, 1.0f, 2.0f), vec3(0.0f, 0.0f, -0.2f)},
+        hermite_point{vec3(0.0f, -1.0f, 2.0f), vec3(0.0f, 3.0f, -0.2f)},
+    };
+    this -> hullinPath = Hermite(&hullinPathPoints);
+
+    std::vector<hermite_point> hullinRotationPathPoints = {
+        hermite_point{vec3(0.0f, 0.0f, PI/2-0.0001f), vec3(0.0f, 0.0f, -0.2f)},
+        hermite_point{vec3(0.0f, 0.0f, -PI/2+0.0001f), vec3(0.0f, 0.0f, -0.2f)},
+    };
+    this -> hullinRotationPath = Hermite(&hullinRotationPathPoints);
 }
+
 
 int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     if (!DEBUG) {
@@ -91,6 +111,12 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     wallTex.bind(Texture::Type::TEX2D);
     program.set("holztexture", 2);
     this->drawMesh(1.0f, pos, program, walls, worldToClip);
+    glActiveTexture(GL_TEXTURE3);
+    hullinTex.bind(Texture::Type::TEX2D);
+    program.set("holztexture", 3);
+    hullinPos = hullinPath.evaluateSplineAllowLoop(time / 2);
+    mat4 hullinMatrix = mat4(Operations::get_rotation_matrix(hullinRotationPath.evaluateSplineAllowLoop(time / 2)));
+    this->drawMesh(1.0f, hullinPos, program, sphere, worldToClip, hullinMatrix);
 
     if (DEBUG) render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 2), camera.target);
     return 0;

@@ -36,6 +36,8 @@ public:
    Hermite();
    Hermite(std::vector<hermite_point> *input);
 
+   Hermite& operator=(const Hermite& other);
+
    /** 
     * Gibt zu einem t die passende Position im Raum gemäß der Spline zurück.
     * Ist das t zu groß, so wird die Position des letzten Punktes gewählt.

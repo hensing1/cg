@@ -1,7 +1,7 @@
 #include "hermite.hpp"
 
 #include <vector>
-
+#include <utility>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <iostream>
@@ -22,6 +22,11 @@ Hermite::Hermite(std::vector<hermite_point> *input) {
         -3.0f, -2.0f,  3.0f, -1.0f,
          2.0f,  1.0f, -2.0f,  1.0f
     ));
+}
+
+Hermite& Hermite::operator=(const Hermite& other) {
+    points = other.points;
+    return *this;
 }
 
 vec3 Hermite::evaluateSplineAllowLoop(float t) {
