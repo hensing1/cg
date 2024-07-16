@@ -8,25 +8,29 @@
 
 Scene03::Scene03() {
     program.load("Scene3.vert", "Scene3.frag");
-    hoersaal.load("meshes/HS3.obj");
+    walls.load("meshes/walls.obj");
+    boden.load("meshes/BodenHS.obj");
+    holz.load("meshes/holzObjekte.obj");
+    sphere.load("meshes/highpolysphere.obj");
     //hullin.load(Texture::Format::SRGB8, "textures/Hullin.png", 0);
     //hullin.bind(Texture::Type::TEX2D);
-    sphere.load("meshes/highpolysphere.obj");
-    bunny.load("meshes/bunny.obj");
-
-    holztexture.load(Texture::Format::SRGB8,"textures/Wood.png",0);
-
+    holztexture.load(Texture::Format::SRGB8, "textures/Wood.png", 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    blaetter.load(Texture::Format::SRGB8,"textures/Blaetter.jpg",0);
+    bodenTex.load(Texture::Format::SRGB8, "textures/Boden.jpg", 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    wallTex.load(Texture::Format::SRGB8, "textures/Wand.jpg", 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glm::vec3 lightDir = glm::normalize(glm::vec3(1.0f, -1.0f, 0.0f));
     float metallness = 0.0f;
     bool useOrenNayar = true;
+    float roughness = 0.5f;
     program.set("uLightDir", lightDir);
-
-
+    program.set("uRoughness",roughness);
+    program.set("uUseOrenNayar", useOrenNayar);
+    program.set("uMetallness", metallness);
     camera_path_points = {
         // Der Fall nach unten
         quintic_hermite_point{vec3(0.02f, 0.0f, 0.0f), vec3(0.0f, 0.0f, PI/16), vec3(0.0f, 0.0f, 0.0f)},
@@ -69,23 +73,25 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
         camera.setPosAlongSpline(time / 2);
     }
     camera.updateIfChanged();
-    program.bind();
-    program.set("uCameraPos", camera.cartesianPosition);
+    glm::vec3 cameraPos = camera.cartesianPosition;
+    program.set("uCameraPos", cameraPos);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    vec3 pos = vec3(0.0f, -3.0f, 0.0f);
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
-    vec3 hoersaalpos = vec3(0, -3, 0);
-
-    // glActiveTexture(GL_TEXTURE0);
-    holztexture.bind(Texture::Type::TEX2D, 0);
+    glActiveTexture(GL_TEXTURE0);
+    holztexture.bind(Texture::Type::TEX2D);
     program.set("holztexture", 0);
-    this->drawMesh(1.0f, hoersaalpos, program, hoersaal, worldToClip);
-    // glActiveTexture(GL_TEXTURE1);
-    blaetter.bind(Texture::Type::TEX2D, 1);
+    this->drawMesh(1.0f, pos, program, holz, worldToClip);
+    glActiveTexture(GL_TEXTURE1);
+    bodenTex.bind(Texture::Type::TEX2D);
     program.set("holztexture", 1);
-    this->drawMesh(1.0f, hoersaalpos, program, bunny, worldToClip);
-    
-    if (DEBUG) render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 2), camera.target);
+    this->drawMesh(1.0f, pos, program, boden, worldToClip);
+    glActiveTexture(GL_TEXTURE2);
+    wallTex.bind(Texture::Type::TEX2D);
+    program.set("holztexture", 2);
+    this->drawMesh(1.0f, pos, program, walls, worldToClip);
 
+    if (DEBUG) render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 2), camera.target);
     return 0;
 }
 
