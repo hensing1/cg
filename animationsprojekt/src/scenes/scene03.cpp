@@ -8,7 +8,7 @@
 Scene03::Scene03(MovableCamera& camera) {
     program.load("Scene3.vert", "Scene3.frag");
     walls.load("meshes/walls.obj");
-    boden.load("meshes/boden.obj");
+    boden.load("meshes/BodenHS.obj");
     holz.load("meshes/holzObjekte.obj");
     holztexture.load(Texture::Format::SRGB8, "textures/Wood.png", 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);

@@ -98,6 +98,7 @@ class Scene03 : public Scene {
     Mesh walls;
     Mesh laptop;
     Mesh holz;
+    Mesh hoersaal;
     Texture bodenTex;
     Texture wallTex;
     Texture holztexture;
