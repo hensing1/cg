@@ -8,7 +8,7 @@
 #include <cmath>
 #include <iostream>
 
-Scene01::Scene01(MovableCamera& camera) {
+Scene01::Scene01() {
 
     program.load("earth.vert", "earth.frag");
     sphere.load("meshes/highpolysphere.obj");
@@ -20,6 +20,7 @@ Scene01::Scene01(MovableCamera& camera) {
 
     cloudProgram.load("clouds.vert", "clouds.frag");
     cloudProgram.set("uEpsilon", 0.01f);
+    cloudProgram.set("uEarthRadius", earthRadius);
     cloudCanvas.load(FULLSCREEN_VERTICES, FULLSCREEN_INDICES);
 
     camera_path_points = {
@@ -41,7 +42,6 @@ Scene01::Scene01(MovableCamera& camera) {
         quintic_hermite_point{vec3(0.10f, 1.711159f, 0.910796f), vec3(-0.050f, 0.0f, 0.0f), vec3( 0.085f, 0.0f, 0.0f)},
         quintic_hermite_point{vec3(0.05f, 1.711159f, 0.910796f), vec3(-0.050f, 0.0f, 0.0f), vec3( 0.0f, 0.0f, 0.0f)},
     };
-    camera.setPath(QuinticHermite(&camera_path_points));
     view_path_points = {
         // Flug auf die Erde zu
         quintic_hermite_point{vec3(0.0f, 0.0f, 10.0f), vec3(0.0f, 0.0f, -6.0f), vec3(0.0f, 0.0f, 0.0f)},
@@ -56,8 +56,6 @@ Scene01::Scene01(MovableCamera& camera) {
         quintic_hermite_point{vec3(1.241977f, 1.491430f, -0.177268f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         quintic_hermite_point{vec3(1.241977f, 1.491430f, -0.177268f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
     };
-    camera.setViewDirPath(QuinticHermite(&view_path_points));
-
 
 }
 
@@ -68,6 +66,8 @@ int Scene01::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     }
     bool cameraChanged = camera.updateIfChanged();
 
+    glBindTexture(GL_TEXTURE_2D, heightmapHandle);
+
     // Erde rendern
     program.bind();
     glDisable(GL_BLEND);
@@ -75,7 +75,7 @@ int Scene01::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
 
     vec3 pos = vec3(0, 0, 0);
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
-    mat4 localToWorld = scale(translate(mat4(1.0f), pos), vec3(2.f));
+    mat4 localToWorld = scale(translate(mat4(1.0f), pos), vec3(earthRadius));
 
     program.set("uLocalToWorld", localToWorld);
     program.set("uLocalToClip", worldToClip * localToWorld);
@@ -97,8 +97,11 @@ int Scene01::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
         cloudProgram.set("uNear", camera.near);
         cloudProgram.set("uFar", camera.far);
     }
-    if (DEBUG) render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 2), camera.target);
     cloudCanvas.draw();
+
+    if (DEBUG) {
+        render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 2), camera.target);
+    }
 
     if (time >= 11.3f) return 2;
     return 0;
@@ -124,10 +127,10 @@ void Scene01::render_debug_objects(Program& program, mat4 worldToClip, vec3 play
     this->drawMesh(0.01f, target, program, sphere, worldToClip);
 }
 
-Mesh Scene01::generate_sphere(int subidivisions) {
+Mesh Scene01::generate_sphere(int subdivisions) {
     HDS icoHDS = generate_icosahedron();
 
-    for (int i = 0; i < subidivisions; i++) {
+    for (int i = 0; i < subdivisions; i++) {
         icoHDS.loop_subdivision();
     }
 

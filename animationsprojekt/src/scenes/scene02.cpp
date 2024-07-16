@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <glad/glad.h>
 
-Scene02::Scene02(MovableCamera& camera) {
+Scene02::Scene02() {
     program.load("Scene2.vert", "Scene2.frag");
     campus.load("meshes/Campus.obj");
     sphere.load("meshes/highpolysphere.obj");
@@ -35,7 +35,6 @@ Scene02::Scene02(MovableCamera& camera) {
         quintic_hermite_point{vec3(0.02f, -glm::pi<float>()+glm::pi<float>()/4, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         quintic_hermite_point{vec3(0.02f, -glm::pi<float>()+glm::pi<float>()/4, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
     };
-    camera.setPath(QuinticHermite(&camera_path_points));
     view_path_points = {
         // Der Fall nach unten
         quintic_hermite_point{vec3(0.0f, 20.0f, 0.0f), vec3(0.0f, -10.0f, 0.0f), vec3(0.0f, -2.0f, -1.0f)},
@@ -52,7 +51,6 @@ Scene02::Scene02(MovableCamera& camera) {
         quintic_hermite_point{vec3(0.62f, 0.4f, 0.2f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         quintic_hermite_point{vec3(4.62f, 0.2f, 3.2f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
     };
-    camera.setViewDirPath(QuinticHermite(&view_path_points));
 }
 
 void Scene02::render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition) {

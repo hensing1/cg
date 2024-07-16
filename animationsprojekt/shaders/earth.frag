@@ -1,7 +1,6 @@
 #version 330 core
 
 in vec3 interpNormal;
-in vec2 interpTexCoord;
 
 out vec3 fragColor;
 

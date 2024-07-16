@@ -6,7 +6,7 @@
 #include <iostream>
 
 
-Scene03::Scene03(MovableCamera& camera) {
+Scene03::Scene03() {
     program.load("Scene3.vert", "Scene3.frag");
     hoersaal.load("meshes/HS3.obj");
     //hullin.load(Texture::Format::SRGB8, "textures/Hullin.png", 0);
@@ -42,7 +42,6 @@ Scene03::Scene03(MovableCamera& camera) {
         quintic_hermite_point{vec3(0.02f, PI/16, -PI/16), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         quintic_hermite_point{vec3(0.02f, PI/16, -PI/16), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
     };
-    camera.setPath(QuinticHermite(&camera_path_points));
     view_path_points = {
         // Flug an den Platz
         quintic_hermite_point{vec3(1.416f, 4.277f, 9.275f), vec3(-1.424f, -0.5f, -3.283f), vec3(-0.2f, -0.3f, -0.4f)},
@@ -61,7 +60,6 @@ Scene03::Scene03(MovableCamera& camera) {
         quintic_hermite_point{vec3(-0.281f, 0.255f, -0.010f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
 
     };
-    camera.setViewDirPath(QuinticHermite(&view_path_points));
 
 }
 
@@ -71,17 +69,18 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
         camera.setPosAlongSpline(time / 2);
     }
     camera.updateIfChanged();
+    program.bind();
     program.set("uCameraPos", camera.cartesianPosition);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
     vec3 hoersaalpos = vec3(0, -3, 0);
 
-    glActiveTexture(GL_TEXTURE0);
-    holztexture.bind(Texture::Type::TEX2D);
+    // glActiveTexture(GL_TEXTURE0);
+    holztexture.bind(Texture::Type::TEX2D, 0);
     program.set("holztexture", 0);
     this->drawMesh(1.0f, hoersaalpos, program, hoersaal, worldToClip);
-    glActiveTexture(GL_TEXTURE1);
-    blaetter.bind(Texture::Type::TEX2D);
+    // glActiveTexture(GL_TEXTURE1);
+    blaetter.bind(Texture::Type::TEX2D, 1);
     program.set("holztexture", 1);
     this->drawMesh(1.0f, hoersaalpos, program, bunny, worldToClip);
     
