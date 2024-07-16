@@ -36,12 +36,13 @@ MainApp::MainApp() : App(800, 600) {
     sc1_lightDir = normalize(vec3(0.6, 0.2, 0.8));
     sc1_alpha = -0.883f;
     sc1_beta = 6.181f;
+    sc1_gamma = 0;
     sc3_roughness = 0.5f;
 
     FRAME = 0;
     SCENE = prev_scene = 1;
     DEBUG_MODE = false;
-    ANIMATION_PLAYING = true;
+    ANIMATION_PLAYING = false;
 
     App::imguiEnabled = true;
     camera.cartesianPosition = vec3(0.0f, 0.0f, 0.0f);
@@ -86,6 +87,7 @@ void MainApp::render() {
         scene->cloudProgram.set("uEpsilon", sc1_epsilon);
         scene->cloudProgram.set("uAlpha", sc1_alpha);
         scene->cloudProgram.set("uBeta", sc1_beta);
+        scene->cloudProgram.set("uGamma", sc1_gamma);
     }
     if (SCENE == 3) {
         current_scene->program.set("uRoughness", sc3_roughness);
@@ -210,6 +212,7 @@ void MainApp::buildImGui() {
             ImGui::SliderFloat("epsilon", &sc1_epsilon, 0.0, 1.0);
             ImGui::SliderFloat("alpha", &sc1_alpha, -1.57, 1.57);
             ImGui::SliderFloat("beta", &sc1_beta, 0.0, 6.28);
+            ImGui::SliderFloat("gamma", &sc1_gamma, -3.14, 3.14);
         }
     }
     else if (SCENE == 3) {

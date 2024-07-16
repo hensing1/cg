@@ -66,6 +66,7 @@ class MainApp : public App {
     float sc1_epsilon;
     float sc1_alpha;
     float sc1_beta;
+    float sc1_gamma;
     // Szene 3
     float sc3_roughness;
 };

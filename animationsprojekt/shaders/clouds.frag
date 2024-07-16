@@ -17,6 +17,7 @@ uniform float uFar;
 
 uniform float uAlpha;
 uniform float uBeta;
+uniform float uGamma;
 
 const float maxSteps = 100.0;
 
@@ -24,6 +25,9 @@ const int SKY_ID = 0;
 const int CLOUD_ID = 1;
 const int EARTH_ID = 2;
 const float Inf = 1.0 / 0.0;
+
+const float cloudMovementSpeed = 0.02;
+const float animationLength = 16;
 
 const float epsilon = 0.005;
 
@@ -33,6 +37,14 @@ vec2 combine(vec2 result, float dist, int ID) {
 
 float sdSphere(vec3 position, vec3 sphereCenter, float radius) {
     return length(position - sphereCenter) - radius;
+}
+
+mat3 rotX(float alpha) {
+    return mat3(
+        1, 0, 0,
+        0, cos(alpha), -sin(alpha),
+        0, sin(alpha), cos(alpha)
+    );
 }
 
 mat3 rotY(float alpha) {
@@ -53,28 +65,36 @@ mat3 rotZ(float alpha) {
 
 // alpha: Inklination der Umlaufbahn
 // beta: Position auf Umlaufbahn
-float sdCloud(vec3 pos, float height, float alpha, float beta, float scale) {
+// gamma: Rotation der Wolke
+float sdCloud(vec3 pos, float height, float alpha, float beta, float gamma, float scale) {
     vec3 posCenter = vec3(uEarthRadius + height, 0, 0);
     float offset = scale * 0.09;
     vec3 posLeft = rotY(offset) * posCenter;
     vec3 posRight = rotY(-offset) * posCenter;
 
-    mat3 inclination = rotZ(alpha) * rotY(beta);
+    mat3 inclination = rotZ(alpha) * rotY(beta - cloudMovementSpeed * uTime) * rotX(gamma);
     posCenter = inclination * posCenter;
     posLeft = inclination * posLeft;
     posRight = inclination * posRight;
 
-    return min(sdSphere(pos, posLeft, 0.12 * scale), min(sdSphere(pos, posCenter, 0.2 * scale), sdSphere(pos, posRight, 0.12 * scale)));
+    float scaleL = 0.15 * scale * (1 + 0.2 * sin(0.5 * uTime + 0.1));
+    float scaleC = 0.2 *  scale * (1 + 0.2 * sin(0.5 * uTime + 0.4));
+    float scaleR = 0.15 * scale * (1 + 0.2 * sin(0.5 * uTime + 0.7));
+
+    return min(sdSphere(pos, posLeft, scaleL), min(sdSphere(pos, posCenter, scaleC), sdSphere(pos, posRight, scaleR)));
 }
 
 /* Returns the signed distance from pos to the scene and the ID of the closest object */
 vec2 sdScene(vec3 pos) {
     vec2 result = vec2(Inf, intBitsToFloat(SKY_ID));
-    result = combine(result, sdCloud(pos, 0.5, 0, 0, 1.2), CLOUD_ID);
-    result = combine(result, sdCloud(pos, 0.7, 2, 4, 0.9), CLOUD_ID);
-    result = combine(result, sdCloud(pos, 0.1, uAlpha, uBeta, 0.3), CLOUD_ID); // diese Wolke ist über Deutschland
-    // result = combine(result, sdCloud(pos, 0.5, 0.3, 6), CLOUD_ID);
-    // result = combine(result, sdCloud(pos, 0.5, 5.45, 4), CLOUD_ID);
+    result = combine(result, sdCloud(pos, 0.5, 0, 0, 0, 1.2), CLOUD_ID);
+    result = combine(result, sdCloud(pos, 0.7, 2, 4, 0, 0.9), CLOUD_ID);
+    result = combine(result,
+        sdCloud(pos, 0.15, -0.883, animationLength * cloudMovementSpeed + 6.181, 0, 0.5), CLOUD_ID); // diese Wolke ist über Deutschland
+    result = combine(result, sdCloud(pos, 0.5, -0.52, 1.01, 0, 1.0), CLOUD_ID);
+    result = combine(result, sdCloud(pos, 0.5, 1.2, 1.24, 0, 1.0), CLOUD_ID);
+    result = combine(result, sdCloud(pos, 0.3, 1.07, 2.98, 1.5, 0.6), CLOUD_ID);
+    result = combine(result, sdCloud(pos, 0.3, 0.1, 2.39, 1.28, 0.6), CLOUD_ID);
     return result; // vec2(distance, ID)
 }
 
