@@ -2,6 +2,11 @@
 
 Scene::Scene() {}
 
+void Scene::setCameraPath(MovableCamera& camera) {
+    camera.setPath(QuinticHermite(&camera_path_points));
+    camera.setViewDirPath(QuinticHermite(&view_path_points));
+}
+
 //  NOTE: Nur zu Testzwecken -> später entfernen
 void Scene::drawMesh(float size, const vec3& pos, Program& program, Mesh& mesh,
                      const mat4& worldToClip) {
@@ -23,7 +28,5 @@ void Scene::drawMesh(float size, const vec3& pos, Program& program, Mesh& mesh,
     mesh.draw();
     srand(42); // Reset random seed for static colors
 }
-
-void Scene::init(MovableCamera& camera) {}
 
 Scene::~Scene() {}

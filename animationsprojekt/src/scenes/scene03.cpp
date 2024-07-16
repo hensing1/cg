@@ -6,7 +6,7 @@
 #include <iostream>
 
 
-Scene03::Scene03(MovableCamera& camera) {
+Scene03::Scene03() {
     program.load("Scene3.vert", "Scene3.frag");
     walls.load("meshes/walls.obj");
     boden.load("meshes/BodenHS.obj");
@@ -46,7 +46,6 @@ Scene03::Scene03(MovableCamera& camera) {
         quintic_hermite_point{vec3(0.02f, PI/16, -PI/16), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         quintic_hermite_point{vec3(0.02f, PI/16, -PI/16), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
     };
-    camera.setPath(QuinticHermite(&camera_path_points));
     view_path_points = {
         // Flug an den Platz
         quintic_hermite_point{vec3(1.416f, 4.277f, 9.275f), vec3(-1.424f, -0.5f, -3.283f), vec3(-0.2f, -0.3f, -0.4f)},
@@ -65,7 +64,7 @@ Scene03::Scene03(MovableCamera& camera) {
         quintic_hermite_point{vec3(-0.281f, 0.255f, -0.010f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
 
     };
-    camera.setViewDirPath(QuinticHermite(&view_path_points));
+
 }
 
 int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {

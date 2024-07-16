@@ -2,7 +2,7 @@
 
 #include "classes/operations.hpp"
 
-TestScene::TestScene(MovableCamera& camera) {
+TestScene::TestScene() {
     program.load("TMP_projection.vert", "TMP_lambert.frag");
     donut.load("meshes/donut.obj");
     cube.load("meshes/cube.obj");
@@ -67,7 +67,6 @@ TestScene::TestScene(MovableCamera& camera) {
         vec3(0.02f, 0.0f, glm::pi<float>()),
     };
 
-    camera.setPath(QuinticHermite(&camera_path_points));
     //camera.setPath(QuinticHermite(starter_point, point_list));
     view_path_points = {
         quintic_hermite_point{vec3(0.0f, 10.0f, 0.0f), vec3(0.0f, -10.0f, 0.0f), vec3(0.0f, -2.0f, 0.0f)},
@@ -76,7 +75,6 @@ TestScene::TestScene(MovableCamera& camera) {
         quintic_hermite_point{vec3(0.0f, -5.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f),vec3(0.0f, 0.0f, 0.0f)},
         quintic_hermite_point{vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f),vec3(0.0f, 0.0f, 0.0f)},
     };
-    camera.setViewDirPath(QuinticHermite(&view_path_points));
 
 }
 

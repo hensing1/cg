@@ -1,9 +1,6 @@
 #include "csv.hpp"
 #include "gl/shader.hpp"
 #include "glm/fwd.hpp"
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
 #include "mesh.hpp"
 #include "objparser.hpp"
 #include "scene.hpp"
@@ -11,7 +8,7 @@
 #include <cmath>
 #include <iostream>
 
-Scene01::Scene01(MovableCamera& camera) {
+Scene01::Scene01() {
 
     program.load("earth.vert", "earth.frag");
     sphere.load("meshes/highpolysphere.obj");
@@ -19,7 +16,12 @@ Scene01::Scene01(MovableCamera& camera) {
     int num_subdivisions = 6;
     earth = generate_sphere(num_subdivisions);
 
-    textureHandle = generate_and_apply_heightmap();
+    heightmapHandle = generate_and_apply_heightmap();
+
+    cloudProgram.load("clouds.vert", "clouds.frag");
+    cloudProgram.set("uEpsilon", 0.01f);
+    cloudProgram.set("uEarthRadius", earthRadius);
+    cloudCanvas.load(FULLSCREEN_VERTICES, FULLSCREEN_INDICES);
 
     camera_path_points = {
         // Flug auf die Erde zu
@@ -40,7 +42,6 @@ Scene01::Scene01(MovableCamera& camera) {
         quintic_hermite_point{vec3(0.10f, 1.711159f, 0.910796f), vec3(-0.050f, 0.0f, 0.0f), vec3( 0.085f, 0.0f, 0.0f)},
         quintic_hermite_point{vec3(0.05f, 1.711159f, 0.910796f), vec3(-0.050f, 0.0f, 0.0f), vec3( 0.0f, 0.0f, 0.0f)},
     };
-    camera.setPath(QuinticHermite(&camera_path_points));
     view_path_points = {
         // Flug auf die Erde zu
         quintic_hermite_point{vec3(0.0f, 0.0f, 10.0f), vec3(0.0f, 0.0f, -6.0f), vec3(0.0f, 0.0f, 0.0f)},
@@ -55,8 +56,6 @@ Scene01::Scene01(MovableCamera& camera) {
         quintic_hermite_point{vec3(1.241977f, 1.491430f, -0.177268f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         quintic_hermite_point{vec3(1.241977f, 1.491430f, -0.177268f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
     };
-    camera.setViewDirPath(QuinticHermite(&view_path_points));
-
 
 }
 
@@ -65,20 +64,44 @@ int Scene01::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
         camera.setViewDirAlongSpline(time / 2);
         camera.setPosAlongSpline(time / 2);
     }
-    camera.updateIfChanged();
+    bool cameraChanged = camera.updateIfChanged();
 
+    glBindTexture(GL_TEXTURE_2D, heightmapHandle);
+
+    // Erde rendern
+    program.bind();
+    glDisable(GL_BLEND);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    vec3 pos = vec3(0, 0, 0);
 
+    vec3 pos = vec3(0, 0, 0);
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
-    mat4 localToWorld = scale(translate(mat4(1.0f), pos), vec3(2.f));
+    mat4 localToWorld = scale(translate(mat4(1.0f), pos), vec3(earthRadius));
 
     program.set("uLocalToWorld", localToWorld);
     program.set("uLocalToClip", worldToClip * localToWorld);
-    program.bind();
     earth.draw();
 
-    if (DEBUG) render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 2), camera.target);
+    // Wolken rendern
+    cloudProgram.bind();
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    cloudProgram.set("uTime", time);
+
+    if (cameraChanged) {
+        cloudProgram.set("uCameraPosition", camera.cartesianPosition);
+        cloudProgram.set("uCameraMatrix", camera.cameraMatrix);
+        cloudProgram.set("uAspectRatio", camera.aspectRatio);
+        cloudProgram.set("uFocalLength", camera.focalLength);
+        cloudProgram.set("uNear", camera.near);
+        cloudProgram.set("uFar", camera.far);
+    }
+    cloudCanvas.draw();
+
+    if (DEBUG) {
+        render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 2), camera.target);
+    }
 
     if (time >= 11.3f) return 2;
     return 0;
@@ -104,10 +127,10 @@ void Scene01::render_debug_objects(Program& program, mat4 worldToClip, vec3 play
     this->drawMesh(0.01f, target, program, sphere, worldToClip);
 }
 
-Mesh Scene01::generate_sphere(int subidivisions) {
+Mesh Scene01::generate_sphere(int subdivisions) {
     HDS icoHDS = generate_icosahedron();
 
-    for (int i = 0; i < subidivisions; i++) {
+    for (int i = 0; i < subdivisions; i++) {
         icoHDS.loop_subdivision();
     }
 
@@ -145,16 +168,17 @@ GLuint Scene01::generate_and_apply_heightmap() {
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, width, height, 0, GL_RED, GL_FLOAT,
                  contiguous_elevation_map.data());
-
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     return handle;
 
 }
 
 void Scene01::calculate_texture_coordinates(std::vector<Mesh::VertexPCN>& sphere_vertices) {
-    float pi = glm::pi<float>();
     for (auto& vertex : sphere_vertices) {
         float latitude = asin(vertex.position.y / length(vertex.position));
 
@@ -164,7 +188,11 @@ void Scene01::calculate_texture_coordinates(std::vector<Mesh::VertexPCN>& sphere
                               ? acos(vertex.position.x / length(pointOnLatitudeCircle))
                               : -acos(vertex.position.x / length(pointOnLatitudeCircle));
 
-        vertex.texCoord = vec2{(pi + longitude) / (2 * pi), (pi / 2 + latitude) / pi};
+        float x = longitude / tau<float>() + 0.5f;
+        float y = latitude / pi<float>() + 0.5f;
+
+        vertex.texCoord = vec2{x, y};
+
     }
 }
 
@@ -253,4 +281,6 @@ HDS Scene01::generate_icosahedron() {
 //
 // }
 
-Scene01::~Scene01() {}
+Scene01::~Scene01() {
+    glDisable(GL_BLEND);
+}

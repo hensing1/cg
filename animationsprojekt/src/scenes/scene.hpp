@@ -18,10 +18,12 @@
 class Scene {
   public:
     Scene(); // constructor loads all required objects
-    Scene(MovableCamera& camera);
+
+    void setCameraPath(MovableCamera& camera);
+
     virtual int render(int frame, float time, MovableCamera& camera,
                        bool DEBUG) = 0; // NOTE: returns next scene
-    virtual void init(MovableCamera& camera);
+
     virtual ~Scene() = 0; // destructor unloads all objects
     Program program;
 
@@ -37,7 +39,7 @@ class Scene {
 
 class TestScene : public Scene {
   public:
-    TestScene(MovableCamera& camera);
+    TestScene();
     int render(int frame, float time, MovableCamera& camera, bool DEBUG) override;
     ~TestScene();
 
@@ -61,14 +63,18 @@ class TestScene : public Scene {
 
 class Scene01 : public Scene {
   public:
-    Scene01(MovableCamera& camera);
+    Scene01();
     int render(int frame, float time, MovableCamera& camera, bool DEBUG) override;
     ~Scene01();
 
+    Program cloudProgram;
+
   private:
-    GLuint textureHandle;
+    GLuint heightmapHandle;
     Mesh earth;
     Mesh sphere;
+    Mesh cloudCanvas;
+    float earthRadius = 2.0;
 
     void render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition, vec3 target);
     Mesh generate_sphere(int subdivisions);
@@ -80,7 +86,7 @@ class Scene01 : public Scene {
 
 class Scene02 : public Scene {
   public:
-    Scene02(MovableCamera& camera);
+    Scene02();
     int render(int frame, float time, MovableCamera& camera, bool DEBUG) override;
         // virtual void init(MovableCamera& camera) override;
         ~Scene02();
@@ -99,7 +105,7 @@ class Scene02 : public Scene {
 
 class Scene03 : public Scene {
   public:
-    Scene03(MovableCamera& camera);
+    Scene03();
     int render(int frame, float time, MovableCamera& camera, bool DEBUG) override;
     ~Scene03();
 
