@@ -15,7 +15,6 @@ using namespace glm;
 #include "classes/movable_camera.hpp"
 
 #include "config.hpp"
-#include <iostream>
 
 MainApp::MainApp() : App(800, 600) {
     
@@ -28,7 +27,7 @@ MainApp::MainApp() : App(800, 600) {
     landColor = vec3(32, 226, 0) / 255.f;
 
     FRAME = 0;
-    SCENE = prev_scene = 3;
+    SCENE = prev_scene = 1;
     DEBUG_MODE = false;
     ANIMATION_PLAYING = true;
 
@@ -56,8 +55,10 @@ void MainApp::render() {
 
     
     // Framezahl erhöhen, wenn Animation abgespielt wird
-    if (ANIMATION_PLAYING) FRAME++;
-    else scene_start_time += time - scene_start_time;
+    if (ANIMATION_PLAYING) {
+        FRAME++;
+        current_time = current_time + (time - prev_time);   // Current Time läuft nur, wenn Animation spielt
+    }
 
     if (SCENE != prev_scene) { // event listener für arme
         switchScene();
@@ -71,7 +72,7 @@ void MainApp::render() {
     if (SCENE == 3) {
     }
 
-    int scene_return = current_scene->render(FRAME, time - scene_start_time, camera, DEBUG_MODE);
+    int scene_return = current_scene->render(FRAME, current_time, camera, DEBUG_MODE);
 
     prev_scene = SCENE;
     prev_time = time;
@@ -110,6 +111,12 @@ void MainApp::keyCallback(Key key, Action action) {
     //else if (key == Key::LEFT_SHIFT && action == Action::PRESS) std::cout << "HEHEHEHA" << std::endl;
     else if (key == Key::BACKSPACE && action == Action::PRESS) reset_time_in_scene();
 
+    else if (key == Key::W          && action == Action::PRESS) wasdCallback(vec3( 0.0f, 0.0f, 1.0f));
+    else if (key == Key::S          && action == Action::PRESS) wasdCallback(vec3( 0.0f, 0.0f, -1.0f));
+    else if (key == Key::D          && action == Action::PRESS) wasdCallback(vec3( 1.0f, 0.0f,  0.0f));
+    else if (key == Key::A          && action == Action::PRESS) wasdCallback(vec3(-1.0f, 0.0f,  0.0f));
+    else if (key == Key::LEFT_SHIFT && action == Action::PRESS) wasdCallback(vec3( 0.0f,-1.0f,  0.0f));
+    else if (key == Key::SPACE      && action == Action::PRESS) wasdCallback(vec3( 0.0f, 1.0f,  0.0f));
     else if (key == Key::W          && (action == Action::PRESS || action == Action::REPEAT)) wasdCallback(vec3( 0.0f, 0.0f, 1.0f));
     else if (key == Key::S          && (action == Action::PRESS || action == Action::REPEAT)) wasdCallback(vec3( 0.0f, 0.0f, -1.0f));
     else if (key == Key::D          && (action == Action::PRESS || action == Action::REPEAT)) wasdCallback(vec3( 1.0f, 0.0f,  0.0f));
@@ -133,6 +140,8 @@ void MainApp::buildImGui() {
     ImGui::StatisticsWindow(App::delta, App::resolution);
     ImGui::Begin("Settings", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
     ImGui::Text("Position:  (%f|%f|%f)", camera.cartesianPosition[0], camera.cartesianPosition[1], camera.cartesianPosition[2]);
+    ImGui::Text("Spherical: (%f|%f|%f)", camera.sphericalPosition[0], camera.sphericalPosition[1], camera.sphericalPosition[2]);
+    ImGui::Text("Target:    (%f|%f|%f)", camera.target[0], camera.target[1], camera.target[2]);
 
     ImGui::Text("Frame:  %u    \t\t|   Scene:  %u", FRAME, SCENE);
     ImGui::Text("Time:   %f \t| Scene-Start:   %f \t Global-Time:  %f", current_time, scene_start_time, time);
