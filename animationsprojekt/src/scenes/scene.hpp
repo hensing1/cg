@@ -106,6 +106,7 @@ class Scene03 : public Scene {
 
   private:
     void render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition, vec3 target);
+    int folienzahl = 1;
 
     Mesh boden;
     Mesh walls;
@@ -113,11 +114,13 @@ class Scene03 : public Scene {
     Mesh holz;
     Mesh hoersaal;
     Mesh hullin;
+    Mesh folien;
     Mesh sphere;
 
     Texture bodenTex;
     Texture wallTex;
     Texture hullinTex;
+    Texture folienTex;
     Texture holztexture;
 
     Hermite hullinPath;

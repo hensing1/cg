@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include <glad/glad.h>
 #include <iostream>
+#include <string>
 #include <vector>
 #include <glm/gtx/string_cast.hpp>
 
@@ -16,6 +17,7 @@ Scene03::Scene03(MovableCamera& camera) {
     holz.load("meshes/holzObjekte.obj");
     sphere.load("meshes/highpolysphere.obj");
     hullin.load("meshes/plane.obj");
+    folien.load("meshes/plane.obj");
     
     holztexture.load(Texture::Format::SRGB8, "textures/Wood.png", 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -162,18 +164,23 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     vec3 pos = vec3(0.0f, -3.0f, 0.0f);
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
+
+
     glActiveTexture(GL_TEXTURE0);
     holztexture.bind(Texture::Type::TEX2D);
     program.set("holztexture", 0);
     this->drawMesh(1.0f, pos, program, holz, worldToClip);
+
     glActiveTexture(GL_TEXTURE1);
     bodenTex.bind(Texture::Type::TEX2D);
     program.set("holztexture", 1);
     this->drawMesh(1.0f, pos, program, boden, worldToClip);
+
     glActiveTexture(GL_TEXTURE2);
     wallTex.bind(Texture::Type::TEX2D);
     program.set("holztexture", 2);
     this->drawMesh(1.0f, pos, program, walls, worldToClip);
+
     glActiveTexture(GL_TEXTURE3);
     hullinTex.bind(Texture::Type::TEX2D);
     program.set("holztexture", 3);
@@ -183,6 +190,26 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     mat4 hullinMatrix = mat4(Operations::get_rotation_matrix(hullinRotationPath.evaluateSplineAllowLoop(time*2)));
     this->drawMesh(2.5f, hullinPos, program, hullin, worldToClip, hullinMatrix);
     glDisable(GL_BLEND);
+
+
+    folienzahl = mod(floor(time/3), 3.0f) + 1;
+    folienTex.load(Texture::Format::SRGB8, "textures/folien/" + std::to_string(folienzahl) + ".png", 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glActiveTexture(GL_TEXTURE4);
+    folienTex.bind(Texture::Type::TEX2D);
+    program.set("holztexture", 4);
+    //std::cout << "ESSS:  " << to_string(mat4(Operations::get_rotation_matrix(vec3(PI/2, 0.0f, 0.0f)))) << std::endl;
+    this->drawMesh(2.0f, pos+vec3(-3.84588f, 5.0f, -10.0f), program, folien, worldToClip ,
+                   mat4(
+                     1.33141f, 0.0f, 0.0f, 0.0f,
+                     0.0f, 0.0f, 1.0f, 0.0f,
+                     0.0f,-1.0f, 0.0f, 0.0f,
+                     0.0f, 0.0f, 0.0f, 1.0f
+                   )
+    );
+
+
 
     if (DEBUG) render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 2), camera.target);
     return 0;
