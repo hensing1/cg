@@ -37,6 +37,7 @@ MainApp::MainApp() : App(800, 600) {
     sc1_alpha = -0.883f;
     sc1_beta = 6.181f;
     sc1_gamma = 0;
+    sc1_atmosColor = vec3(0, 23, 83) / 255.f;
     sc3_roughness = 0.5f;
 
     FRAME = 0;
@@ -84,10 +85,10 @@ void MainApp::render() {
         scene->program.set("landThreshold", sc1_landThreshold);
 
         scene->cloudProgram.set("uLightDir", sc1_lightDir);
-        scene->cloudProgram.set("uEpsilon", sc1_epsilon);
         scene->cloudProgram.set("uAlpha", sc1_alpha);
         scene->cloudProgram.set("uBeta", sc1_beta);
         scene->cloudProgram.set("uGamma", sc1_gamma);
+        scene->cloudProgram.set("uAtmosColor", sc1_atmosColor);
     }
     if (SCENE == 3) {
         current_scene->program.set("uRoughness", sc3_roughness);
@@ -209,10 +210,10 @@ void MainApp::buildImGui() {
             ImGui::ColorPicker3("Mountain color", (float*)&sc1_mountainColor);
         }
         if (ImGui::CollapsingHeader("Cloud options")) {
-            ImGui::SliderFloat("epsilon", &sc1_epsilon, 0.0, 1.0);
             ImGui::SliderFloat("alpha", &sc1_alpha, -1.57, 1.57);
             ImGui::SliderFloat("beta", &sc1_beta, 0.0, 6.28);
             ImGui::SliderFloat("gamma", &sc1_gamma, -3.14, 3.14);
+            ImGui::ColorPicker3("athmosphere color", (float*)&sc1_atmosColor);
         }
     }
     else if (SCENE == 3) {

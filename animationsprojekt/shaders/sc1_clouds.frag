@@ -10,6 +10,7 @@ uniform vec3 uLightDir = normalize(vec3(1.0));
 uniform vec3 uCameraPosition;
 
 uniform vec4 shadowColor = vec4(0, 0, 0, 0.3);
+uniform vec3 uAtmosColor;
 
 uniform float uEarthRadius;
 uniform float uNear;
@@ -30,6 +31,10 @@ const float cloudMovementSpeed = 0.02;
 const float animationLength = 16;
 
 const float epsilon = 0.005;
+
+vec4 proceduralSun(vec3 rayDir) {
+    return pow(max(0.0, dot(rayDir, uLightDir)), 1000) * vec4(1);
+}
 
 vec2 combine(vec2 result, float dist, int ID) {
     return dist < result.x ? vec2(dist, intBitsToFloat(ID)) : result;
@@ -99,7 +104,7 @@ vec2 sdScene(vec3 pos) {
 }
 
 vec2 sdEarth(vec3 pos) {
-    return vec2(sdSphere(pos, vec3(0), uEarthRadius), intBitsToFloat(EARTH_ID));
+    return vec2(sdSphere(pos, vec3(0), uEarthRadius + 0.03), intBitsToFloat(EARTH_ID));
 }
 
 vec3 raymarchScene(vec3 rayOrigin, vec3 rayDir, float near, float far, bool earth) {
@@ -171,6 +176,9 @@ void main() {
             isEarthShadow = true;
         }
     }
+
+    // draw atmosphere
+    color = blend(vec4(uAtmosColor, distToEarth.y / 40), color);
     
     // then: Raymarch the scene, result = vec3(depth, steps, ID)
     vec3 result = raymarchScene(rayOrigin, rayDir, uNear, min(uFar, distToEarth.x), false);
@@ -188,14 +196,19 @@ void main() {
         color = vec4(lighting, 0.5f);
 
     }
+
+    if (isinf(result.x) && isinf(distToEarth.x)) {
+        color = blend(proceduralSun(rayDir), color);
+    }
+
     vec3 glowColor = vec3(0.5);
     float x = result.y / 50;
     vec4 glow = vec4(glowColor, 0.5 + 0.5 * tanh(10 * (x - 0.45)));
     
-    if (isEarthShadow && isinf(result.x)) {
+    // if (isEarthShadow && isinf(result.x)) {
         fragColor = blend(glow, color); 
-    }
-    else {
-        fragColor = glow + color;
-    }
+    // }
+    // else {
+        // fragColor = glow + color;
+    // }
 }

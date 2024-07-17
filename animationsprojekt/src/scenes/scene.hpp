@@ -68,8 +68,12 @@ class Scene01 : public Scene {
     ~Scene01();
 
     Program cloudProgram;
+    Program skyboxProgram;
 
   private:
+    Mesh skybox;
+    Texture skyboxTexture;
+
     GLuint heightmapHandle;
     Mesh earth;
     Mesh sphere;
