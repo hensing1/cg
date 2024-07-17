@@ -4,6 +4,7 @@
 #include "classes/hermite.hpp"
 #include "classes/movable_camera.hpp"
 #include <glm/gtc/constants.hpp>
+#include <vector>
 #include "gl/texture.hpp"
 
 #include "framework/gl/program.hpp"
@@ -115,6 +116,8 @@ class Scene03 : public Scene {
 
   private:
     void render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition, vec3 target);
+    int folienzahl = 1;
+
     Mesh boden;
     Mesh walls;
     Mesh laptop;
@@ -122,10 +125,19 @@ class Scene03 : public Scene {
     Mesh hoersaal;
     Mesh beamer;
     Mesh tueren;
+    Mesh hullin;
+    Mesh folien;
     Mesh sphere;
 
     Texture bodenTex;
     Texture wallTex;
-    Texture hullin;
+    Texture hullinTex;
+    Texture folienTex;
     Texture holztexture;
+
+    Hermite hullinPath;
+    Hermite hullinRotationPath;
+    std::vector<hermite_point> hullinPathPoints;
+    std::vector<hermite_point> hullinRotationPathPoints;
+    vec3 hullinPos;
 };

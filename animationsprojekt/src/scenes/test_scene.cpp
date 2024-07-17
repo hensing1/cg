@@ -79,9 +79,11 @@ TestScene::TestScene() {
 }
 
 int TestScene::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
-    //camera.updateIfChanged();
-    camera.setViewDirAlongSpline(time / 4);
-    camera.setPosAlongSpline(time / 4);
+    if (!DEBUG) {
+        camera.setViewDirAlongSpline(time / 2);
+        camera.setPosAlongSpline(time / 2);
+    }
+    camera.updateIfChanged();
 
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
 

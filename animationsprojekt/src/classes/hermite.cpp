@@ -1,7 +1,7 @@
 #include "hermite.hpp"
 
 #include <vector>
-
+#include <utility>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <iostream>
@@ -11,7 +11,12 @@
 
 Hermite::Hermite() {
     points = std::vector<hermite_point>({});
-    HERMITE_MATRIX = mat4(0.0f);
+    HERMITE_MATRIX = transpose(mat4(
+         1.0f,  0.0f,  0.0f,  0.0f,
+         0.0f,  1.0f,  0.0f,  0.0f,
+        -3.0f, -2.0f,  3.0f, -1.0f,
+         2.0f,  1.0f, -2.0f,  1.0f
+    ));
 }
 
 Hermite::Hermite(std::vector<hermite_point> *input) {
@@ -22,6 +27,18 @@ Hermite::Hermite(std::vector<hermite_point> *input) {
         -3.0f, -2.0f,  3.0f, -1.0f,
          2.0f,  1.0f, -2.0f,  1.0f
     ));
+}
+
+Hermite& Hermite::operator=(const Hermite& other) {
+    points = other.points;
+    return *this;
+}
+
+void Hermite::set_path(std::vector<hermite_point> new_path) {
+    this -> points = new_path;
+}
+std::vector<hermite_point> Hermite::get_path() {
+    return points;
 }
 
 vec3 Hermite::evaluateSplineAllowLoop(float t) {
@@ -42,7 +59,7 @@ vec3 Hermite::evaluateSplineAllowLoop(float t) {
     res.y = dot(t_vector, vec4(point1 -> pos.y, point1 -> vel.y, point2 -> pos.y, point2 -> vel.y));
     res.z = dot(t_vector, vec4(point1 -> pos.z, point1 -> vel.z, point2 -> pos.z, point2 -> vel.z));
 
-    return (res);
+    return res;
 
 }
 
@@ -63,7 +80,7 @@ vec3 Hermite::evaluateSpline(float t) {
     res.y = dot(t_vector, vec4(point1 -> pos.y, point1 -> vel.y, point2 -> pos.y, point2 -> vel.y));
     res.z = dot(t_vector, vec4(point1 -> pos.z, point1 -> vel.z, point2 -> pos.z, point2 -> vel.z));
 
-    return (res);
+    return res;
 
 }
 
