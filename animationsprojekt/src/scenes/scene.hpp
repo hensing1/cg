@@ -111,6 +111,7 @@ class Scene03 : public Scene {
 
   private:
     void render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition, vec3 target);
+    void setupGBuffer();
     Mesh boden;
     Mesh walls;
     Mesh laptop;
@@ -123,6 +124,5 @@ class Scene03 : public Scene {
     Texture holztexture;
     std::vector<glm::vec3> ssaoKernel;
     GLuint gPosition;
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+    GLuint noiseTexture;
 };
