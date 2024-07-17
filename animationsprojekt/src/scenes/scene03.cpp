@@ -8,9 +8,11 @@
 
 Scene03::Scene03() {
     program.load("Scene3.vert", "Scene3.frag");
-    walls.load("meshes/walls.obj");
-    boden.load("meshes/BodenHS.obj");
-    holz.load("meshes/holzObjekte.obj");
+    walls.load("meshes/sc3_waende.obj");
+    boden.load("meshes/sc3_boden.obj");
+    holz.load("meshes/sc3_stuehle_pult.obj");
+    beamer.load("meshes/sc3_beamer.obj");
+    tueren.load("meshes/sc3_tueren.obj");
     sphere.load("meshes/highpolysphere.obj");
     //hullin.load(Texture::Format::SRGB8, "textures/Hullin.png", 0);
     //hullin.bind(Texture::Type::TEX2D);
@@ -72,30 +74,47 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
         camera.setViewDirAlongSpline(time / 2);
         camera.setPosAlongSpline(time / 2);
     }
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    program.bind();
+
     camera.updateIfChanged();
     glm::vec3 cameraPos = camera.cartesianPosition;
     program.set("uCameraPos", cameraPos);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    vec3 pos = vec3(0.0f, -3.0f, 0.0f);
+
+    vec3 pos = vec3(0.0f, -4.0f, 0.0f);
+    mat4 localToWorld = translate(mat4(1.0f), pos);
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
-    glActiveTexture(GL_TEXTURE0);
-    holztexture.bind(Texture::Type::TEX2D);
-    program.set("holztexture", 0);
-    this->drawMesh(1.0f, pos, program, holz, worldToClip);
-    glActiveTexture(GL_TEXTURE1);
-    bodenTex.bind(Texture::Type::TEX2D);
-    program.set("holztexture", 1);
-    this->drawMesh(1.0f, pos, program, boden, worldToClip);
-    glActiveTexture(GL_TEXTURE2);
-    wallTex.bind(Texture::Type::TEX2D);
-    program.set("holztexture", 2);
-    this->drawMesh(1.0f, pos, program, walls, worldToClip);
+    program.set("uLocalToWorld", localToWorld);
+    program.set("uLocalToClip", worldToClip * localToWorld);
+
+    program.set("uUseTexture", true);
+
+    holztexture.bind(Texture::Type::TEX2D, 0);
+    program.set("uTexture", 0);
+    holz.draw();
+
+    bodenTex.bind(Texture::Type::TEX2D, 1);
+    program.set("uTexture", 1);
+    boden.draw();
+
+    wallTex.bind(Texture::Type::TEX2D, 2);
+    program.set("uTexture", 2);
+    walls.draw();
+
+    program.set("uUseTexture", false);
+
+    program.set("uColor", vec3(0.4f));
+    beamer.draw();
+    program.set("uColor", vec3(0.2f));
+    tueren.draw();
 
     if (DEBUG) render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 2), camera.target);
     return 0;
 }
 
 void Scene03::render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition, vec3 target) {
+    program.bind();
+    program.set("uUseTexture", false);
     program.set("uColor", vec3(0.65f, 0.00f, 0.4f));
     for (int i = 0; i < view_path_points.size(); i++) {
         drawMesh(0.10f, view_path_points[i].pos, program, sphere, worldToClip);

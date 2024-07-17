@@ -120,7 +120,10 @@ class Scene03 : public Scene {
     Mesh laptop;
     Mesh holz;
     Mesh hoersaal;
+    Mesh beamer;
+    Mesh tueren;
     Mesh sphere;
+
     Texture bodenTex;
     Texture wallTex;
     Texture hullin;

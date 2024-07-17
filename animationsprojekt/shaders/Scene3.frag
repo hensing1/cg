@@ -6,15 +6,20 @@ in vec3 worldPos;
 
 out vec3 fragColor;
 
-uniform sampler2D holztexture;
+uniform sampler2D uTexture;
 uniform vec3 uCameraPos;
 uniform vec3 uLightDir;
-vec3 L = normalize(uLightDir);
 uniform bool uUseOrenNayar;
 uniform float uRoughness;
 uniform float uMetallness;
+
+uniform bool uUseTexture;
+uniform vec3 uColor;
+
 const float PI = 3.14159265359;
 const float EPSILON = 1e-5;
+
+vec3 L = normalize(uLightDir);
 
 vec3 F_schlickApprox(float HdotV, vec3 R0) {
     return R0 + (1.0 - R0) * pow(1.0 - HdotV, 5.0);
@@ -101,7 +106,7 @@ void main() {
     float HdotV = max(dot(H, V), 0.0);
 
 
-    baseColor = texture(holztexture, interpTexCoords).rgb;
+    baseColor = uUseTexture ? texture(uTexture, interpTexCoords).rgb : uColor;
     vec3 brdfColor = principledBRDF(N, L, V, H, NdotL, NdotV, NdotH, HdotV, baseColor, uRoughness, uMetallness);
     fragColor = brdfColor;
 }
