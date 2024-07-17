@@ -121,4 +121,8 @@ class Scene03 : public Scene {
     Texture wallTex;
     Texture hullin;
     Texture holztexture;
+    std::vector<glm::vec3> ssaoKernel;
+    GLuint gPosition;
+const unsigned int SCR_WIDTH = 800;
+const unsigned int SCR_HEIGHT = 600;
 };

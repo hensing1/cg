@@ -4,9 +4,38 @@
 #include <glm/glm.hpp>
 #include <glad/glad.h>
 #include <iostream>
+#include <random>
 
 
 Scene03::Scene03() {
+ ssaoKernel.resize(64);
+std::uniform_real_distribution<GLfloat> randomFloats(0.0, 1.0); // generates random floats between 0.0 and 1.0
+std::default_random_engine generator;
+for (unsigned int i = 0; i < 64; ++i)
+{
+    glm::vec3 sample(
+        randomFloats(generator) * 2.0 - 1.0, 
+        randomFloats(generator) * 2.0 - 1.0, 
+        randomFloats(generator)
+    );
+    sample = glm::normalize(sample);
+    sample *= randomFloats(generator);
+    float scale = float(i) / 64.0;
+    scale = glm::mix(0.1f, 1.0f, scale * scale);
+    ssaoKernel[i] = sample;
+}
+program.set("samples", ssaoKernel);
+std::vector<glm::vec3> ssaoNoise;
+for (unsigned int i = 0; i < 16; i++)
+{
+    glm::vec3 noise(
+        randomFloats(generator) * 2.0 - 1.0, 
+        randomFloats(generator) * 2.0 - 1.0, 
+        0.0f);
+    ssaoNoise.push_back(noise);
+}
+
+
     program.load("Scene3.vert", "Scene3.frag");
     walls.load("meshes/walls.obj");
     boden.load("meshes/BodenHS.obj");
@@ -23,6 +52,31 @@ Scene03::Scene03() {
     wallTex.load(Texture::Format::SRGB8, "textures/Wand.jpg", 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glGenTextures(1, &gPosition);
+    glBindTexture(GL_TEXTURE_2D, gPosition);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGBA, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); 
+    GLuint noiseTexture;
+    glGenTextures(1, &noiseTexture);
+    glBindTexture(GL_TEXTURE_2D, noiseTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, 4, 4, 0, GL_RGB, GL_FLOAT, &ssaoNoise[0]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    unsigned int ssaoFBO;
+    glGenFramebuffers(1, &ssaoFBO);  
+    glBindFramebuffer(GL_FRAMEBUFFER, ssaoFBO);
+    unsigned int ssaoColorBuffer;
+    glGenTextures(1, &ssaoColorBuffer);
+    glBindTexture(GL_TEXTURE_2D, ssaoColorBuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, SCR_WIDTH, SCR_HEIGHT, 0, GL_RED, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ssaoColorBuffer, 0);  
     glm::vec3 lightDir = glm::normalize(glm::vec3(1.0f, -1.0f, 0.0f));
     float metallness = 0.0f;
     bool useOrenNayar = true;
@@ -78,14 +132,18 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     vec3 pos = vec3(0.0f, -3.0f, 0.0f);
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
+    
+    
     glActiveTexture(GL_TEXTURE0);
     holztexture.bind(Texture::Type::TEX2D);
     program.set("holztexture", 0);
     this->drawMesh(1.0f, pos, program, holz, worldToClip);
+
     glActiveTexture(GL_TEXTURE1);
     bodenTex.bind(Texture::Type::TEX2D);
     program.set("holztexture", 1);
     this->drawMesh(1.0f, pos, program, boden, worldToClip);
+
     glActiveTexture(GL_TEXTURE2);
     wallTex.bind(Texture::Type::TEX2D);
     program.set("holztexture", 2);
