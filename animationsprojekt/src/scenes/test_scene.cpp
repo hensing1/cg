@@ -3,7 +3,7 @@
 #include "classes/operations.hpp"
 
 TestScene::TestScene(MovableCamera& camera) {
-    program.load("TMP_projection.vert", "TMP_lambert.frag");
+    program.load("Scene2.vert", "Scene2.frag");
     donut.load("meshes/donut.obj");
     cube.load("meshes/cube.obj");
     sphere.load("meshes/highpolysphere.obj");
@@ -81,9 +81,11 @@ TestScene::TestScene(MovableCamera& camera) {
 }
 
 int TestScene::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
-    //camera.updateIfChanged();
-    camera.setViewDirAlongSpline(time / 4);
-    camera.setPosAlongSpline(time / 4);
+    if (!DEBUG) {
+        camera.setViewDirAlongSpline(time / 2);
+        camera.setPosAlongSpline(time / 2);
+    }
+    camera.updateIfChanged();
 
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
 

@@ -4,7 +4,9 @@
 #include "framework/gl/texture.hpp"
 #include <glm/glm.hpp>
 #include <glad/glad.h>
+#include <iostream>
 #include <vector>
+#include <glm/gtx/string_cast.hpp>
 
 
 Scene03::Scene03(MovableCamera& camera) {
@@ -74,17 +76,78 @@ Scene03::Scene03(MovableCamera& camera) {
 
 
 
-    std::vector<hermite_point> hullinPathPoints = {
-        hermite_point{vec3(0.0f, 1.0f, 2.0f), vec3(0.0f, 0.0f, -0.2f)},
-        hermite_point{vec3(0.0f, -1.0f, 2.0f), vec3(0.0f, 3.0f, -0.2f)},
+    this -> hullinPathPoints = {
+        hermite_point{vec3( 6.7341f, -1.0f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 6.7341f, -1.0f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 6.7341f, -1.0f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 6.7341f, -1.0f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 6.7341f, -1.0f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 6.7341f, -1.0f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 6.7341f, -1.0f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 6.7341f, -1.0f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 6.7341f, -1.0f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 6.7341f, -1.0f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 6.7341f, -1.0f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 6.7341f, -1.0f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
+        // Hullin schaut kurz rein
+        hermite_point{vec3( 5.8298f, -1.0f, -10.8305f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 3.8298f, -1.0f, -10.8305f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 3.8298f, -1.0f, -10.8305f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 5.8298f, -1.0f, -10.8305f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 6.7341f, -1.0f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
+        // Hullin läuft rein
+        hermite_point{vec3( 3.1000f, -1.0f, -11.8246f), vec3(0.0f,  0.8f, 0.0f)},
+        hermite_point{vec3( 2.0000f, -1.0f, -09.0236f), vec3(0.0f, -0.8f, 0.0f)},
+        hermite_point{vec3( 0.9000f, -1.0f, -09.0236f), vec3(0.0f,  0.8f, 0.0f)},
+        hermite_point{vec3(-0.2000f, -1.0f, -09.0236f), vec3(0.0f, -0.8f, 0.0f)},
+        hermite_point{vec3(-1.3000f, -1.0f, -09.0236f), vec3(0.0f,  0.8f, 0.0f)},
+        hermite_point{vec3(-2.4000f, -1.0f, -09.0236f), vec3(0.0f, -0.8f, 0.0f)},
+        hermite_point{vec3(-3.5000f, -0.8f, -09.0236f), vec3(0.0f,  0.8f, 0.0f)},
+        // Hullin nimmt seinen rechtmäßigen Platz ein
+        hermite_point{vec3(-4.9081f, -0.8f, -09.0236f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3(-4.9081f, -0.2f, -08.9779f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3(-4.9081f, -0.2f, -08.9779f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3(-4.9081f, -0.2f, -08.9779f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3(-4.9081f, -0.2f, -08.9779f), vec3(0.0f,  0.0f, 0.0f)},
     };
-    this -> hullinPath = Hermite(&hullinPathPoints);
+    this -> hullinPath.set_path(hullinPathPoints);
 
-    std::vector<hermite_point> hullinRotationPathPoints = {
-        hermite_point{vec3(0.0f, 0.0f, PI/2-0.0001f), vec3(0.0f, 0.0f, -0.2f)},
-        hermite_point{vec3(0.0f, 0.0f, -PI/2+0.0001f), vec3(0.0f, 0.0f, -0.2f)},
+    this -> hullinRotationPathPoints = {
+        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        // Hullin schaut kurz rein
+        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
+        hermite_point{vec3(PI/2, 0.0f, PI/8), vec3(0.0f, 0.0f,  0.0f)},
+        hermite_point{vec3(PI/2, 0.0f, PI/8), vec3(0.0f, 0.0f,  0.0f)},
+        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
+        hermite_point{vec3(PI/2, PI/16, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
+        // Hullin läuft rein
+        hermite_point{vec3(PI/2, PI/4, 0.0f), vec3(0.0f, 0.0f,  PI/8)},
+        hermite_point{vec3(PI/2, PI/8, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f,  PI/8)},
+        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f,  PI/8)},
+        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f,  PI/8)},
+        // Hullin nimmt seinen rechtmäßigen Platz ein
+        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
+        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
+        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
+        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
+        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
     };
-    this -> hullinRotationPath = Hermite(&hullinRotationPathPoints);
+    this -> hullinRotationPath.set_path(hullinRotationPathPoints);
+    std::cout << to_string(hullinRotationPath.get_path()[1].pos) << std::endl;
 }
 
 
@@ -114,9 +177,12 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     glActiveTexture(GL_TEXTURE3);
     hullinTex.bind(Texture::Type::TEX2D);
     program.set("holztexture", 3);
-    hullinPos = hullinPath.evaluateSplineAllowLoop(time / 2);
-    mat4 hullinMatrix = mat4(Operations::get_rotation_matrix(hullinRotationPath.evaluateSplineAllowLoop(time / 2)));
-    this->drawMesh(1.0f, hullinPos, program, sphere, worldToClip, hullinMatrix);
+    hullinPos = hullinPath.evaluateSplineAllowLoop(time*2);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+    mat4 hullinMatrix = mat4(Operations::get_rotation_matrix(hullinRotationPath.evaluateSplineAllowLoop(time*2)));
+    this->drawMesh(2.5f, hullinPos, program, hullin, worldToClip, hullinMatrix);
+    glDisable(GL_BLEND);
 
     if (DEBUG) render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 2), camera.target);
     return 0;

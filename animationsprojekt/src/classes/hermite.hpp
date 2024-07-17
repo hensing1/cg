@@ -49,6 +49,9 @@ public:
    */
    vec3 evaluateSplineAllowLoop(float t);
 
+   void set_path(std::vector<hermite_point> new_points);
+   std::vector<hermite_point> get_path();
+
 private:
    std::vector<hermite_point> points;
    mat4 HERMITE_MATRIX;

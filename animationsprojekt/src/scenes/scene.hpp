@@ -4,6 +4,7 @@
 #include "classes/hermite.hpp"
 #include "classes/movable_camera.hpp"
 #include <glm/gtc/constants.hpp>
+#include <vector>
 #include "gl/texture.hpp"
 
 #include "framework/gl/program.hpp"
@@ -121,5 +122,7 @@ class Scene03 : public Scene {
 
     Hermite hullinPath;
     Hermite hullinRotationPath;
+    std::vector<hermite_point> hullinPathPoints;
+    std::vector<hermite_point> hullinRotationPathPoints;
     vec3 hullinPos;
 };
