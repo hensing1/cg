@@ -78,8 +78,8 @@ void Scene02::render_debug_objects(Program& program, mat4 worldToClip, vec3 play
 
 int Scene02::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     if (!DEBUG) {
-        camera.setViewDirAlongSpline(time / 4);
-        camera.setPosAlongSpline(time / 4);
+        camera.setViewDirAlongSpline(time / 3);
+        camera.setPosAlongSpline(time / 3);
     }
     camera.updateIfChanged();
 
@@ -106,7 +106,7 @@ int Scene02::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
 
     if (DEBUG) render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 4));
 
-    if (time >= 24.7f) return 3;
+    if (time >= 18.5f) return 3;
     return 0;
 }
 

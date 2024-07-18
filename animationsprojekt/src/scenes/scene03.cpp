@@ -60,11 +60,16 @@ Scene03::Scene03() {
         quintic_hermite_point{vec3(0.02f, PI/16, -PI/16), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         quintic_hermite_point{vec3(0.02f, PI/16, -PI/16), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         quintic_hermite_point{vec3(0.02f, PI/16, -PI/16), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(0.02f, PI/16, -PI/16), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         // Blick auf den Laptop
         quintic_hermite_point{vec3(0.02f, PI/32, PI/32), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         quintic_hermite_point{vec3(0.02f, PI/32, PI/32), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(0.02f, PI/32, PI/32), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, -PI/24, PI/20), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, -PI/24, PI/20), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, -PI/24, PI/20), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.02f, -PI/24, PI/20), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        // Flug auf den Laptop zu
+        quintic_hermite_point{vec3(0.002f, -PI/24, PI/20), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.002f, -PI/24, PI/20), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
     };
     view_path_points = {
         // Flug an den Platz
@@ -81,11 +86,16 @@ Scene03::Scene03() {
         quintic_hermite_point{vec3(-0.281f, 0.355f, -0.010f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         quintic_hermite_point{vec3(-0.281f, 0.355f, -0.010f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         quintic_hermite_point{vec3(-0.281f, 0.355f, -0.010f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(-0.281f, 0.355f, -0.010f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         // Blick auf den Laptop
         quintic_hermite_point{vec3(-0.281f, 0.355f, -0.010f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         quintic_hermite_point{vec3(-0.281f, 0.355f, -0.010f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         quintic_hermite_point{vec3(-0.281f, 0.355f, -0.010f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(-0.281f, 0.355f, -0.010f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(-0.281f, 0.355f, -0.010f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(-0.281f, 0.355f, -0.010f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        // Flug auf den Laptop zu
+        quintic_hermite_point{vec3(-0.083978f, -0.050709f, -1.565814f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(-0.083978f, -0.050709f, -1.565814f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
 
     };
 
@@ -157,6 +167,42 @@ Scene03::Scene03() {
         hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  0.4f, 0.0f)},
         hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  0.4f, 0.0f)},
         // Vorlesung geht weiter 2 electric boogaloo
+        hermite_point{vec3(-0.8194f, -0.8f, -08.2779f), vec3(0.0f,  0.4f, 0.0f)},
+        hermite_point{vec3(-0.8194f, -0.8f, -08.2779f), vec3(0.0f,  -0.4f, 0.0f)},
+        hermite_point{vec3(-0.8194f, -0.8f, -08.2779f), vec3(0.0f,  0.2f, 0.0f)},
+        hermite_point{vec3(-0.8194f, -0.8f, -08.2779f), vec3(0.0f,  -0.2f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  0.2f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  -0.2f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  0.4f, 0.0f)},
+        
+        // Hullin hält Vorlesung 3 
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  0.4f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  -0.2f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  0.4f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  -0.2f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  0.4f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  -0.2f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  0.4f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  0.4f, 0.0f)},
+        // Vorlesung geht weiter 3
+        hermite_point{vec3(-0.8194f, -0.8f, -08.2779f), vec3(0.0f,  0.4f, 0.0f)},
+        hermite_point{vec3(-0.8194f, -0.8f, -08.2779f), vec3(0.0f,  -0.4f, 0.0f)},
+        hermite_point{vec3(-0.8194f, -0.8f, -08.2779f), vec3(0.0f,  0.2f, 0.0f)},
+        hermite_point{vec3(-0.8194f, -0.8f, -08.2779f), vec3(0.0f,  -0.2f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  0.2f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  -0.2f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  0.4f, 0.0f)},
+
+        // Hullin hält Vorlesung 4 schon so spät? 
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  0.4f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  -0.2f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  0.4f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  -0.2f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  0.4f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  -0.2f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  0.4f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  0.4f, 0.0f)},
+        // Vorlesung geht weiter 4 schon so spät?
         hermite_point{vec3(-0.8194f, -0.8f, -08.2779f), vec3(0.0f,  0.4f, 0.0f)},
         hermite_point{vec3(-0.8194f, -0.8f, -08.2779f), vec3(0.0f,  -0.4f, 0.0f)},
         hermite_point{vec3(-0.8194f, -0.8f, -08.2779f), vec3(0.0f,  0.2f, 0.0f)},
@@ -237,19 +283,60 @@ Scene03::Scene03() {
         hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  PI/23)},
         hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  -PI/32)},
 
+        // Hullin hält Vorlesung 3
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  PI/32)},
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  -PI/32)},
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  PI/16)},
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  -PI/16)},
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  PI/32)},
+        hermite_point{vec3(0.0f, -1*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  -PI/32)},
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  PI/32)},
+        // Vorlesung geht weiter 3
+        hermite_point{vec3(0.0f, PI/2-PI/8, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
+        hermite_point{vec3(0.0f, PI/2-PI/8, 0.0f), vec3(0.0f, 0.0f,  PI/32)},
+        hermite_point{vec3(0.0f, PI/2-PI/8, 0.0f), vec3(0.0f, 0.0f,  -PI/32)},
+        hermite_point{vec3(0.0f, PI/2-PI/8, 0.0f), vec3(0.0f, 0.0f,  PI/16)},
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  -PI/16)},
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  PI/23)},
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  -PI/32)},
+
+        // Hullin hält Vorlesung 4 schon so spät?
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  PI/32)},
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  -PI/32)},
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  PI/16)},
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  -PI/16)},
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  PI/32)},
+        hermite_point{vec3(0.0f, -1*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  -PI/32)},
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  PI/32)},
+        // Vorlesung geht weiter 4 schon so spät?
+        hermite_point{vec3(0.0f, PI/2-PI/8, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
+        hermite_point{vec3(0.0f, PI/2-PI/8, 0.0f), vec3(0.0f, 0.0f,  PI/32)},
+        hermite_point{vec3(0.0f, PI/2-PI/8, 0.0f), vec3(0.0f, 0.0f,  -PI/32)},
+        hermite_point{vec3(0.0f, PI/2-PI/8, 0.0f), vec3(0.0f, 0.0f,  PI/16)},
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  -PI/16)},
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  PI/23)},
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  -PI/32)},
+
+
     };
     this -> hullinRotationPath.set_path(hullinRotationPathPoints);
     //std::cout << to_string(hullinRotationPath.get_path()[1].pos) << std::endl;
 
 
 
-    // NOTE: Tuer-Pfad
+    // NOTE: Tuer-Pfad und Laptop-Pfad
     
     std::vector<hermite_point> tuerPathPoints = {
         hermite_point{vec3(0.0f, PI/4, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
         hermite_point{vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
     };
     this -> tuerPath.set_path(tuerPathPoints);
+    
+    std::vector<hermite_point> laptopPathPoints = {
+        hermite_point{vec3(-9*PI/16, 0.0f, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
+        hermite_point{vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
+    };
+    this -> laptopPath.set_path(laptopPathPoints);
 
 }
 
@@ -257,6 +344,12 @@ int get_folie(int time) {
     if      (time < 14) return 0;
     else if (time < 18) return 1;
     else if (time < 22) return 2;
+    else if (time < 26) return 3;
+    else if (time < 30) return 4;
+    else if (time < 34) return 5;
+    else if (time < 38) return 6;
+    else if (time < 42) return 7;
+    else if (time < 46) return 8;
     return 0;
 }
 
@@ -272,19 +365,22 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     camera.updateIfChanged();
     glm::vec3 cameraPos = camera.cartesianPosition;
     program.set("uCameraPos", cameraPos);
-
+    
     vec3 hoersaalOffset = vec3(0.0f, -3.4f, 0.0f);
+    float laptop_start_time = 21.5;
+
+
+    // NOTE: Beamer
     mat4 localToWorld = translate(mat4(1.0f), hoersaalOffset);
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
     program.set("uLocalToWorld", localToWorld);
     program.set("uLocalToClip", worldToClip * localToWorld);
-
     program.set("uUseTexture", false);
-
     program.set("uColor", vec3(0.4f));
     beamer.draw();
 
 
+    // NOTE: Tür
     program.set("uColor", vec3(0.2f));
     mat4 tuerTransformation = mat4(Operations::get_rotation_matrix(tuerPath.evaluateSpline((time-9))));
     vec3 tuerPos = hoersaalOffset + vec3(1.0466f, 0.0f, -10.4436f);
@@ -292,12 +388,13 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     program.set("uLocalToWorld", tuerLocalToWorld);
     program.set("uLocalToClip", worldToClip * tuerLocalToWorld * tuerTransformation);
     tuerLinks.draw();
-    //tuerPos = hoersaalOffset + vec3(3.5108f, 0.0f, -10.4436f);
-    //tuerLocalToWorld = scale(translate(mat4(1.0f), tuerPos), vec3(1.0f));
     program.set("uLocalToWorld", tuerLocalToWorld);
     program.set("uLocalToClip", worldToClip * tuerLocalToWorld);
     tuerRechts.draw();
     
+
+    // NOTE: Suzanne
+    program.set("uColor", vec3(0.248f, 0.160f, 0.126f));
     program.set("uLocalToWorld", localToWorld);
     program.set("uLocalToClip", worldToClip * localToWorld);
     vec3 suzannePos = hoersaalOffset + vec3(-3.02f, 2.822f + 0.05f * sin(time), -2.5f);
@@ -308,6 +405,9 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
 
     suzanne.draw();
 
+
+    // NOTE: Bunny
+    program.set("uColor", vec3(0.84f, 0.72f, 0.66f));
     vec3 bunnyPos = hoersaalOffset + vec3(1.142f, 2.822f, -3.854f);
     localToWorld = rotate(scale(translate(mat4(1.0f), bunnyPos), vec3(0.4f)), time / 2, vec3(0, 1, 0));
     program.set("uLocalToWorld", localToWorld);
@@ -315,22 +415,26 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
 
     bunny.draw();
 
-    program.set("uColor", vec3(0.1f));
 
-    vec3 laptopPos = hoersaalOffset + vec3(0.312f, 3.058f, -0.629f);
-    localToWorld = rotate(translate(mat4(1.0f), laptopPos), 3.f, vec3(0, 1, 0));
+    // NOTE: Laptop
+    program.set("uColor", vec3(0.1f));
+    vec3 laptopPos = hoersaalOffset + vec3(-0.122f, 3.080f, -1.509f);
+    mat4 laptopTransformation = mat4(Operations::get_rotation_matrix(laptopPath.evaluateSpline((time-laptop_start_time)/3)));
+    localToWorld = rotate(translate(mat4(1.0f), laptopPos), 3.f, vec3(0, 1, 0)) * laptopTransformation;
     program.set("uLocalToWorld", localToWorld);
     program.set("uLocalToClip", worldToClip * localToWorld);
 
     laptopDeckel.draw();
+    localToWorld = rotate(translate(mat4(1.0f), laptopPos), 3.f, vec3(0, 1, 0));
+    program.set("uLocalToClip", worldToClip * localToWorld);
     program.set("uColor", vec3(0.7f));
     laptopTastatur.draw();
 
+
+    // NOTE: Beamer
     localToWorld = translate(mat4(1.0f), hoersaalOffset);
     program.set("uLocalToWorld", localToWorld);
     program.set("uLocalToClip", worldToClip * localToWorld);
-
-
     program.set("uColor", vec3(0.4f));
     beamer.draw();
 
@@ -375,6 +479,8 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
 
 
     if (DEBUG) render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 2), camera.target);
+
+    if (time >= 35.2f) return 1;
     return 0;
 }
 

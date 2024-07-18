@@ -46,11 +46,11 @@ Scene01::Scene01() {
         quintic_hermite_point{vec3(1.0f, 0.881166f, 0.690583f), vec3(0.0f, 0.9f, 0.2f), vec3(0.0f, -0.2f, -0.2f)},
         // Zoom in die Kugel hinein
         quintic_hermite_point{vec3(0.99f, 1.711159f, 0.910796f), vec3(-0.400f, 0.0f, 0.0f), vec3(-0.2f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(0.60f, 1.711159f, 0.910796f), vec3(-0.350f, 0.0f, 0.0f), vec3( 0.310f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(0.30f, 1.711159f, 0.910796f), vec3(-0.225f, 0.0f, 0.0f), vec3( 0.235f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(0.15f, 1.711159f, 0.910796f), vec3(-0.125f, 0.0f, 0.0f), vec3( 0.135f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(0.10f, 1.711159f, 0.910796f), vec3(-0.050f, 0.0f, 0.0f), vec3( 0.085f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(0.05f, 1.711159f, 0.910796f), vec3(-0.050f, 0.0f, 0.0f), vec3( 0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.60f, 1.711159f, 0.910796f), vec3(-0.575f, 0.0f, 0.0f), vec3( 0.310f, 0.0f, 0.0f)},
+        //quintic_hermite_point{vec3(0.30f, 1.711159f, 0.910796f), vec3(-0.225f, 0.0f, 0.0f), vec3( 0.235f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.15f, 1.711159f, 0.910796f), vec3(-0.175f, 0.0f, 0.0f), vec3( 0.135f, 0.0f, 0.0f)},
+        //quintic_hermite_point{vec3(0.10f, 1.711159f, 0.910796f), vec3(-0.050f, 0.0f, 0.0f), vec3( 0.085f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.05f, 1.711159f, 0.910796f), vec3(-0.100f, 0.0f, 0.0f), vec3( 0.0f, 0.0f, 0.0f)},
     };
     view_path_points = {
         quintic_hermite_point{vec3(0.0f, 0.0f, 10.0f), vec3(0.0f, 0.0f, -0.0f), vec3(0.0f, 0.0f, 0.0f)},
@@ -64,9 +64,9 @@ Scene01::Scene01() {
         // View-Point ändert sich nicht mehr
         quintic_hermite_point{vec3(1.241977f, 1.491430f, -0.177268f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         quintic_hermite_point{vec3(1.241977f, 1.491430f, -0.177268f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        //quintic_hermite_point{vec3(1.241977f, 1.491430f, -0.177268f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         quintic_hermite_point{vec3(1.241977f, 1.491430f, -0.177268f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(1.241977f, 1.491430f, -0.177268f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(1.241977f, 1.491430f, -0.177268f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        //quintic_hermite_point{vec3(1.241977f, 1.491430f, -0.177268f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         quintic_hermite_point{vec3(1.241977f, 1.491430f, -0.177268f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
     };
 
@@ -129,7 +129,7 @@ int Scene01::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
         render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 2), camera.target);
     }
 
-    if (time >= 15.3f) return 2;
+    if (time >= 14.8f) return 2;
     return 0;
 }
 

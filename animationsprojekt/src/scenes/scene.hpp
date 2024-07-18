@@ -148,4 +148,5 @@ class Scene03 : public Scene {
     vec3 hullinPos;
 
     Hermite tuerPath;
+    Hermite laptopPath;
 };

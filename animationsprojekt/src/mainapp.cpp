@@ -42,7 +42,7 @@ MainApp::MainApp() : App(800, 600) {
     sc3_roughness = 0.5f;
 
     FRAME = 0;
-    SCENE = prev_scene = 3;
+    SCENE = prev_scene = 1;
     DEBUG_MODE = false;
     ANIMATION_PLAYING = true;
 
