@@ -3,7 +3,6 @@
 #extension GL_ARB_separate_shader_objects : enable
 layout (location = 0) out vec4 gPosition;
 layout (location = 1) out vec3 gNormal;
-layout (location = 2) out vec4 gAlbedoSpec;
 
 in vec2 TexCoords;
 in vec3 FragPos;
@@ -15,6 +14,4 @@ void main()
     gPosition = vec4(FragPos, 1.0);
     // also store the per-fragment normals into the gbuffer
     gNormal = normalize(Normal);
-    // and the diffuse per-fragment color, ignore specular
-    gAlbedoSpec.rgb = vec3(0.95);
 }  

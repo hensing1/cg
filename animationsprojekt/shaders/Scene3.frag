@@ -9,7 +9,7 @@ out vec3 fragColor;
 uniform sampler2D texNoise;
 uniform sampler2D depthTexture;
 uniform sampler2D uTexture;
-uniform sampler2D ssaoTexture; // Add SSAO texture uniform
+uniform sampler2D ssaoTexture; 
 uniform vec3 uCameraPos;
 uniform vec3 uLightPos;
 uniform bool uUseOrenNayar;
@@ -25,7 +25,6 @@ uniform bool uUseTexture;
 uniform vec3 uColor;
 
 const float PI = 3.14159265359;
-const float EPSILON = 1e-5;
 
 vec3 L = normalize(uLightPos - worldPos);
 
@@ -112,9 +111,9 @@ void main() {
     // Specular component
     vec3 specular = vec3(0.0);
     if (NdotL > 0.0) {
-        vec3 viewDir = normalize(-worldPos); // Assuming view position is at (0,0,0)
+        vec3 viewDir = V; 
         vec3 reflectDir = reflect(-L, N);
-        float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
+        float spec = pow(max(dot(viewDir, reflectDir), 0.0), 8.0);
         specular = vec3(1.0) * spec; // Assuming white specular light
     }
     

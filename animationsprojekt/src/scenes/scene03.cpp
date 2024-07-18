@@ -41,7 +41,7 @@ Scene03::Scene03() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     float metallness = 0.0f;
     bool useOrenNayar = true;
-    vec3 lightPos = glm::normalize(glm::vec3(0.0f, 1.0f, -1.0f));
+    vec3 lightPos = glm::normalize(glm::vec3(1.0f, 1.0f, 1.0f));
     setupGBuffer();
     program.set("uLightPos", lightPos);
     program.set("uUseOrenNayar", useOrenNayar);
@@ -264,7 +264,6 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     camera.updateIfChanged();
     glm::vec3 cameraPos = camera.cartesianPosition;
     program.set("uCameraPos", cameraPos);
-    renderSceneObjects(program, camera, time);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -308,7 +307,7 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     program.set("gNormal", 1);
 
         // Set the SSAO texture
-    glActiveTexture(GL_TEXTURE2); // Use a texture unit that is not used by other textures
+    glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, ssaoColorBuffer);
     program.set("ssaoTexture", 2);
 
@@ -323,27 +322,8 @@ void Scene03::renderSceneObjects(Program& program, MovableCamera& camera, float 
      mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
 
     program.set("uUseTexture", false);
-    program.set("uColor", vec3(0.4));
-
-    vec3 suzannePos = vec3(-3.02f, -0.625f + 0.05f * sin(time), -2.5f);
-    // vec3 suzannePos = debugPos;
-    mat4 localToWorld = rotate(scale(translate(mat4(1.0f), suzannePos), vec3(0.6f)), glm::pi<float>(), vec3(0, 1, 0));
-    program.set("uLocalToWorld", localToWorld);
-    program.set("uLocalToClip", worldToClip * localToWorld);
-
-    suzanne.draw();
-
-    vec3 bunnyPos = vec3(1.142f, -1.142f, -3.854f);
-    localToWorld = rotate(scale(translate(mat4(1.0f), bunnyPos), vec3(0.4f)), time / 2, vec3(0, 1, 0));
-    program.set("uLocalToWorld", localToWorld);
-    program.set("uLocalToClip", worldToClip * localToWorld);
-
-    bunny.draw();
-
-    program.set("uColor", vec3(0.1f));
-
     vec3 laptopPos = vec3(0.312f, -0.938f, -0.629f);
-    localToWorld = rotate(translate(mat4(1.0f), laptopPos), 3.f, vec3(0, 1, 0));
+    mat4 localToWorld = rotate(translate(mat4(1.0f), laptopPos), 3.f, vec3(0, 1, 0));
     program.set("uLocalToWorld", localToWorld);
     program.set("uLocalToClip", worldToClip * localToWorld);
 
