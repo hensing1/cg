@@ -19,8 +19,6 @@ Scene03::Scene03() {
     holz.load("meshes/sc3_stuehle_pult.obj");
     beamer.load("meshes/sc3_beamer.obj");
     tueren.load("meshes/sc3_tueren.obj");
-    suzanne.load("meshes/suzanne.obj");
-    bunny.load("meshes/bunny.obj");
     laptopDeckel.load("meshes/sc3_laptopdeckel.obj");
     laptopTastatur.load("meshes/sc3_laptoptastatur.obj");
     sphere.load("meshes/highpolysphere.obj");
@@ -216,7 +214,6 @@ void Scene03::setupGBuffer() {
         std::cout << "SSAO Framebuffer not complete!" << std::endl;
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    // SSAO kernel and noise setup (unchanged)
     ssaoKernel.resize(64);
     std::uniform_real_distribution<GLfloat> randomFloats(0.0, 1.0);
     std::default_random_engine generator;
@@ -232,7 +229,6 @@ void Scene03::setupGBuffer() {
         scale = glm::mix(0.1f, 1.0f, scale * scale);
         ssaoKernel[i] = sample;
     }
-    ssaoProgram.set("samples", ssaoKernel);
     std::vector<glm::vec3> ssaoNoise;
     for (unsigned int i = 0; i < 16; i++) {
         glm::vec3 noise(
@@ -262,9 +258,7 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     program.bind();
     camera.updateIfChanged();
-    glm::vec3 cameraPos = camera.cartesianPosition;
-    program.set("uCameraPos", cameraPos);
-
+    renderSceneObjects(program, camera, time);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // 2. SSAO Pass: Compute SSAO using the G-buffer and store the result in an SSAO texture.
@@ -283,7 +277,6 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, noiseTexture);
     ssaoProgram.set("texNoise", 2);
-
     ssaoProgram.set("projection", camera.projectionMatrix);
     ssaoProgram.set("samples", ssaoKernel);
 
@@ -320,7 +313,10 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
 
 void Scene03::renderSceneObjects(Program& program, MovableCamera& camera, float time) {
      mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
-
+    program.bind();
+    camera.updateIfChanged();
+    glm::vec3 cameraPos = camera.cartesianPosition;
+    program.set("uCameraPos", cameraPos);
     program.set("uUseTexture", false);
     vec3 laptopPos = vec3(0.312f, -0.938f, -0.629f);
     mat4 localToWorld = rotate(translate(mat4(1.0f), laptopPos), 3.f, vec3(0, 1, 0));
@@ -393,13 +389,10 @@ void Scene03::renderQuad() {
     if (quadVAO == 0) {
         float quadVertices[] = {
             // positions        // texture Coords
-            -1.0f,  1.0f, 0.0f,  0.0f, 1.0f,
-            -1.0f, -1.0f, 0.0f,  0.0f, 0.0f,
-             1.0f, -1.0f, 0.0f,  1.0f, 0.0f,
-
-            -1.0f,  1.0f, 0.0f,  0.0f, 1.0f,
-             1.0f, -1.0f, 0.0f,  1.0f, 0.0f,
-             1.0f,  1.0f, 0.0f,  1.0f, 1.0f
+            -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+             1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+             1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
         };
         glGenVertexArrays(1, &quadVAO);
         glGenBuffers(1, &quadVBO);
@@ -412,7 +405,7 @@ void Scene03::renderQuad() {
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     }
     glBindVertexArray(quadVAO);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glDrawArrays(GL_TRIANGLES, 0, 4);
     glBindVertexArray(0);
 }
 

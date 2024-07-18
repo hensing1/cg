@@ -24,9 +24,9 @@ void main()
     mat3 TBN       = mat3(tangent, bitangent, normal); 
 
     float occlusion = 0.0;
-    float radius = 0.5; // Define as needed
-    float bias = 0.025; // Define as needed
-    int kernelSize = 64; // Define as needed
+    float radius = 1.0; 
+    float bias = 0.025; 
+    int kernelSize = 64; 
 
     for(int i = 0; i < kernelSize; ++i)
     {
