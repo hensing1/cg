@@ -127,7 +127,8 @@ class Scene03 : public Scene {
     Mesh holz;
     Mesh hoersaal;
     Mesh beamer;
-    Mesh tueren;
+    Mesh tuerLinks;
+    Mesh tuerRechts;
     Mesh hullin;
     Mesh folien;
     Mesh suzanne;

@@ -16,7 +16,8 @@ Scene03::Scene03() {
     boden.load("meshes/sc3_boden.obj");
     holz.load("meshes/sc3_stuehle_pult.obj");
     beamer.load("meshes/sc3_beamer.obj");
-    tueren.load("meshes/sc3_tueren.obj");
+    tuerLinks.load("meshes/sc3_tuer_links.obj");
+    tuerRechts.load("meshes/sc3_tuer_rechts.obj");
     sphere.load("meshes/highpolysphere.obj");
     hullin.load("meshes/hullin.obj");
     suzanne.load("meshes/suzanne.obj");
@@ -245,8 +246,8 @@ Scene03::Scene03() {
     // NOTE: Tuer-Pfad
     
     std::vector<hermite_point> tuerPathPoints = {
+        hermite_point{vec3(0.0f, PI/4, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
         hermite_point{vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
-        hermite_point{vec3(0.0f, PI/2, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
     };
     this -> tuerPath.set_path(tuerPathPoints);
 
@@ -283,13 +284,22 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     program.set("uColor", vec3(0.4f));
     beamer.draw();
 
-    mat4 tuerTransformation = mat4(Operations::get_rotation_matrix(tuerPath.evaluateSpline((time-9)/2)));
-    program.set("uLocalToClip", worldToClip * localToWorld * tuerTransformation );
+
     program.set("uColor", vec3(0.2f));
-    tueren.draw();
-
+    mat4 tuerTransformation = mat4(Operations::get_rotation_matrix(tuerPath.evaluateSpline((time-9))));
+    vec3 tuerPos = hoersaalOffset + vec3(1.0466f, 0.0f, -10.4436f);
+    mat4 tuerLocalToWorld = scale(translate(mat4(1.0f), tuerPos), vec3(1.0f));
+    program.set("uLocalToWorld", tuerLocalToWorld);
+    program.set("uLocalToClip", worldToClip * tuerLocalToWorld * tuerTransformation);
+    tuerLinks.draw();
+    //tuerPos = hoersaalOffset + vec3(3.5108f, 0.0f, -10.4436f);
+    //tuerLocalToWorld = scale(translate(mat4(1.0f), tuerPos), vec3(1.0f));
+    program.set("uLocalToWorld", tuerLocalToWorld);
+    program.set("uLocalToClip", worldToClip * tuerLocalToWorld);
+    tuerRechts.draw();
+    
+    program.set("uLocalToWorld", localToWorld);
     program.set("uLocalToClip", worldToClip * localToWorld);
-
     vec3 suzannePos = hoersaalOffset + vec3(-3.02f, 2.822f + 0.05f * sin(time), -2.5f);
     // vec3 suzannePos = debugPos;
     localToWorld = rotate(scale(translate(mat4(1.0f), suzannePos), vec3(0.6f)), glm::pi<float>(), vec3(0, 1, 0));
