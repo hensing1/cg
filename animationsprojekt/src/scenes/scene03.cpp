@@ -75,8 +75,9 @@ Scene03::Scene03() {
         quintic_hermite_point{vec3(0.02f, -PI/24, PI/20), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         quintic_hermite_point{vec3(0.02f, -PI/24, PI/20), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         // Flug auf den Laptop zu
-        quintic_hermite_point{vec3(0.002f, -PI/24, PI/20), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(0.002f, -PI/24, PI/20), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.019f, -PI/24, PI/20), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.016f, -PI/24, PI/20), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.016f, -PI/24, PI/20), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
     };
     view_path_points = {
         // Flug an den Platz
@@ -101,6 +102,7 @@ Scene03::Scene03() {
         quintic_hermite_point{vec3(-0.281f, 0.355f, -0.010f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         quintic_hermite_point{vec3(-0.281f, 0.355f, -0.010f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         // Flug auf den Laptop zu
+        quintic_hermite_point{vec3(-0.083978f, -0.050709f, -1.565814f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         quintic_hermite_point{vec3(-0.083978f, -0.050709f, -1.565814f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         quintic_hermite_point{vec3(-0.083978f, -0.050709f, -1.565814f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
 
@@ -478,7 +480,7 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     program.bind();
     camera.updateIfChanged();
-    renderSceneObjects(program, camera, time);
+    //renderSceneObjects(program, camera, time);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // 2. SSAO Pass: Compute SSAO using the G-buffer and store the result in an SSAO texture.
@@ -571,7 +573,7 @@ void Scene03::renderSceneObjects(Program& program, MovableCamera& camera, float 
     
 
     // NOTE: Suzanne
-    program.set("uColor", vec3(0.248f, 0.160f, 0.126f));
+    program.set("uColor", vec3(0.248f, 0.180f, 0.126f));
     vec3 suzannePos = hoersaalOffset + vec3(-3.02f, 2.822f + 0.05f * sin(time), -2.5f);
     // vec3 suzannePos = debugPos;
     localToWorld = rotate(scale(translate(mat4(1.0f), suzannePos), vec3(0.6f)), glm::pi<float>(), vec3(0, 1, 0));

@@ -30,11 +30,11 @@ Scene01::Scene01() {
     cloudCanvas.load(FULLSCREEN_VERTICES, FULLSCREEN_INDICES);
 
     camera_path_points = {
-        quintic_hermite_point{vec3(1.5f, 0.0f, 0.0f), vec3(-0.f, 0.0f, 0.0f), vec3(-0.f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(1.5f, 0.0f, 0.0f), vec3(-0.f, 0.0f, 0.0f), vec3(-0.f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(1.5f, 0.0f, 0.0f), vec3(-0.f, 0.0f, 0.0f), vec3(-0.f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(1.5f, 0.0f, 0.0f), vec3(0.f, 0.0f, 0.0f), vec3(0.f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(1.5f, 0.0f, 0.0f), vec3(0.f, 0.0f, 0.0f), vec3(0.f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(1.5f, 0.0f, 0.0f), vec3(0.f, 0.0f, 0.0f), vec3(0.f, 0.0f, 0.0f)},
         // Flug auf die Erde zu
-        quintic_hermite_point{vec3(1.5f, 0.0f, 0.0f), vec3(-0.3f, 0.0f, 0.0f), vec3(-0.4f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(1.5f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
           //quintic_hermite_point{vec3(1.5f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(-0.3f, 0.0f, 0.0f)},
           //quintic_hermite_point{vec3(1.2f, PI/8, PI/16), vec3(-0.3f, PI/4, PI/8), vec3(0.0f, 0.0f, 0.0f)},
           //quintic_hermite_point{vec3(0.8f, PI/2, PI/4), vec3(-0.3f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
@@ -52,11 +52,11 @@ Scene01::Scene01() {
         quintic_hermite_point{vec3(0.05f, 1.711159f, 0.910796f), vec3(-0.100f, 0.0f, 0.0f), vec3( 0.0f, 0.0f, 0.0f)},
     };
     view_path_points = {
-        quintic_hermite_point{vec3(0.0f, 0.0f, 10.0f), vec3(0.0f, 0.0f, -0.0f), vec3(0.0f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(0.0f, 0.0f, 10.0f), vec3(0.0f, 0.0f, -0.0f), vec3(0.0f, 0.0f, 0.0f)},
-        quintic_hermite_point{vec3(0.0f, 0.0f, 10.0f), vec3(0.0f, 0.0f, -0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.0f, 0.0f, 10.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.0f, 0.0f, 10.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.0f, 0.0f, 10.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         // Flug auf die Erde zu
-        quintic_hermite_point{vec3(0.0f, 0.0f, 10.0f), vec3(0.0f, 0.0f, -6.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.0f, 0.0f, 10.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f)},
         //quintic_hermite_point{vec3(0.0f, 0.3f, 04.0f), vec3(0.0f, 0.3f, 0.0f), vec3(0.0f, 0.2f, 0.0f)},
         quintic_hermite_point{vec3(0.8f, 0.8f, 04.0f), vec3(0.65f, 0.3f, -3.0f), vec3(0.0f, 0.2f, 0.0f)},
         quintic_hermite_point{vec3(1.256274f, 1.366754f,  1.154455f), vec3(0.09f, 0.025f, -1.38f), vec3(0.0f, 0.0f, 0.0f)},

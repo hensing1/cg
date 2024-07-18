@@ -109,14 +109,14 @@ void main() {
     vec3 ambient = 0.3 * brdfColor * ao;
     
     // Diffuse component
-    vec3 diffuse = max(dot(N, L), 0.0) * brdfColor * vec3(1.0);
+    vec3 diffuse = max(dot(N, L), EPSILON) * brdfColor * vec3(1.0);
     
     // Specular component
     vec3 specular = vec3(0.0);
     if (NdotL > 0.0) {
         vec3 viewDir = V; 
         vec3 reflectDir = reflect(-L, N);
-        float spec = pow(max(dot(viewDir, reflectDir), 0.0), 8.0);
+        float spec = pow(max(dot(viewDir, reflectDir), EPSILON), 8.0);
         specular = vec3(1.0) * spec; // Assuming white specular light
     }
     
