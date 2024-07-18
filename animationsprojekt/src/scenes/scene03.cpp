@@ -24,6 +24,7 @@ Scene03::Scene03() {
     bunny.load("meshes/bunny.obj");
     laptopDeckel.load("meshes/sc3_laptopdeckel.obj");
     laptopTastatur.load("meshes/sc3_laptoptastatur.obj");
+    laptopScreen.load("meshes/plane.obj");
     folien.load("meshes/plane.obj");
     
     holztexture.load(Texture::Format::SRGB8, "textures/Wood.png", 0);
@@ -353,6 +354,21 @@ int get_folie(int time) {
     return 0;
 }
 
+int get_laptop_screen(int time) {
+    if      (time < 4) return 0;
+    else if (time < 7) return 1;
+    else if (time < 10) return 2;
+    else if (time < 12) return 3;
+    else if (time < 13) return 0;
+    else if (time < 20) return 4;
+    else if (time < 22) return 0;
+    else if (time < 28) return 5;
+    else if (time < 30) return 0;
+    else if (time < 88) return 6;
+    return 0;
+}
+
+
 
 int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     if (!DEBUG) {
@@ -452,6 +468,8 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     program.set("uTexture", 2);
     walls.draw();
     
+
+    // NOTE: Folien
     folienzahl = get_folie(floor(time));
     folienTex.load(Texture::Format::SRGB8, "textures/folien/" + std::to_string(folienzahl) + ".png", 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -467,15 +485,39 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
                      0.0f, 0.0f, 0.0f, 1.0f
                    )
     );
+ 
 
-    //glEnable(GL_BLEND);
-    //glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+    // NOTE: Laptop-Screen
+    if (time > laptop_start_time + 3.5f) {
+        laptopzahl = get_laptop_screen(floor(4*time - 4*laptop_start_time - 4*3.5f));
+        laptopScreenTex.load(Texture::Format::SRGB8, "textures/laptop/" + std::to_string(laptopzahl) + ".png", 1);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        laptopScreenTex.bind(Texture::Type::TEX2D, 5);
+        localToWorld = rotate(translate(mat4(1.0f), laptopPos), 3.f, vec3(0, 1, 0));
+        program.set("uLocalToWorld", localToWorld);
+        program.set("uLocalToClip", worldToClip * localToWorld);
+        program.set("uTexture", 5);
+        this->drawMesh(0.21f, laptopPos+vec3(0.034f, 0.28f, -0.055f), program, laptopScreen, worldToClip ,
+                       mat4(Operations::get_rotation_matrix(vec3(-0.18f, -0.145f, 0.0f))) * mat4(
+                         1.82184f, 0.0f, 0.0f, 0.0f,
+                         0.0f, 0.0f, 1.0f, 0.0f,
+                         0.0f,-1.0f, 0.0f, 0.0f,
+                         0.0f, 0.0f, 0.0f, 1.0f
+                       )
+        );
+    }
+
+
+    // NOTE: Prof. Hullin
+    localToWorld = translate(mat4(1.0f), hoersaalOffset);
+    program.set("uLocalToWorld", localToWorld);
+    program.set("uLocalToClip", worldToClip * localToWorld);
     hullinTex.bind(Texture::Type::TEX2D, 3);
     program.set("uTexture", 3);
     hullinPos = hullinPath.evaluateSplineAllowLoop(time*2);
     mat4 hullinMatrix = mat4(Operations::get_rotation_matrix(hullinRotationPath.evaluateSplineAllowLoop(time*2)));
     this->drawMesh(1.5f, hullinPos, program, hullin, worldToClip, hullinMatrix);
-    //glDisable(GL_BLEND);
 
 
     if (DEBUG) render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 2), camera.target);
