@@ -20,7 +20,7 @@ Scene01::Scene01() {
     program.load("sc1_earth.vert", "sc1_earth.frag");
     sphere.load("meshes/highpolysphere.obj");
 
-    int num_subdivisions = 3;
+    int num_subdivisions = 7;
     earth = generate_sphere(num_subdivisions);
 
     heightmapHandle = generate_and_apply_heightmap();

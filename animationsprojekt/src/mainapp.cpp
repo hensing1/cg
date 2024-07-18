@@ -51,8 +51,7 @@ MainApp::MainApp() : App(800, 600) {
     //  NOTE: Nur zu Testzwecken -> später entfernen
     // program.load("TMP_projection.vert", "TMP_lambert.frag");
 
-    scene_start_time = 0.0f;
-    current_time = 2.4f;
+    scene_start_time = current_time = prev_time = 0.0f;
     switchScene();
 }
 
@@ -89,10 +88,6 @@ void MainApp::render() {
         scene->cloudProgram.set("uBeta", sc1_beta);
         scene->cloudProgram.set("uGamma", sc1_gamma);
         scene->cloudProgram.set("uAtmosColor", sc1_atmosColor);
-    }
-    if (SCENE == 2) {
-        Scene02* scene = (Scene02*)current_scene.get();
-        scene->debugPos = sc1_lightDir;
     }
     if (SCENE == 3) {
         Scene03* scene = (Scene03*)current_scene.get();
