@@ -114,6 +114,22 @@ Scene03::Scene03() {
         hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  0.0f, 0.0f)},
         hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  0.0f, 0.0f)},
         hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  0.0f, 0.0f)},
+
+        // Hullin hält Vorlesung
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  0.4f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  -0.2f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  0.4f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  -0.2f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  0.4f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  -0.2f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  0.4f, 0.0f)},
+        // Vorlesung geht weiter
+        hermite_point{vec3(-0.8194f, -0.8f, -08.2779f), vec3(0.0f,  0.4f, 0.0f)},
+        hermite_point{vec3(-0.8194f, -0.8f, -08.2779f), vec3(0.0f,  0.4f, 0.0f)},
+        hermite_point{vec3(-0.8194f, -0.8f, -08.2779f), vec3(0.0f,  0.4f, 0.0f)},
+        hermite_point{vec3(-0.8194f, -0.8f, -08.2779f), vec3(0.0f,  0.4f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  0.4f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  0.4f, 0.0f)},
     };
     this -> hullinPath.set_path(hullinPathPoints);
 
@@ -149,6 +165,22 @@ Scene03::Scene03() {
         hermite_point{vec3(0.0f, -5*PI/2, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
         hermite_point{vec3(0.0f, -5*PI/2, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
         hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
+
+        // Hullin hält Vorlesung
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  PI/32)},
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  -PI/32)},
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  PI/16)},
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  -PI/16)},
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  PI/32)},
+        hermite_point{vec3(0.0f, -1*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  -PI/32)},
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  PI/32)},
+        // Vorlesung geht weiter
+        hermite_point{vec3(0.0f, PI/2-PI/8, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
+        hermite_point{vec3(0.0f, PI/2-PI/8, 0.0f), vec3(0.0f, 0.0f,  PI/32)},
+        hermite_point{vec3(0.0f, PI/2-PI/8, 0.0f), vec3(0.0f, 0.0f,  -PI/32)},
+        hermite_point{vec3(0.0f, PI/2-PI/8, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
         hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
         hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
     };
