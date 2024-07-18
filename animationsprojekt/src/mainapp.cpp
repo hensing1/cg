@@ -41,7 +41,7 @@ MainApp::MainApp() : App(800, 600) {
     sc3_roughness = 0.5f;
 
     FRAME = 0;
-    SCENE = prev_scene = 2;
+    SCENE = prev_scene = 1;
     DEBUG_MODE = false;
     ANIMATION_PLAYING = true;
 
@@ -89,6 +89,10 @@ void MainApp::render() {
         scene->cloudProgram.set("uBeta", sc1_beta);
         scene->cloudProgram.set("uGamma", sc1_gamma);
         scene->cloudProgram.set("uAtmosColor", sc1_atmosColor);
+    }
+    if (SCENE == 2) {
+        Scene02* scene = (Scene02*)current_scene.get();
+        scene->debugPos = sc1_lightDir;
     }
     if (SCENE == 3) {
         Scene03* scene = (Scene03*)current_scene.get();
@@ -217,6 +221,9 @@ void MainApp::buildImGui() {
             ImGui::SliderFloat("gamma", &sc1_gamma, -3.14, 3.14);
             ImGui::ColorPicker3("athmosphere color", (float*)&sc1_atmosColor);
         }
+    }
+    else if (SCENE == 2) {
+        ImGui::SphericalSlider("sun", sc1_lightDir);
     }
     else if (SCENE == 3) {
         ImGui::SliderFloat("Roughness", &sc3_roughness, 0.0f, 1.0f);

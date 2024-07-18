@@ -12,5 +12,5 @@ uniform sampler2D uTexture;
 void main() {
     vec3 normal = normalize(interpNormal);
     vec3 texColor = texture(uTexture, fragTexCoords).rgb;
-    fragColor = vec4(texColor, 1.0);
+    fragColor = vec4(texColor, 1.0) * max(dot(normal, uLightDir), 0.1);
 }

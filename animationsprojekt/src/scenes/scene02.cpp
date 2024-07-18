@@ -3,6 +3,7 @@
 #include "framework/gl/texture.hpp"
 #include <glm/glm.hpp>
 #include <glad/glad.h>
+#include <iostream>
 
 Scene02::Scene02() {
 
@@ -97,7 +98,7 @@ int Scene02::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     cloudProgram.set("uCameraMatrix", camera.cameraMatrix);
     cloudProgram.set("uAspectRatio", camera.aspectRatio);
     cloudProgram.set("uFocalLength", camera.focalLength);
-    cloudProgram.set("uLightDir", normalize(vec3(1)));
+    cloudProgram.set("uLightDir", lightDir);
 
     cloudCanvas.draw();
 
@@ -105,25 +106,28 @@ int Scene02::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
 
     program.bind();
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
+    mat4 localToWorld = scale(mat4(1.0f), vec3(0.5f));
+    program.set("uLocalToWorld", localToWorld);
+    program.set("uLocalToClip", worldToClip * localToWorld);
+    program.set("uLightDir", lightDir);
 
-    vec3 campus_pos(0.0f);
     bodenTex.bind(Texture::Type::TEX2D, 0);
     program.set("uTexture", 0);
-    this->drawMesh(0.5f, campus_pos, program, campusBoden, worldToClip);
+    campusBoden.draw();
 
     buildingsTex.bind(Texture::Type::TEX2D, 1);
     program.set("uTexture", 1);
-    this->drawMesh(0.5f, campus_pos, program, buildings, worldToClip);
+    buildings.draw();
     
     glActiveTexture(GL_TEXTURE2);
     kronenTex.bind(Texture::Type::TEX2D, 2);
     program.set("uTexture", 2);
-    this->drawMesh(0.5f, campus_pos, program, kronen, worldToClip);
+    kronen.draw();
 
     glActiveTexture(GL_TEXTURE3);
     stammTex.bind(Texture::Type::TEX2D, 3);
     program.set("uTexture", 3);
-    this->drawMesh(0.5f, campus_pos, program, stamm, worldToClip);
+    stamm.draw();
 
     if (DEBUG) render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 4));
 
