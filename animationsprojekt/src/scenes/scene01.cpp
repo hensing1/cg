@@ -1,5 +1,6 @@
 #include "csv.hpp"
-#include "gl/shader.hpp"
+#include "gl/buffer.hpp"
+#include "gl/program.hpp"
 #include "glm/fwd.hpp"
 #include "mesh.hpp"
 #include "objparser.hpp"
@@ -10,20 +11,29 @@
 
 Scene01::Scene01() {
 
-    program.load("earth.vert", "earth.frag");
+    skyboxProgram.load("sc1_skybox.vert", "sc1_skybox.frag");
+    skybox = generate_sphere(3);
+    skyboxTexture.load(Texture::Format::SRGB8, "textures/sterne2.jpg", 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    program.load("sc1_earth.vert", "sc1_earth.frag");
     sphere.load("meshes/highpolysphere.obj");
 
-    int num_subdivisions = 6;
+    int num_subdivisions = 3;
     earth = generate_sphere(num_subdivisions);
 
     heightmapHandle = generate_and_apply_heightmap();
 
-    cloudProgram.load("clouds.vert", "clouds.frag");
+    cloudProgram.load("sc1_clouds.vert", "sc1_clouds.frag");
     cloudProgram.set("uEpsilon", 0.01f);
     cloudProgram.set("uEarthRadius", earthRadius);
     cloudCanvas.load(FULLSCREEN_VERTICES, FULLSCREEN_INDICES);
 
     camera_path_points = {
+        quintic_hermite_point{vec3(1.5f, 0.0f, 0.0f), vec3(-0.f, 0.0f, 0.0f), vec3(-0.f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(1.5f, 0.0f, 0.0f), vec3(-0.f, 0.0f, 0.0f), vec3(-0.f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(1.5f, 0.0f, 0.0f), vec3(-0.f, 0.0f, 0.0f), vec3(-0.f, 0.0f, 0.0f)},
         // Flug auf die Erde zu
         quintic_hermite_point{vec3(1.5f, 0.0f, 0.0f), vec3(-0.3f, 0.0f, 0.0f), vec3(-0.4f, 0.0f, 0.0f)},
           //quintic_hermite_point{vec3(1.5f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f), vec3(-0.3f, 0.0f, 0.0f)},
@@ -43,6 +53,9 @@ Scene01::Scene01() {
         quintic_hermite_point{vec3(0.05f, 1.711159f, 0.910796f), vec3(-0.050f, 0.0f, 0.0f), vec3( 0.0f, 0.0f, 0.0f)},
     };
     view_path_points = {
+        quintic_hermite_point{vec3(0.0f, 0.0f, 10.0f), vec3(0.0f, 0.0f, -0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.0f, 0.0f, 10.0f), vec3(0.0f, 0.0f, -0.0f), vec3(0.0f, 0.0f, 0.0f)},
+        quintic_hermite_point{vec3(0.0f, 0.0f, 10.0f), vec3(0.0f, 0.0f, -0.0f), vec3(0.0f, 0.0f, 0.0f)},
         // Flug auf die Erde zu
         quintic_hermite_point{vec3(0.0f, 0.0f, 10.0f), vec3(0.0f, 0.0f, -6.0f), vec3(0.0f, 0.0f, 0.0f)},
         //quintic_hermite_point{vec3(0.0f, 0.3f, 04.0f), vec3(0.0f, 0.3f, 0.0f), vec3(0.0f, 0.2f, 0.0f)},
@@ -64,17 +77,28 @@ int Scene01::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
         camera.setViewDirAlongSpline(time / 2);
         camera.setPosAlongSpline(time / 2);
     }
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     bool cameraChanged = camera.updateIfChanged();
+    mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
 
-    glBindTexture(GL_TEXTURE_2D, heightmapHandle);
+    // Skybox rendern
+    skyboxProgram.bind();
+    mat4 skyboxTransform = scale(translate(mat4(1.0f), camera.cartesianPosition), vec3(100)); // Kamera immer in der Mitte der Skybox
+
+    skyboxProgram.set("uLocalToWorld", skyboxTransform);
+    skyboxProgram.set("uLocalToClip", worldToClip * skyboxTransform);
+    skyboxTexture.bind(Texture::Type::TEX2D);
+    glDisable(GL_CULL_FACE); // wir schauen die Himmelskugel von innen an
+    skybox.draw();
+    glEnable(GL_CULL_FACE);
 
     // Erde rendern
     program.bind();
+    // glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, heightmapHandle);
     glDisable(GL_BLEND);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     vec3 pos = vec3(0, 0, 0);
-    mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
     mat4 localToWorld = scale(translate(mat4(1.0f), pos), vec3(earthRadius));
 
     program.set("uLocalToWorld", localToWorld);
@@ -85,7 +109,9 @@ int Scene01::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     cloudProgram.bind();
 
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // glBlendFunc(GL_ONE, GL_ONE);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
     cloudProgram.set("uTime", time);
 
@@ -103,7 +129,7 @@ int Scene01::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
         render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 2), camera.target);
     }
 
-    if (time >= 11.3f) return 2;
+    if (time >= 15.3f) return 2;
     return 0;
 }
 
@@ -160,7 +186,7 @@ GLuint Scene01::generate_and_apply_heightmap() {
 
     GLuint handle;
     glGenTextures(1, &handle);
-    glActiveTexture(GL_TEXTURE0);
+    // glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, handle);
     
     // internal format: GL_R32F
@@ -197,7 +223,7 @@ void Scene01::calculate_texture_coordinates(std::vector<Mesh::VertexPCN>& sphere
 }
 
 std::vector<std::vector<float>> Scene01::load_elevation_map() {
-    auto values = CSV::read_csv("textures/elevation.csv");
+    auto values = CSV::read_csv("textures/elevation_hi_res.csv");
 
     float oceanMarker = 99999.0f;
     float max = -INFINITY;
@@ -254,32 +280,6 @@ HDS Scene01::generate_icosahedron() {
     HDS icosahedron = HDS(positions, icoInds);
     return icosahedron;
 }
-
-// HDS generateTrongle() {
-//     std::vector<float> trongleVerts {
-//         -1, 1, 0,
-//         -1, -1, 0,
-//         1, -1, 0
-//     };
-//
-//     std::vector<unsigned int> trongleInds {
-//         0,1,2,
-//         2,1,0
-//     };
-//
-//     auto positions = std::vector<glm::vec3>();
-//     for (size_t i = 0; i < trongleVerts.size() / 3; i++) {
-//         positions.push_back({
-//             trongleVerts[3 * i],
-//             trongleVerts[3 * i + 1],
-//             trongleVerts[3 * i + 2]
-//         });
-//     }
-//
-//     HDS icosahedron = HDS(positions, trongleInds);
-//     return icosahedron;
-//
-// }
 
 Scene01::~Scene01() {
     glDisable(GL_BLEND);

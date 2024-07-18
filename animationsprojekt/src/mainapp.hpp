@@ -63,9 +63,13 @@ class MainApp : public App {
     vec3  sc1_mountainColor;
     float sc1_landThreshold;
 
-    float sc1_epsilon;
     float sc1_alpha;
     float sc1_beta;
+    float sc1_gamma;
+    vec3 sc1_atmosColor;
     // Szene 3
     float sc3_roughness;
+    float sc3_debugPosX;
+    float sc3_debugPosY;
+    float sc3_debugPosZ;
 };
