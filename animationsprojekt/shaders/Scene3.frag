@@ -6,12 +6,12 @@ in vec3 worldPos;
 
 out vec3 fragColor;
 
-
 uniform sampler2D texNoise;
 uniform sampler2D depthTexture;
 uniform sampler2D uTexture;
+uniform sampler2D ssaoTexture; // Add SSAO texture uniform
 uniform vec3 uCameraPos;
-uniform vec3 uLightDir;
+uniform vec3 uLightPos;
 uniform bool uUseOrenNayar;
 uniform float uRoughness;
 uniform float uMetallness;
@@ -24,11 +24,10 @@ uniform vec3 samples[kernelSize];
 uniform bool uUseTexture;
 uniform vec3 uColor;
 
-
 const float PI = 3.14159265359;
 const float EPSILON = 1e-5;
 
-vec3 L = normalize(uLightDir);
+vec3 L = normalize(uLightPos - worldPos);
 
 vec3 F_schlickApprox(float HdotV, vec3 R0) {
     return R0 + (1.0 - R0) * pow(1.0 - HdotV, 5.0);
@@ -40,7 +39,7 @@ float D_beckmannDistribution(float NdotH, float sigma2) {
     float NdotH2 = NdotH * NdotH;
 
     float denom = (NdotH2 * alpha2 + (1.0 - NdotH2));
-    denom = PI * denom * denom + EPSILON;
+    denom = PI * denom * denom;
 
     float exponent = (NdotH2 - 1.0) / (NdotH2 * alpha2);
 
@@ -82,55 +81,44 @@ vec3 principledBRDF(vec3 N, vec3 L, vec3 V, vec3 H, float NdotL, float NdotV, fl
     float G = G_geometricAttenuation(NdotL, NdotV);
 
     vec3 diffuse = baseColor / PI;
-    vec3 specular = F * D * G / (4.0 * NdotL * NdotV + EPSILON);
+    vec3 specular = F * D * G / (4.0 * NdotL * NdotV);
 
     return diffuse + specular;
 }
 
-float calculateSSAO(vec3 fragPos, vec3 normal, vec2 TexCoords) {
-    vec2 noiseScale = vec2(textureSize(texNoise, 0));
-    vec3 randomVec = texture(texNoise, TexCoords * noiseScale).xyz;
-
-    vec3 tangent = normalize(randomVec - normal * dot(randomVec, normal));
-    vec3 bitangent = cross(normal, tangent);
-    mat3 TBN = mat3(tangent, bitangent, normal);
-
-    float occlusion = 0.0;
-    for(int i = 0; i < kernelSize; ++i)
-    {
-        vec3 sample = TBN * samples[i];
-        sample = fragPos + sample * 0.5;
-
-        vec4 offset = view * vec4(sample, 1.0);
-        offset = projection * offset;
-        offset.xyz /= offset.w;
-        offset.xyz = offset.xyz * 0.5 + 0.5;
-
-        float sampleDepth = texture(depthTexture, offset.xy).z;
-        float rangeCheck = smoothstep(0.0, 1.0, 0.5 / abs(fragPos.z - sampleDepth));
-        occlusion += (sampleDepth >= sample.z + 0.025 ? 1.0 : 0.0) * rangeCheck;
-    }
-    occlusion = 1.0 - (occlusion / kernelSize);
-    return occlusion;
-}
 
 void main() {
     vec3 N = normalize(interpNormal);
     vec3 V = normalize(uCameraPos - worldPos);
-    vec3 L = normalize(uLightDir);
     vec3 H = normalize(L + V);
-    vec3 baseColor;
 
     float NdotL = max(dot(N, L), 0.0);
     float NdotV = max(dot(N, V), 0.0);
-    float NdotH = max(dot(N, H), EPSILON);
+    float NdotH = max(dot(N, H), 0.0);
     float HdotV = max(dot(H, V), 0.0);
 
-
-
-    baseColor = uUseTexture ? texture(uTexture, interpTexCoords).rgb : uColor;
+    vec3 baseColor = uUseTexture ? texture(uTexture, interpTexCoords).rgb : uColor;
     vec3 brdfColor = principledBRDF(N, L, V, H, NdotL, NdotV, NdotH, HdotV, baseColor, uRoughness, uMetallness);
     
-    float ao = calculateSSAO(worldPos, N, interpTexCoords);
-    fragColor = brdfColor;
+    // Fetch the SSAO value from the SSAO texture
+    float ao = texture(ssaoTexture, interpTexCoords).r;
+    
+    // Ambient component
+    vec3 ambient = 0.3 * brdfColor * ao;
+    
+    // Diffuse component
+    vec3 diffuse = max(dot(N, L), 0.0) * brdfColor * vec3(1.0);
+    
+    // Specular component
+    vec3 specular = vec3(0.0);
+    if (NdotL > 0.0) {
+        vec3 viewDir = normalize(-worldPos); // Assuming view position is at (0,0,0)
+        vec3 reflectDir = reflect(-L, N);
+        float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
+        specular = vec3(1.0) * spec; // Assuming white specular light
+    }
+    
+    // Final color calculation
+    vec3 lighting = ambient + diffuse + specular;
+    fragColor = lighting;
 }

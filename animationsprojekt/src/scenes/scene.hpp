@@ -118,6 +118,8 @@ class Scene03 : public Scene {
     vec3 debugPos;
   private:
     void render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition, vec3 target);
+    void renderSceneObjects(Program& program, MovableCamera& camera, float time);
+    void renderQuad();
     void setupGBuffer();
     int folienzahl = 1;
 
@@ -143,7 +145,9 @@ class Scene03 : public Scene {
     std::vector<glm::vec3> ssaoKernel;
     GLuint gPosition;
     GLuint noiseTexture;
-
+    GLuint ssaoFBO;
+    GLuint ssaoColorBuffer;
+    Program ssaoProgram;
     Hermite hullinPath;
     Hermite hullinRotationPath;
     std::vector<hermite_point> hullinPathPoints;
