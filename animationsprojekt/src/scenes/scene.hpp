@@ -140,4 +140,6 @@ class Scene03 : public Scene {
     std::vector<hermite_point> hullinPathPoints;
     std::vector<hermite_point> hullinRotationPathPoints;
     vec3 hullinPos;
+
+    Hermite tuerPath;
 };

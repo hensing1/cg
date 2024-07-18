@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
+#include <iterator>
 #include <memory>
 using namespace glm;
 
@@ -51,8 +52,7 @@ MainApp::MainApp() : App(800, 600) {
     //  NOTE: Nur zu Testzwecken -> später entfernen
     // program.load("TMP_projection.vert", "TMP_lambert.frag");
 
-    scene_start_time = 0.0f;
-    current_time = 2.4f;
+    scene_start_time = prev_time = current_time = 0.0f;
     switchScene();
 }
 

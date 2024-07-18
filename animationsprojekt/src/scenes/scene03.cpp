@@ -18,7 +18,7 @@ Scene03::Scene03() {
     beamer.load("meshes/sc3_beamer.obj");
     tueren.load("meshes/sc3_tueren.obj");
     sphere.load("meshes/highpolysphere.obj");
-    hullin.load("meshes/plane.obj");
+    hullin.load("meshes/hullin.obj");
     folien.load("meshes/plane.obj");
     
     holztexture.load(Texture::Format::SRGB8, "textures/Wood.png", 0);
@@ -77,81 +77,102 @@ Scene03::Scene03() {
     };
 
 
-
+    /** 
+     *  NOTE:  Hullin-Pfad
+    */
     this -> hullinPathPoints = {
-        hermite_point{vec3( 6.7341f, -1.0f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
-        hermite_point{vec3( 6.7341f, -1.0f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
-        hermite_point{vec3( 6.7341f, -1.0f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
-        hermite_point{vec3( 6.7341f, -1.0f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
-        hermite_point{vec3( 6.7341f, -1.0f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
-        hermite_point{vec3( 6.7341f, -1.0f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
-        hermite_point{vec3( 6.7341f, -1.0f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
-        hermite_point{vec3( 6.7341f, -1.0f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
-        hermite_point{vec3( 6.7341f, -1.0f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
-        hermite_point{vec3( 6.7341f, -1.0f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
-        hermite_point{vec3( 6.7341f, -1.0f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
-        hermite_point{vec3( 6.7341f, -1.0f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 6.7341f, -1.5f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 6.7341f, -1.5f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 6.7341f, -1.5f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 6.7341f, -1.5f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 6.7341f, -1.5f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 6.7341f, -1.5f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 6.7341f, -1.5f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 6.7341f, -1.5f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 6.7341f, -1.5f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 6.7341f, -1.5f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 6.7341f, -1.5f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 6.7341f, -1.5f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
         // Hullin schaut kurz rein
-        hermite_point{vec3( 5.8298f, -1.0f, -10.8305f), vec3(0.0f,  0.0f, 0.0f)},
-        hermite_point{vec3( 3.8298f, -1.0f, -10.8305f), vec3(0.0f,  0.0f, 0.0f)},
-        hermite_point{vec3( 3.8298f, -1.0f, -10.8305f), vec3(0.0f,  0.0f, 0.0f)},
-        hermite_point{vec3( 5.8298f, -1.0f, -10.8305f), vec3(0.0f,  0.0f, 0.0f)},
-        hermite_point{vec3( 6.7341f, -1.0f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 5.8298f, -1.5f, -10.8305f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 3.8298f, -1.5f, -10.8305f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 3.8298f, -1.5f, -10.8305f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 5.8298f, -1.5f, -10.8305f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3( 6.7341f, -1.5f, -12.1000f), vec3(0.0f,  0.0f, 0.0f)},
         // Hullin läuft rein
-        hermite_point{vec3( 3.1000f, -1.0f, -11.8246f), vec3(0.0f,  0.8f, 0.0f)},
-        hermite_point{vec3( 2.0000f, -1.0f, -09.0236f), vec3(0.0f, -0.8f, 0.0f)},
-        hermite_point{vec3( 0.9000f, -1.0f, -09.0236f), vec3(0.0f,  0.8f, 0.0f)},
-        hermite_point{vec3(-0.2000f, -1.0f, -09.0236f), vec3(0.0f, -0.8f, 0.0f)},
-        hermite_point{vec3(-1.3000f, -1.0f, -09.0236f), vec3(0.0f,  0.8f, 0.0f)},
-        hermite_point{vec3(-2.4000f, -1.0f, -09.0236f), vec3(0.0f, -0.8f, 0.0f)},
-        hermite_point{vec3(-3.5000f, -0.8f, -09.0236f), vec3(0.0f,  0.8f, 0.0f)},
+        hermite_point{vec3( 3.1000f, -1.5f, -11.8246f), vec3(0.0f,  0.8f, 0.0f)},
+        hermite_point{vec3( 2.0000f, -1.5f, -09.0236f), vec3(0.0f, -0.8f, 0.0f)},
+        hermite_point{vec3( 0.9000f, -1.5f, -09.0236f), vec3(0.0f,  0.8f, 0.0f)},
+        hermite_point{vec3(-0.2000f, -1.5f, -09.0236f), vec3(0.0f, -0.8f, 0.0f)},
+        hermite_point{vec3(-1.3000f, -1.5f, -09.0236f), vec3(0.0f,  0.8f, 0.0f)},
+        hermite_point{vec3(-2.4000f, -1.5f, -09.0236f), vec3(0.0f, -0.8f, 0.0f)},
+        hermite_point{vec3(-3.5000f, -1.3f, -09.0236f), vec3(0.0f,  0.8f, 0.0f)},
         // Hullin nimmt seinen rechtmäßigen Platz ein
-        hermite_point{vec3(-4.9081f, -0.8f, -09.0236f), vec3(0.0f,  0.0f, 0.0f)},
-        hermite_point{vec3(-4.9081f, -0.2f, -08.9779f), vec3(0.0f,  0.0f, 0.0f)},
-        hermite_point{vec3(-4.9081f, -0.2f, -08.9779f), vec3(0.0f,  0.0f, 0.0f)},
-        hermite_point{vec3(-4.9081f, -0.2f, -08.9779f), vec3(0.0f,  0.0f, 0.0f)},
-        hermite_point{vec3(-4.9081f, -0.2f, -08.9779f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3(-4.9081f, -1.3f, -09.0236f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3(-4.9081f, -0.8f, -08.9779f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3(-4.9081f, -0.8f, -08.9779f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  0.0f, 0.0f)},
+        hermite_point{vec3(-6.3081f, -0.8f, -08.2779f), vec3(0.0f,  0.0f, 0.0f)},
     };
     this -> hullinPath.set_path(hullinPathPoints);
 
     this -> hullinRotationPathPoints = {
-        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
-        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
-        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
-        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
-        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
-        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
-        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
-        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
-        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
-        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
-        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
-        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(0.0f, PI/2, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(0.0f, PI/2, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(0.0f, PI/2, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(0.0f, PI/2, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(0.0f, PI/2, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(0.0f, PI/2, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(0.0f, PI/2, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(0.0f, PI/2, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(0.0f, PI/2, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(0.0f, PI/2, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(0.0f, PI/2, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(0.0f, PI/2, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
         // Hullin schaut kurz rein
-        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
-        hermite_point{vec3(PI/2, 0.0f, PI/8), vec3(0.0f, 0.0f,  0.0f)},
-        hermite_point{vec3(PI/2, 0.0f, PI/8), vec3(0.0f, 0.0f,  0.0f)},
-        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
-        hermite_point{vec3(PI/2, PI/16, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
+        hermite_point{vec3(0.0f, PI/2, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
+        hermite_point{vec3(0.0f, PI/2, PI/8), vec3(0.0f, 0.0f,  0.0f)},
+        hermite_point{vec3(0.0f, PI/2, PI/8), vec3(0.0f, 0.0f,  0.0f)},
+        hermite_point{vec3(0.0f, PI/2, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
+        hermite_point{vec3(0.0f, PI/2+PI/16, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
         // Hullin läuft rein
-        hermite_point{vec3(PI/2, PI/4, 0.0f), vec3(0.0f, 0.0f,  PI/8)},
-        hermite_point{vec3(PI/2, PI/8, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
-        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f,  PI/8)},
-        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
-        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f,  PI/8)},
-        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
-        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f,  PI/8)},
+        hermite_point{vec3(0.0f, PI/2+PI/4, 0.0f), vec3(0.0f, 0.0f,  PI/8)},
+        hermite_point{vec3(0.0f, PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(0.0f, PI/2, 0.0f), vec3(0.0f, 0.0f,  PI/8)},
+        hermite_point{vec3(0.0f, 5*PI/2, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(0.0f, 5*PI/2, 0.0f), vec3(0.0f, 0.0f,  PI/8)},
+        hermite_point{vec3(0.0f, PI/2, 0.0f), vec3(0.0f, 0.0f, -PI/8)},
+        hermite_point{vec3(0.0f, PI/2, 0.0f), vec3(0.0f, 0.0f,  PI/8)},
         // Hullin nimmt seinen rechtmäßigen Platz ein
-        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
-        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
-        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
-        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
-        hermite_point{vec3(PI/2, 0.0f, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
+        hermite_point{vec3(0.0f, PI/2, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
+        hermite_point{vec3(0.0f, -5*PI/2, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
+        hermite_point{vec3(0.0f, -5*PI/2, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
+        hermite_point{vec3(0.0f, -5*PI/2+PI/8, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
     };
     this -> hullinRotationPath.set_path(hullinRotationPathPoints);
-    std::cout << to_string(hullinRotationPath.get_path()[1].pos) << std::endl;
+    //std::cout << to_string(hullinRotationPath.get_path()[1].pos) << std::endl;
+
+
+
+    // NOTE: Tuer-Pfad
+    
+    std::vector<hermite_point> tuerPathPoints = {
+        hermite_point{vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
+        hermite_point{vec3(0.0f, PI/2, 0.0f), vec3(0.0f, 0.0f,  0.0f)},
+    };
+    this -> tuerPath.set_path(tuerPathPoints);
+
 }
 
+int get_folie(int time) {
+    if      (time < 14) return 0;
+    else if (time < 18) return 1;
+    else if (time < 22) return 2;
+    return 0;
+}
 
 int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     if (!DEBUG) {
@@ -165,7 +186,7 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     glm::vec3 cameraPos = camera.cartesianPosition;
     program.set("uCameraPos", cameraPos);
 
-    vec3 pos = vec3(0.0f, -4.0f, 0.0f);
+    vec3 pos = vec3(0.0f, -3.4f, 0.0f);
     mat4 localToWorld = translate(mat4(1.0f), pos);
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
     program.set("uLocalToWorld", localToWorld);
@@ -175,9 +196,13 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
 
     program.set("uColor", vec3(0.4f));
     beamer.draw();
+
+    mat4 tuerTransformation = mat4(Operations::get_rotation_matrix(tuerPath.evaluateSpline((time-9)/2)));
+    program.set("uLocalToClip", worldToClip * localToWorld * tuerTransformation );
     program.set("uColor", vec3(0.2f));
     tueren.draw();
 
+    program.set("uLocalToClip", worldToClip * localToWorld);
     program.set("uUseTexture", true);
 
     holztexture.bind(Texture::Type::TEX2D, 0);
@@ -191,18 +216,8 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     wallTex.bind(Texture::Type::TEX2D, 2);
     program.set("uTexture", 2);
     walls.draw();
-    hullinTex.bind(Texture::Type::TEX2D, 3);
-    program.set("uTexture", 3);
-    hullinPos = hullinPath.evaluateSplineAllowLoop(time*2);
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-    mat4 hullinMatrix = mat4(Operations::get_rotation_matrix(hullinRotationPath.evaluateSplineAllowLoop(time*2)));
-    this->drawMesh(2.5f, hullinPos, program, hullin, worldToClip, hullinMatrix);
-    glDisable(GL_BLEND);
-
-
-    folienzahl = mod(floor(time/3), 3.0f) + 1;
+    
+    folienzahl = get_folie(floor(time));
     folienTex.load(Texture::Format::SRGB8, "textures/folien/" + std::to_string(folienzahl) + ".png", 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -217,6 +232,16 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
                      0.0f, 0.0f, 0.0f, 1.0f
                    )
     );
+
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+    hullinTex.bind(Texture::Type::TEX2D, 3);
+    program.set("uTexture", 3);
+    hullinPos = hullinPath.evaluateSplineAllowLoop(time*2);
+    mat4 hullinMatrix = mat4(Operations::get_rotation_matrix(hullinRotationPath.evaluateSplineAllowLoop(time*2)));
+    this->drawMesh(1.5f, hullinPos, program, hullin, worldToClip, hullinMatrix);
+    //glDisable(GL_BLEND);
+
 
     if (DEBUG) render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 2), camera.target);
     return 0;
