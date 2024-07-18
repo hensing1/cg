@@ -95,6 +95,8 @@ class Scene02 : public Scene {
     int render(int frame, float time, MovableCamera& camera, bool DEBUG) override;
         // virtual void init(MovableCamera& camera) override;
         ~Scene02();
+
+    Program cloudProgram;
     private:
         void render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition);
         Mesh cloudCanvas;
