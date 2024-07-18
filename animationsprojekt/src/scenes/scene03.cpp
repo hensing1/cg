@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include <glad/glad.h>
 #include <iostream>
+#include <random>
 #include <string>
 #include <vector>
 #include <glm/gtx/string_cast.hpp>
@@ -12,6 +13,7 @@
 
 Scene03::Scene03() {
     program.load("Scene3.vert", "Scene3.frag");
+    ssaoProgram.load("ssao.vert", "ssao.frag");
     walls.load("meshes/sc3_waende.obj");
     boden.load("meshes/sc3_boden.obj");
     holz.load("meshes/sc3_stuehle_pult.obj");
@@ -26,7 +28,7 @@ Scene03::Scene03() {
     laptopTastatur.load("meshes/sc3_laptoptastatur.obj");
     laptopScreen.load("meshes/plane.obj");
     folien.load("meshes/plane.obj");
-    
+
     holztexture.load(Texture::Format::SRGB8, "textures/Wood.png", 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -34,6 +36,10 @@ Scene03::Scene03() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     wallTex.load(Texture::Format::SRGB8, "textures/Wand.jpg", 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    hullinTex.load(Texture::Format::SRGB8, "textures/Hullin.png", 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     hullinTex.load(Texture::Format::SRGB8, "textures/Hullin.png", 0);
@@ -43,9 +49,9 @@ Scene03::Scene03() {
     glm::vec3 lightDir = glm::normalize(glm::vec3(1.0f, -1.0f, 0.0f));
     float metallness = 0.0f;
     bool useOrenNayar = true;
-    float roughness = 0.5f;
-    program.set("uLightDir", lightDir);
-    program.set("uRoughness",roughness);
+    vec3 lightPos = glm::normalize(glm::vec3(1.0f, 1.0f, 1.0f));
+    setupGBuffer();
+    program.set("uLightPos", lightPos);
     program.set("uUseOrenNayar", useOrenNayar);
     program.set("uMetallness", metallness);
     camera_path_points = {
@@ -370,15 +376,168 @@ int get_laptop_screen(int time) {
 
 
 
+GLuint gBuffer;
+GLuint gPosition, gNormal;
+const unsigned int SCR_WIDTH = 800;
+const unsigned int SCR_HEIGHT = 600;
+
+void Scene03::setupGBuffer() {
+    // G-buffer setup
+    glGenFramebuffers(1, &gBuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
+
+    // Position color buffer
+    glGenTextures(1, &gPosition);
+    glBindTexture(GL_TEXTURE_2D, gPosition);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPosition, 0);
+
+    // Normal color buffer
+    glGenTextures(1, &gNormal);
+    glBindTexture(GL_TEXTURE_2D, gNormal);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gNormal, 0);
+
+    // Create and attach depth buffer (renderbuffer)
+    GLuint rboDepth;
+    glGenRenderbuffers(1, &rboDepth);
+    glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, SCR_WIDTH, SCR_HEIGHT);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
+
+    // Finally check if framebuffer is complete
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        std::cout << "Framebuffer not complete!" << std::endl;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    // SSAO FBO setup
+    glGenFramebuffers(1, &ssaoFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, ssaoFBO);
+
+    // SSAO color buffer
+    glGenTextures(1, &ssaoColorBuffer);
+    glBindTexture(GL_TEXTURE_2D, ssaoColorBuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, SCR_WIDTH, SCR_HEIGHT, 0, GL_RED, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ssaoColorBuffer, 0);
+
+    // Check if SSAO framebuffer is complete
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        std::cout << "SSAO Framebuffer not complete!" << std::endl;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    ssaoKernel.resize(64);
+    std::uniform_real_distribution<GLfloat> randomFloats(0.0, 1.0);
+    std::default_random_engine generator;
+    for (unsigned int i = 0; i < 64; ++i) {
+        glm::vec3 sample(
+            randomFloats(generator) * 2.0 - 1.0,
+            randomFloats(generator) * 2.0 - 1.0,
+            randomFloats(generator)
+        );
+        sample = glm::normalize(sample);
+        sample *= randomFloats(generator);
+        float scale = float(i) / 64.0;
+        scale = glm::mix(0.1f, 1.0f, scale * scale);
+        ssaoKernel[i] = sample;
+    }
+    std::vector<glm::vec3> ssaoNoise;
+    for (unsigned int i = 0; i < 16; i++) {
+        glm::vec3 noise(
+            randomFloats(generator) * 2.0 - 1.0,
+            randomFloats(generator) * 2.0 - 1.0,
+            0.0f);
+        ssaoNoise.push_back(noise);
+    }
+    glGenTextures(1, &noiseTexture);
+    glBindTexture(GL_TEXTURE_2D, noiseTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, 4, 4, 0, GL_RGB, GL_FLOAT, &ssaoNoise[0]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+}
+
+
 int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     if (!DEBUG) {
         camera.setViewDirAlongSpline(time / 2);
         camera.setPosAlongSpline(time / 2);
     }
+    // 1. Geometry Pass: Render the scene's geometry and store relevant data in the G-buffer.
+    glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    program.bind();
+    camera.updateIfChanged();
+    renderSceneObjects(program, camera, time);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    // 2. SSAO Pass: Compute SSAO using the G-buffer and store the result in an SSAO texture.
+    glBindFramebuffer(GL_FRAMEBUFFER, ssaoFBO);
+    glClear(GL_COLOR_BUFFER_BIT);
+    ssaoProgram.bind();
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, gPosition);
+    ssaoProgram.set("gPosition", 0);
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, gNormal);
+    ssaoProgram.set("gNormal", 1);
+
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, noiseTexture);
+    ssaoProgram.set("texNoise", 2);
+    ssaoProgram.set("projection", camera.projectionMatrix);
+    ssaoProgram.set("samples", ssaoKernel);
+
+    // Render a screen-filling quad to apply SSAO effect
+    renderQuad();
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    //combine with other Shader
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     program.bind();
 
-    camera.updateIfChanged();
+
+    // Bind other necessary textures
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, gPosition);
+    program.set("gPosition", 0);
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, gNormal);
+    program.set("gNormal", 1);
+
+        // Set the SSAO texture
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, ssaoColorBuffer);
+    program.set("ssaoTexture", 2);
+
+    // Render the final scene with SSAO applied
+    renderSceneObjects(program, camera, time);
+
+    if (DEBUG) render_debug_objects(program, camera.projectionMatrix * camera.viewMatrix, camera.getViewDirAlongSpline(time / 2), camera.target);
+
+    if (time >= 35.2f) return 1;
+    return 0;
+}
+
+
+void Scene03::renderSceneObjects(Program& program, MovableCamera& camera, float time) {
+    mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
+    program.bind();
+    //camera.updateIfChanged();
     glm::vec3 cameraPos = camera.cartesianPosition;
     program.set("uCameraPos", cameraPos);
     
@@ -388,7 +547,6 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
 
     // NOTE: Beamer
     mat4 localToWorld = translate(mat4(1.0f), hoersaalOffset);
-    mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
     program.set("uLocalToWorld", localToWorld);
     program.set("uLocalToClip", worldToClip * localToWorld);
     program.set("uUseTexture", false);
@@ -397,7 +555,10 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
 
 
     // NOTE: Tür
-    program.set("uColor", vec3(0.2f));
+    program.set("uUseTexture", false);
+    program.set("uColor", vec3(0.4));
+    program.set("uMetallness", 0.8f);
+    program.set("uRoughness", 0.9f);
     mat4 tuerTransformation = mat4(Operations::get_rotation_matrix(tuerPath.evaluateSpline((time-9))));
     vec3 tuerPos = hoersaalOffset + vec3(1.0466f, 0.0f, -10.4436f);
     mat4 tuerLocalToWorld = scale(translate(mat4(1.0f), tuerPos), vec3(1.0f));
@@ -411,8 +572,6 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
 
     // NOTE: Suzanne
     program.set("uColor", vec3(0.248f, 0.160f, 0.126f));
-    program.set("uLocalToWorld", localToWorld);
-    program.set("uLocalToClip", worldToClip * localToWorld);
     vec3 suzannePos = hoersaalOffset + vec3(-3.02f, 2.822f + 0.05f * sin(time), -2.5f);
     // vec3 suzannePos = debugPos;
     localToWorld = rotate(scale(translate(mat4(1.0f), suzannePos), vec3(0.6f)), glm::pi<float>(), vec3(0, 1, 0));
@@ -431,7 +590,7 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
 
     bunny.draw();
 
-
+    
     // NOTE: Laptop
     program.set("uColor", vec3(0.1f));
     vec3 laptopPos = hoersaalOffset + vec3(-0.122f, 3.080f, -1.509f);
@@ -446,30 +605,32 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     program.set("uColor", vec3(0.7f));
     laptopTastatur.draw();
 
-
-    // NOTE: Beamer
     localToWorld = translate(mat4(1.0f), hoersaalOffset);
+    worldToClip = camera.projectionMatrix * camera.viewMatrix;
     program.set("uLocalToWorld", localToWorld);
     program.set("uLocalToClip", worldToClip * localToWorld);
-    program.set("uColor", vec3(0.4f));
-    beamer.draw();
 
     program.set("uUseTexture", true);
 
-    holztexture.bind(Texture::Type::TEX2D, 0);
-    program.set("uTexture", 0);
+    holztexture.bind(Texture::Type::TEX2D, 4);
+    program.set("uTexture", 4);
+    program.set("uMetallness", 0.f);
+    program.set("uRoughness", 0.2f);
     holz.draw();
 
-    bodenTex.bind(Texture::Type::TEX2D, 1);
-    program.set("uTexture", 1);
+    bodenTex.bind(Texture::Type::TEX2D, 5);
+    program.set("uTexture", 5);
+    program.set("uRoughness", 1.f);
     boden.draw();
 
-    wallTex.bind(Texture::Type::TEX2D, 2);
-    program.set("uTexture", 2);
+    wallTex.bind(Texture::Type::TEX2D, 6);
+    program.set("uTexture", 6);
     walls.draw();
     
 
     // NOTE: Folien
+    program.set("uMetallness", 0.4f);
+    program.set("uRoughness", 0.2f);
     folienzahl = get_folie(floor(time));
     folienTex.load(Texture::Format::SRGB8, "textures/folien/" + std::to_string(folienzahl) + ".png", 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -520,10 +681,34 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     this->drawMesh(1.5f, hullinPos, program, hullin, worldToClip, hullinMatrix);
 
 
-    if (DEBUG) render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 2), camera.target);
 
-    if (time >= 35.2f) return 1;
-    return 0;
+}
+
+void Scene03::renderQuad() {
+    // Render a full-screen quad for SSAO computation
+    static unsigned int quadVAO = 0;
+    static unsigned int quadVBO;
+    if (quadVAO == 0) {
+        float quadVertices[] = {
+            // positions        // texture Coords
+            -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+             1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+             1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+        };
+        glGenVertexArrays(1, &quadVAO);
+        glGenBuffers(1, &quadVBO);
+        glBindVertexArray(quadVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    }
+    glBindVertexArray(quadVAO);
+    glDrawArrays(GL_TRIANGLES, 0, 4);
+    glBindVertexArray(0);
 }
 
 void Scene03::render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition, vec3 target) {

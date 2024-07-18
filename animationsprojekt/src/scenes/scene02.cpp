@@ -1,19 +1,27 @@
+#include "mesh.hpp"
 #include "scene.hpp"
 #include "framework/gl/texture.hpp"
 #include <glm/glm.hpp>
 #include <glad/glad.h>
+#include <iostream>
 
 Scene02::Scene02() {
+
+    cloudProgram.load("sc2_clouds.vert", "sc2_clouds.frag");
+    cloudCanvas.load(FULLSCREEN_VERTICES, FULLSCREEN_INDICES);
+
     program.load("Scene2.vert", "Scene2.frag");
-    campusBoden.load("meshes/CampusBoden.obj");
+
+    campusBoden.load("meshes/sc2_boden.obj");
     sphere.load("meshes/highpolysphere.obj");
-    buildings.load("meshes/buildings.obj");
+    buildings.load("meshes/sc2_gebaeude.obj");
     kronen.load("meshes/Baumkronen.obj");
     stamm.load("meshes/Baumstamm.obj");
+
     bodenTex.load(Texture::Format::SRGB8,"textures/karte.png",0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    buildingsTex.load(Texture::Format::SRGB8,"textures/Windows2.png",0);
+    buildingsTex.load(Texture::Format::SRGB8,"textures/Campusgebaeude.png",0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     stammTex.load(Texture::Format::SRGB8,"textures/Baumrinde.jpg",0);
@@ -82,27 +90,44 @@ int Scene02::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
         camera.setPosAlongSpline(time / 3);
     }
     camera.updateIfChanged();
-
-    mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    vec3 campus_pos(0.0f);
-    glActiveTexture(GL_TEXTURE0);
-    bodenTex.bind(Texture::Type::TEX2D);
+    cloudProgram.bind();
+    cloudProgram.set("uTime", time);
+    cloudProgram.set("uCameraPosition", camera.cartesianPosition);
+    cloudProgram.set("uCameraMatrix", camera.cameraMatrix);
+    cloudProgram.set("uAspectRatio", camera.aspectRatio);
+    cloudProgram.set("uFocalLength", camera.focalLength);
+    cloudProgram.set("uLightDir", lightDir);
+
+    cloudCanvas.draw();
+
+    glClear(GL_DEPTH_BUFFER_BIT); // Wolken immer im Hintergrund
+
+    program.bind();
+    mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
+    mat4 localToWorld = scale(mat4(1.0f), vec3(0.5f));
+    program.set("uLocalToWorld", localToWorld);
+    program.set("uLocalToClip", worldToClip * localToWorld);
+    program.set("uLightDir", lightDir);
+
+    bodenTex.bind(Texture::Type::TEX2D, 0);
     program.set("uTexture", 0);
-    this->drawMesh(0.5f, campus_pos, program, campusBoden, worldToClip);
-    glActiveTexture(GL_TEXTURE1);
-    buildingsTex.bind(Texture::Type::TEX2D);
+    campusBoden.draw();
+
+    buildingsTex.bind(Texture::Type::TEX2D, 1);
     program.set("uTexture", 1);
-    this->drawMesh(0.5f, campus_pos, program, buildings, worldToClip);
+    buildings.draw();
+    
     glActiveTexture(GL_TEXTURE2);
-    kronenTex.bind(Texture::Type::TEX2D);
+    kronenTex.bind(Texture::Type::TEX2D, 2);
     program.set("uTexture", 2);
-    this->drawMesh(0.5f, campus_pos, program, kronen, worldToClip);
+    kronen.draw();
+
     glActiveTexture(GL_TEXTURE3);
-    stammTex.bind(Texture::Type::TEX2D);
+    stammTex.bind(Texture::Type::TEX2D, 3);
     program.set("uTexture", 3);
-    this->drawMesh(0.5f, campus_pos, program, stamm, worldToClip);
+    stamm.draw();
 
     if (DEBUG) render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 4));
 

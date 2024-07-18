@@ -7,7 +7,6 @@
 #include "scene.hpp"
 #include <algorithm>
 #include <cmath>
-#include <iostream>
 
 Scene01::Scene01() {
 
@@ -20,7 +19,7 @@ Scene01::Scene01() {
     program.load("sc1_earth.vert", "sc1_earth.frag");
     sphere.load("meshes/highpolysphere.obj");
 
-    int num_subdivisions = 3;
+    int num_subdivisions = 6;
     earth = generate_sphere(num_subdivisions);
 
     heightmapHandle = generate_and_apply_heightmap();
@@ -87,14 +86,16 @@ int Scene01::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
 
     skyboxProgram.set("uLocalToWorld", skyboxTransform);
     skyboxProgram.set("uLocalToClip", worldToClip * skyboxTransform);
-    skyboxTexture.bind(Texture::Type::TEX2D);
+    skyboxProgram.set("uTexture", 0);
+    skyboxTexture.bind(Texture::Type::TEX2D, 0);
     glDisable(GL_CULL_FACE); // wir schauen die Himmelskugel von innen an
     skybox.draw();
     glEnable(GL_CULL_FACE);
 
     // Erde rendern
     program.bind();
-    // glActiveTexture(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE0);
+    program.set("heightmap", 0);
     glBindTexture(GL_TEXTURE_2D, heightmapHandle);
     glDisable(GL_BLEND);
 

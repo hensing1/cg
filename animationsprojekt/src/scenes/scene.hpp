@@ -95,6 +95,9 @@ class Scene02 : public Scene {
     int render(int frame, float time, MovableCamera& camera, bool DEBUG) override;
         // virtual void init(MovableCamera& camera) override;
         ~Scene02();
+
+    vec3 debugPos;
+    Program cloudProgram;
     private:
         void render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition);
         Mesh cloudCanvas;
@@ -107,6 +110,7 @@ class Scene02 : public Scene {
         Texture bodenTex;
         Texture kronenTex;
         Texture stammTex;
+        vec3 lightDir = normalize(vec3(-0.74f, 0.56f, 0.36f));
 };
 
 class Scene03 : public Scene {
@@ -118,6 +122,9 @@ class Scene03 : public Scene {
     vec3 debugPos;
   private:
     void render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition, vec3 target);
+    void renderSceneObjects(Program& program, MovableCamera& camera, float time);
+    void renderQuad();
+    void setupGBuffer();
     int folienzahl = 1;
     int laptopzahl = 1;
 
@@ -143,7 +150,12 @@ class Scene03 : public Scene {
     Texture folienTex;
     Texture laptopScreenTex;
     Texture holztexture;
-
+    std::vector<glm::vec3> ssaoKernel;
+    GLuint gPosition;
+    GLuint noiseTexture;
+    GLuint ssaoFBO;
+    GLuint ssaoColorBuffer;
+    Program ssaoProgram;
     Hermite hullinPath;
     Hermite hullinRotationPath;
     std::vector<hermite_point> hullinPathPoints;
