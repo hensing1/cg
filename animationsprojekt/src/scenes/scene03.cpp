@@ -327,6 +327,8 @@ void Scene03::renderSceneObjects(Program& program, MovableCamera& camera, float 
 
     program.set("uUseTexture", false);
     program.set("uColor", vec3(0.4));
+    program.set("uMetallness", 0.8f);
+    program.set("uRoughness", 0.9f);
 
     vec3 suzannePos = vec3(-3.02f, -0.625f + 0.05f * sin(time), -2.5f);
     // vec3 suzannePos = debugPos;
@@ -348,6 +350,7 @@ void Scene03::renderSceneObjects(Program& program, MovableCamera& camera, float 
     program.set("uLocalToWorld", localToWorld);
     program.set("uLocalToClip", worldToClip * localToWorld);
 
+    program.set("uColor", vec3(0.1f));
     laptopDeckel.draw();
     program.set("uColor", vec3(0.7f));
     laptopTastatur.draw();
@@ -367,10 +370,13 @@ void Scene03::renderSceneObjects(Program& program, MovableCamera& camera, float 
 
     holztexture.bind(Texture::Type::TEX2D, 4);
     program.set("uTexture", 4);
+    program.set("uMetallness", 0.f);
+    program.set("uRoughness", 0.2f);
     holz.draw();
 
     bodenTex.bind(Texture::Type::TEX2D, 5);
     program.set("uTexture", 5);
+    program.set("uRoughness", 1.f);
     boden.draw();
 
     wallTex.bind(Texture::Type::TEX2D, 6);

@@ -41,7 +41,7 @@ MainApp::MainApp() : App(800, 600) {
     sc3_roughness = 0.5f;
 
     FRAME = 0;
-    SCENE = prev_scene = 1;
+    SCENE = prev_scene = 3;
     DEBUG_MODE = false;
     ANIMATION_PLAYING = true;
 
@@ -92,6 +92,7 @@ void MainApp::render() {
     if (SCENE == 3) {
         Scene03* scene = (Scene03*)current_scene.get();
         scene->program.set("uRoughness", sc3_roughness);
+        scene->program.set("uMetallness", sc3_metalness);
         scene->debugPos = vec3(sc3_debugPosX, sc3_debugPosY, sc3_debugPosZ);
     }
 
@@ -222,6 +223,7 @@ void MainApp::buildImGui() {
     }
     else if (SCENE == 3) {
         ImGui::SliderFloat("Roughness", &sc3_roughness, 0.0f, 1.0f);
+        ImGui::SliderFloat("Metalness", &sc3_metalness, 0.0f, 1.0f);
         ImGui::SliderFloat("x", &sc3_debugPosX, -10.f, 10.f);
         ImGui::SliderFloat("y", &sc3_debugPosY, -10.f, 10.f);
         ImGui::SliderFloat("z", &sc3_debugPosZ, -10.f, 10.f);
