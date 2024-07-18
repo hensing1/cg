@@ -6,15 +6,16 @@ in vec3 worldPos;
 
 out vec3 fragColor;
 
-uniform sampler2D texNoise;
-uniform sampler2D depthTexture;
 uniform sampler2D uTexture;
-uniform sampler2D ssaoTexture; 
 uniform vec3 uCameraPos;
-uniform vec3 uLightPos;
+uniform vec3 uLightDir;
 uniform bool uUseOrenNayar;
 uniform float uRoughness;
 uniform float uMetallness;
+uniform sampler2D texNoise;
+uniform sampler2D depthTexture;
+uniform sampler2D ssaoTexture; 
+uniform vec3 uLightPos;
 uniform mat4 view;
 uniform mat4 projection;
 
@@ -95,6 +96,7 @@ void main() {
     float NdotV = max(dot(N, V), 0.0);
     float NdotH = max(dot(N, H), 0.0);
     float HdotV = max(dot(H, V), 0.0);
+
 
     vec3 baseColor = uUseTexture ? texture(uTexture, interpTexCoords).rgb : uColor;
     vec3 brdfColor = principledBRDF(N, L, V, H, NdotL, NdotV, NdotH, HdotV, baseColor, uRoughness, uMetallness);

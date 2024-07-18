@@ -19,11 +19,14 @@ Scene03::Scene03() {
     holz.load("meshes/sc3_stuehle_pult.obj");
     beamer.load("meshes/sc3_beamer.obj");
     tueren.load("meshes/sc3_tueren.obj");
+    suzanne.load("meshes/suzanne.obj");
+    bunny.load("meshes/bunny.obj");
     laptopDeckel.load("meshes/sc3_laptopdeckel.obj");
     laptopTastatur.load("meshes/sc3_laptoptastatur.obj");
     sphere.load("meshes/highpolysphere.obj");
     hullin.load("meshes/plane.obj");
     folien.load("meshes/plane.obj");
+
     holztexture.load(Texture::Format::SRGB8, "textures/Wood.png", 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -37,6 +40,11 @@ Scene03::Scene03() {
     hullinTex.load(Texture::Format::SRGB8, "textures/Hullin.png", 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    hullinTex.load(Texture::Format::SRGB8, "textures/Hullin.png", 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glm::vec3 lightDir = glm::normalize(glm::vec3(1.0f, -1.0f, 0.0f));
     float metallness = 0.0f;
     bool useOrenNayar = true;
     vec3 lightPos = glm::normalize(glm::vec3(1.0f, 1.0f, 1.0f));
@@ -252,7 +260,6 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
         camera.setViewDirAlongSpline(time / 2);
         camera.setPosAlongSpline(time / 2);
     }
-
     // 1. Geometry Pass: Render the scene's geometry and store relevant data in the G-buffer.
     glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -317,12 +324,33 @@ void Scene03::renderSceneObjects(Program& program, MovableCamera& camera, float 
     camera.updateIfChanged();
     glm::vec3 cameraPos = camera.cartesianPosition;
     program.set("uCameraPos", cameraPos);
+
     program.set("uUseTexture", false);
-    vec3 laptopPos = vec3(0.312f, -0.938f, -0.629f);
-    mat4 localToWorld = rotate(translate(mat4(1.0f), laptopPos), 3.f, vec3(0, 1, 0));
+    program.set("uColor", vec3(0.4));
+    program.set("uMetallness", 0.8f);
+    program.set("uRoughness", 0.9f);
+
+    vec3 suzannePos = vec3(-3.02f, -0.625f + 0.05f * sin(time), -2.5f);
+    // vec3 suzannePos = debugPos;
+    mat4 localToWorld = rotate(scale(translate(mat4(1.0f), suzannePos), vec3(0.6f)), glm::pi<float>(), vec3(0, 1, 0));
     program.set("uLocalToWorld", localToWorld);
     program.set("uLocalToClip", worldToClip * localToWorld);
 
+    suzanne.draw();
+
+    vec3 bunnyPos = vec3(1.142f, -1.142f, -3.854f);
+    localToWorld = rotate(scale(translate(mat4(1.0f), bunnyPos), vec3(0.4f)), time / 2, vec3(0, 1, 0));
+    program.set("uLocalToWorld", localToWorld);
+    program.set("uLocalToClip", worldToClip * localToWorld);
+
+    bunny.draw();
+
+    vec3 laptopPos = vec3(0.312f, -0.938f, -0.629f);
+    localToWorld = rotate(translate(mat4(1.0f), laptopPos), 3.f, vec3(0, 1, 0));
+    program.set("uLocalToWorld", localToWorld);
+    program.set("uLocalToClip", worldToClip * localToWorld);
+
+    program.set("uColor", vec3(0.1f));
     laptopDeckel.draw();
     program.set("uColor", vec3(0.7f));
     laptopTastatur.draw();
@@ -342,10 +370,13 @@ void Scene03::renderSceneObjects(Program& program, MovableCamera& camera, float 
 
     holztexture.bind(Texture::Type::TEX2D, 4);
     program.set("uTexture", 4);
+    program.set("uMetallness", 0.f);
+    program.set("uRoughness", 0.2f);
     holz.draw();
 
     bodenTex.bind(Texture::Type::TEX2D, 5);
     program.set("uTexture", 5);
+    program.set("uRoughness", 1.f);
     boden.draw();
 
     wallTex.bind(Texture::Type::TEX2D, 6);
@@ -378,7 +409,6 @@ void Scene03::renderSceneObjects(Program& program, MovableCamera& camera, float 
     //                  0.0f, 0.0f, 0.0f, 1.0f
     //                )
     // );
-
 
 }
 
