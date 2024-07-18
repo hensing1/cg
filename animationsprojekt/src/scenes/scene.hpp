@@ -114,19 +114,23 @@ class Scene03 : public Scene {
     int render(int frame, float time, MovableCamera& camera, bool DEBUG) override;
     ~Scene03();
 
+    vec3 debugPos;
   private:
     void render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition, vec3 target);
     int folienzahl = 1;
 
     Mesh boden;
     Mesh walls;
-    Mesh laptop;
+    Mesh laptopDeckel;
+    Mesh laptopTastatur;
     Mesh holz;
     Mesh hoersaal;
     Mesh beamer;
     Mesh tueren;
     Mesh hullin;
     Mesh folien;
+    Mesh suzanne;
+    Mesh bunny;
     Mesh sphere;
 
     Texture bodenTex;

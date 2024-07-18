@@ -91,7 +91,9 @@ void MainApp::render() {
         scene->cloudProgram.set("uAtmosColor", sc1_atmosColor);
     }
     if (SCENE == 3) {
-        current_scene->program.set("uRoughness", sc3_roughness);
+        Scene03* scene = (Scene03*)current_scene.get();
+        scene->program.set("uRoughness", sc3_roughness);
+        scene->debugPos = vec3(sc3_debugPosX, sc3_debugPosY, sc3_debugPosZ);
     }
 
     int scene_return = current_scene->render(FRAME, current_time, camera, DEBUG_MODE);
@@ -218,6 +220,9 @@ void MainApp::buildImGui() {
     }
     else if (SCENE == 3) {
         ImGui::SliderFloat("Roughness", &sc3_roughness, 0.0f, 1.0f);
+        ImGui::SliderFloat("x", &sc3_debugPosX, -10.f, 10.f);
+        ImGui::SliderFloat("y", &sc3_debugPosY, -10.f, 10.f);
+        ImGui::SliderFloat("z", &sc3_debugPosZ, -10.f, 10.f);
     }
     ImGui::End();
 }

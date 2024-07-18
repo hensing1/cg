@@ -17,6 +17,10 @@ Scene03::Scene03() {
     holz.load("meshes/sc3_stuehle_pult.obj");
     beamer.load("meshes/sc3_beamer.obj");
     tueren.load("meshes/sc3_tueren.obj");
+    suzanne.load("meshes/suzanne.obj");
+    bunny.load("meshes/bunny.obj");
+    laptopDeckel.load("meshes/sc3_laptopdeckel.obj");
+    laptopTastatur.load("meshes/sc3_laptoptastatur.obj");
     sphere.load("meshes/highpolysphere.obj");
     hullin.load("meshes/plane.obj");
     folien.load("meshes/plane.obj");
@@ -164,14 +168,41 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     camera.updateIfChanged();
     glm::vec3 cameraPos = camera.cartesianPosition;
     program.set("uCameraPos", cameraPos);
-
-    vec3 pos = vec3(0.0f, -4.0f, 0.0f);
-    mat4 localToWorld = translate(mat4(1.0f), pos);
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
+
+    program.set("uUseTexture", false);
+    program.set("uColor", vec3(0.4));
+
+    vec3 suzannePos = vec3(-3.02f, -0.625f + 0.05f * sin(time), -2.5f);
+    // vec3 suzannePos = debugPos;
+    mat4 localToWorld = rotate(scale(translate(mat4(1.0f), suzannePos), vec3(0.6f)), glm::pi<float>(), vec3(0, 1, 0));
     program.set("uLocalToWorld", localToWorld);
     program.set("uLocalToClip", worldToClip * localToWorld);
 
-    program.set("uUseTexture", false);
+    suzanne.draw();
+
+    vec3 bunnyPos = vec3(1.142f, -1.142f, -3.854f);
+    localToWorld = rotate(scale(translate(mat4(1.0f), bunnyPos), vec3(0.4f)), time / 2, vec3(0, 1, 0));
+    program.set("uLocalToWorld", localToWorld);
+    program.set("uLocalToClip", worldToClip * localToWorld);
+
+    bunny.draw();
+
+    program.set("uColor", vec3(0.1f));
+
+    vec3 laptopPos = vec3(0.312f, -0.938f, -0.629f);
+    localToWorld = rotate(translate(mat4(1.0f), laptopPos), 3.f, vec3(0, 1, 0));
+    program.set("uLocalToWorld", localToWorld);
+    program.set("uLocalToClip", worldToClip * localToWorld);
+
+    laptopDeckel.draw();
+    laptopTastatur.draw();
+
+    vec3 hoersaalOffset = vec3(0.0f, -4.0f, 0.0f);
+    localToWorld = translate(mat4(1.0f), hoersaalOffset);
+    program.set("uLocalToWorld", localToWorld);
+    program.set("uLocalToClip", worldToClip * localToWorld);
+
 
     program.set("uColor", vec3(0.4f));
     beamer.draw();
@@ -191,6 +222,7 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     wallTex.bind(Texture::Type::TEX2D, 2);
     program.set("uTexture", 2);
     walls.draw();
+
     hullinTex.bind(Texture::Type::TEX2D, 3);
     program.set("uTexture", 3);
     hullinPos = hullinPath.evaluateSplineAllowLoop(time*2);
@@ -202,21 +234,21 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     glDisable(GL_BLEND);
 
 
-    folienzahl = mod(floor(time/3), 3.0f) + 1;
-    folienTex.load(Texture::Format::SRGB8, "textures/folien/" + std::to_string(folienzahl) + ".png", 0);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    folienTex.bind(Texture::Type::TEX2D, 4);
-    program.set("uTexture", 4);
-    //std::cout << "ESSS:  " << to_string(mat4(Operations::get_rotation_matrix(vec3(PI/2, 0.0f, 0.0f)))) << std::endl;
-    this->drawMesh(2.0f, pos+vec3(-3.84588f, 5.0f, -10.0f), program, folien, worldToClip ,
-                   mat4(
-                     1.33141f, 0.0f, 0.0f, 0.0f,
-                     0.0f, 0.0f, 1.0f, 0.0f,
-                     0.0f,-1.0f, 0.0f, 0.0f,
-                     0.0f, 0.0f, 0.0f, 1.0f
-                   )
-    );
+    // folienzahl = mod(floor(time/3), 3.0f) + 1;
+    // folienTex.load(Texture::Format::SRGB8, "textures/folien/" + std::to_string(folienzahl) + ".png", 0);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    // folienTex.bind(Texture::Type::TEX2D, 4);
+    // program.set("uTexture", 4);
+    // //std::cout << "ESSS:  " << to_string(mat4(Operations::get_rotation_matrix(vec3(PI/2, 0.0f, 0.0f)))) << std::endl;
+    // this->drawMesh(2.0f, hoersaalOffset+vec3(-3.84588f, 5.0f, -10.0f), program, folien, worldToClip ,
+    //                mat4(
+    //                  1.33141f, 0.0f, 0.0f, 0.0f,
+    //                  0.0f, 0.0f, 1.0f, 0.0f,
+    //                  0.0f,-1.0f, 0.0f, 0.0f,
+    //                  0.0f, 0.0f, 0.0f, 1.0f
+    //                )
+    // );
 
     if (DEBUG) render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 2), camera.target);
     return 0;
