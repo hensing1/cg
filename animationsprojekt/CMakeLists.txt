@@ -47,10 +47,61 @@ set(MESHES
     meshes/highpolysphere.obj
     meshes/plane.obj
     meshes/suzanne.obj
+    meshes/Baumkronen.obj
+    meshes/Baumstamm.obj
+    meshes/BodenHS.obj
+    meshes/buildings.obj
+    meshes/Campus.obj
+    meshes/CampusBoden.obj
+    meshes/holzObjekte.obj
+    meshes/HS3.obj
+    meshes/hullin.obj
+    meshes/icosahedron.obj
+    meshes/sc2_boden.obj
+    meshes/sc2_gebaeude.obj
+    meshes/sc3_beamer.obj
+    meshes/sc3_boden.obj
+    meshes/sc3_laptopdeckel.obj
+    meshes/sc3_laptoptastatur.obj
+    meshes/sc3_stuehle_pult.obj
+    meshes/sc3_tuer_links.obj
+    meshes/sc3_tuer_rechts.obj
+    meshes/sc3_waende.obj
+    meshes/walls.obj
 )
 set(TEXTURES
     textures/checker.png
     textures/checkerbw.png
+    textures/Baumrinde.jpg
+    textures/Boden.jpg
+    textures/Campusgebaeude.png
+    textures/elevation.csv
+    textures/elevation_hi_res.csv
+    textures/Hullin.png
+    textures/karte.png
+    textures/sterne1.jpg
+    textures/sterne2.jpg
+    textures/Wand.jpg
+    textures/Wand2.jpeg
+    textures/Windows2.png
+    textures/Wood.png
+    textures/Wood2.jpg
+    textures/folien/0.png
+    textures/folien/1.png
+    textures/folien/2.png
+    textures/folien/3.png
+    textures/folien/4.png
+    textures/folien/5.png
+    textures/folien/6.png
+    textures/folien/7.png
+    textures/folien/8.png
+    textures/laptop/0.png
+    textures/laptop/1.png
+    textures/laptop/2.png
+    textures/laptop/3.png
+    textures/laptop/4.png
+    textures/laptop/5.png
+    textures/laptop/6.png
 )
 set(ICON
     icons/AppIcon.icns

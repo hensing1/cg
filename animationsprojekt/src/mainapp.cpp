@@ -42,11 +42,11 @@ MainApp::MainApp() : App(800, 600) {
     sc3_roughness = 0.5f;
 
     FRAME = 0;
-    SCENE = prev_scene = 3;
+    SCENE = prev_scene = 1;
     DEBUG_MODE = false;
     ANIMATION_PLAYING = true;
 
-    App::imguiEnabled = true;
+    App::imguiEnabled = false;
     camera.cartesianPosition = vec3(0.0f, 0.0f, 0.0f);
 
     //  NOTE: Nur zu Testzwecken -> später entfernen
