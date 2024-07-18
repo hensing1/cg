@@ -69,4 +69,7 @@ class MainApp : public App {
     vec3 sc1_atmosColor;
     // Szene 3
     float sc3_roughness;
+    float sc3_debugPosX;
+    float sc3_debugPosY;
+    float sc3_debugPosZ;
 };

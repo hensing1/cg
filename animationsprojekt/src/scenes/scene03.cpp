@@ -19,6 +19,10 @@ Scene03::Scene03() {
     tueren.load("meshes/sc3_tueren.obj");
     sphere.load("meshes/highpolysphere.obj");
     hullin.load("meshes/hullin.obj");
+    suzanne.load("meshes/suzanne.obj");
+    bunny.load("meshes/bunny.obj");
+    laptopDeckel.load("meshes/sc3_laptopdeckel.obj");
+    laptopTastatur.load("meshes/sc3_laptoptastatur.obj");
     folien.load("meshes/plane.obj");
     
     holztexture.load(Texture::Format::SRGB8, "textures/Wood.png", 0);
@@ -206,6 +210,7 @@ int get_folie(int time) {
     return 0;
 }
 
+
 int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     if (!DEBUG) {
         camera.setViewDirAlongSpline(time / 2);
@@ -218,8 +223,8 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     glm::vec3 cameraPos = camera.cartesianPosition;
     program.set("uCameraPos", cameraPos);
 
-    vec3 pos = vec3(0.0f, -3.4f, 0.0f);
-    mat4 localToWorld = translate(mat4(1.0f), pos);
+    vec3 hoersaalOffset = vec3(0.0f, -3.4f, 0.0f);
+    mat4 localToWorld = translate(mat4(1.0f), hoersaalOffset);
     mat4 worldToClip = camera.projectionMatrix * camera.viewMatrix;
     program.set("uLocalToWorld", localToWorld);
     program.set("uLocalToClip", worldToClip * localToWorld);
@@ -235,6 +240,41 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     tueren.draw();
 
     program.set("uLocalToClip", worldToClip * localToWorld);
+
+    vec3 suzannePos = hoersaalOffset + vec3(-3.02f, 2.822f + 0.05f * sin(time), -2.5f);
+    // vec3 suzannePos = debugPos;
+    localToWorld = rotate(scale(translate(mat4(1.0f), suzannePos), vec3(0.6f)), glm::pi<float>(), vec3(0, 1, 0));
+    program.set("uLocalToWorld", localToWorld);
+    program.set("uLocalToClip", worldToClip * localToWorld);
+
+    suzanne.draw();
+
+    vec3 bunnyPos = hoersaalOffset + vec3(1.142f, 2.822f, -3.854f);
+    localToWorld = rotate(scale(translate(mat4(1.0f), bunnyPos), vec3(0.4f)), time / 2, vec3(0, 1, 0));
+    program.set("uLocalToWorld", localToWorld);
+    program.set("uLocalToClip", worldToClip * localToWorld);
+
+    bunny.draw();
+
+    program.set("uColor", vec3(0.1f));
+
+    vec3 laptopPos = hoersaalOffset + vec3(0.312f, 3.058f, -0.629f);
+    localToWorld = rotate(translate(mat4(1.0f), laptopPos), 3.f, vec3(0, 1, 0));
+    program.set("uLocalToWorld", localToWorld);
+    program.set("uLocalToClip", worldToClip * localToWorld);
+
+    laptopDeckel.draw();
+    program.set("uColor", vec3(0.7f));
+    laptopTastatur.draw();
+
+    localToWorld = translate(mat4(1.0f), hoersaalOffset);
+    program.set("uLocalToWorld", localToWorld);
+    program.set("uLocalToClip", worldToClip * localToWorld);
+
+
+    program.set("uColor", vec3(0.4f));
+    beamer.draw();
+
     program.set("uUseTexture", true);
 
     holztexture.bind(Texture::Type::TEX2D, 0);
@@ -256,7 +296,7 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     folienTex.bind(Texture::Type::TEX2D, 4);
     program.set("uTexture", 4);
     //std::cout << "ESSS:  " << to_string(mat4(Operations::get_rotation_matrix(vec3(PI/2, 0.0f, 0.0f)))) << std::endl;
-    this->drawMesh(2.0f, pos+vec3(-3.84588f, 5.0f, -10.0f), program, folien, worldToClip ,
+    this->drawMesh(2.0f, hoersaalOffset+vec3(-3.84588f, 5.0f, -10.0f), program, folien, worldToClip ,
                    mat4(
                      1.33141f, 0.0f, 0.0f, 0.0f,
                      0.0f, 0.0f, 1.0f, 0.0f,
