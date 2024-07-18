@@ -12,3 +12,7 @@ Dieses Projekt wurde erstellt von Florian Barth, John Derksen und Henning Lehman
 ## Campus
 
 - Low Poly Tree von [Anskar](https://sketchfab.com/Anskar) (CC attribution)
+
+## Hörsaal
+
+- Laptop von [GeniusPilot2016](https://sketchfab.com/3d-models/laptop-4dbce01df47449f98d65c3f4e3299bd9) (CC attribution)

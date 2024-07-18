@@ -196,6 +196,7 @@ int Scene03::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     program.set("uLocalToClip", worldToClip * localToWorld);
 
     laptopDeckel.draw();
+    program.set("uColor", vec3(0.7f));
     laptopTastatur.draw();
 
     vec3 hoersaalOffset = vec3(0.0f, -4.0f, 0.0f);

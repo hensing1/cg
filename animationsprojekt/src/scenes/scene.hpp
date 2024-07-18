@@ -97,6 +97,7 @@ class Scene02 : public Scene {
         ~Scene02();
     private:
         void render_debug_objects(Program& program, mat4 worldToClip, vec3 playerPosition);
+        Mesh cloudCanvas;
         Mesh campusBoden;
         Mesh sphere;
         Mesh buildings;
