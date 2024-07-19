@@ -26,9 +26,9 @@ MainApp::MainApp() : App(800, 600) {
     camera = MovableCamera();
 
     // Szenen initialisieren, um shader zu kompilieren etc.
-    // scene_01 = std::make_shared<Scene01>();
-    // scene_02 = std::make_shared<Scene02>();
-    // scene_03 = std::make_shared<Scene03>();
+    scene_03 = std::make_shared<Scene03>();
+    scene_02 = std::make_shared<Scene02>();
+    scene_01 = std::make_shared<Scene01>();
 
     sc1_oceanColor = vec3(0, 8, 69) / 255.f;
     sc1_landColor = vec3(10, 71, 0) / 255.f;
@@ -44,7 +44,7 @@ MainApp::MainApp() : App(800, 600) {
     FRAME = 0;
     SCENE = prev_scene = 1;
     DEBUG_MODE = false;
-    ANIMATION_PLAYING = true;
+    ANIMATION_PLAYING = false;
 
     App::imguiEnabled = false;
     camera.cartesianPosition = vec3(0.0f, 0.0f, 0.0f);
@@ -55,6 +55,7 @@ MainApp::MainApp() : App(800, 600) {
 
     scene_start_time = current_time = prev_time = 0.0f;
     switchScene();
+    reset_time_in_scene();
 }
 
 void MainApp::init() {
@@ -115,20 +116,20 @@ void MainApp::switchScene() {
         current_scene = std::make_shared<TestScene>();
         break;
     case 1:
-        // current_scene = scene_01;
-        current_scene = std::make_shared<Scene01>();
+        current_scene = scene_01;
+        // current_scene = std::make_shared<Scene01>();
         break;
     case 2:
-        // current_scene = scene_02;
-        current_scene = std::make_shared<Scene02>();
+        current_scene = scene_02;
+        // current_scene = std::make_shared<Scene02>();
         break;
     case 3:
-        // current_scene = scene_03;
-        current_scene = std::make_shared<Scene03>();
+        current_scene = scene_03;
+        // current_scene = std::make_shared<Scene03>();
         break;
     default:
-        // current_scene = scene_01;
-        current_scene = std::make_shared<TestScene>();
+        current_scene = scene_01;
+        // current_scene = std::make_shared<TestScene>();
     }
     current_scene->setCameraPath(camera);
 }
@@ -145,6 +146,8 @@ void MainApp::keyCallback(Key key, Action action) {
     // std::endl;
     else if (key == Key::BACKSPACE && action == Action::PRESS)
         reset_time_in_scene();
+    else if (key == Key::SPACE && action == Action::PRESS)
+        ANIMATION_PLAYING ^= true;
 
     else if (key == Key::W && action == Action::PRESS)
         wasdCallback(vec3(0.0f, 0.0f, 1.0f));
@@ -168,8 +171,8 @@ void MainApp::keyCallback(Key key, Action action) {
         wasdCallback(vec3(-1.0f, 0.0f, 0.0f));
     else if (key == Key::LEFT_SHIFT && (action == Action::PRESS || action == Action::REPEAT))
         wasdCallback(vec3(0.0f, -1.0f, 0.0f));
-    else if (key == Key::SPACE && (action == Action::PRESS || action == Action::REPEAT))
-        wasdCallback(vec3(0.0f, 1.0f, 0.0f));
+    // else if (key == Key::SPACE && (action == Action::PRESS || action == Action::REPEAT))
+    //     wasdCallback(vec3(0.0f, 1.0f, 0.0f));
 }
 
 /*

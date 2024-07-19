@@ -41,9 +41,9 @@ class MainApp : public App {
     // NOTE: Globale Variablen
     MovableCamera camera;
     std::shared_ptr<Scene> current_scene;
-    // std::shared_ptr<Scene01> scene_01;
-    // std::shared_ptr<Scene02> scene_02;
-    // std::shared_ptr<Scene03> scene_03;
+    std::shared_ptr<Scene01> scene_01;
+    std::shared_ptr<Scene02> scene_02;
+    std::shared_ptr<Scene03> scene_03;
 
     int FRAME;
     int SCENE;

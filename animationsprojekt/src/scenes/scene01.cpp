@@ -19,7 +19,7 @@ Scene01::Scene01() {
     program.load("sc1_earth.vert", "sc1_earth.frag");
     sphere.load("meshes/highpolysphere.obj");
 
-    int num_subdivisions = 6;
+    int num_subdivisions = 7;
     earth = generate_sphere(num_subdivisions);
 
     heightmapHandle = generate_and_apply_heightmap();
@@ -97,7 +97,7 @@ int Scene01::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
     glActiveTexture(GL_TEXTURE0);
     program.set("heightmap", 0);
     glBindTexture(GL_TEXTURE_2D, heightmapHandle);
-    glDisable(GL_BLEND);
+    // glDisable(GL_BLEND);
 
     vec3 pos = vec3(0, 0, 0);
     mat4 localToWorld = scale(translate(mat4(1.0f), pos), vec3(earthRadius));
@@ -125,12 +125,13 @@ int Scene01::render(int frame, float time, MovableCamera& camera, bool DEBUG) {
         cloudProgram.set("uFar", camera.far);
     }
     cloudCanvas.draw();
+    glDisable(GL_BLEND);
 
     if (DEBUG) {
         render_debug_objects(program, worldToClip, camera.getViewDirAlongSpline(time / 2), camera.target);
     }
 
-    if (time >= 14.8f) return 2;
+    if (time >= 15.1f) return 2;
     return 0;
 }
 
